@@ -122,6 +122,24 @@ getMode <- function(sorted_vec, size) {
     .Call(`_hmcdm_getMode`, sorted_vec, size)
 }
 
+#' @title List to Array
+#' @description Takes a list of (J*K) Q matrices as an input and returns an 
+#' array of Q matrices as an output.
+#' @param Q_List A list of Q matrices
+#' @return Q_Array An array of Q matrices
+#' @examples 
+#' \donttest{
+#' List2Array(Q_List)
+#' }
+#' @export
+List2Array <- function(Q_List) {
+    .Call(`_hmcdm_List2Array`, Q_List)
+}
+
+Array2List <- function(Q_Array) {
+    .Call(`_hmcdm_Array2List`, Q_Array)
+}
+
 #' @title Obtain learning model point estimates
 #' @description Obtain EAPs of continuous parameters and EAP or MAP of the attribute trajectory estimates under
 #' the CDM learning models based on the MCMC output

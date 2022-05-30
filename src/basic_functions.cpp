@@ -319,3 +319,38 @@ int getMode(arma::vec sorted_vec, int size){
   return mode;
 }
 
+
+//' @title List to Array
+//' @description Takes a list of (J*K) Q matrices as an input and returns an 
+//' array of Q matrices as an output.
+//' @param Q_List A list of Q matrices
+//' @return Q_Array An array of Q matrices
+//' @examples 
+//' \donttest{
+//' List2Array(Q_List)
+//' }
+//' @export
+// [[Rcpp::export]]
+arma::cube List2Array(const Rcpp::List Q_List){
+  arma::mat Q_mat = Rcpp::as<arma::mat> (Q_List[1]);
+  unsigned int J = Q_mat.n_rows;
+  unsigned int K = Q_mat.n_cols;
+  unsigned int T = Q_List.size();
+  
+  arma::cube Q_Array = arma::zeros<arma::cube>(J,K,T);
+  for(unsigned int i= 0; i<T; i++){
+    Q_Array.slice(i) = Rcpp::as<arma::mat>(Q_List[i]);
+  }
+  return Q_Array;
+}
+
+// [[Rcpp::export]]
+Rcpp::List Array2List(const arma::cube Q_Array){
+  unsigned int T = Q_Array.n_slices;
+  Rcpp::List Q_List;
+  for(unsigned int tt=0; tt<T; tt++){
+    Q_List.push_back(Q_Array.slice(tt));
+  }
+  return Q_List;
+}
+

@@ -6,6 +6,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // bijectionvector
 arma::vec bijectionvector(unsigned int K);
 RcppExport SEXP _hmcdm_bijectionvector(SEXP KSEXP) {
@@ -187,6 +192,28 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type sorted_vec(sorted_vecSEXP);
     Rcpp::traits::input_parameter< int >::type size(sizeSEXP);
     rcpp_result_gen = Rcpp::wrap(getMode(sorted_vec, size));
+    return rcpp_result_gen;
+END_RCPP
+}
+// List2Array
+arma::cube List2Array(const Rcpp::List Q_List);
+RcppExport SEXP _hmcdm_List2Array(SEXP Q_ListSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Rcpp::List >::type Q_List(Q_ListSEXP);
+    rcpp_result_gen = Rcpp::wrap(List2Array(Q_List));
+    return rcpp_result_gen;
+END_RCPP
+}
+// Array2List
+Rcpp::List Array2List(const arma::cube Q_Array);
+RcppExport SEXP _hmcdm_Array2List(SEXP Q_ArraySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::cube >::type Q_Array(Q_ArraySEXP);
+    rcpp_result_gen = Rcpp::wrap(Array2List(Q_Array));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -880,6 +907,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_hmcdm_resp_miss", (DL_FUNC) &_hmcdm_resp_miss, 3},
     {"_hmcdm_OddsRatio", (DL_FUNC) &_hmcdm_OddsRatio, 3},
     {"_hmcdm_getMode", (DL_FUNC) &_hmcdm_getMode, 2},
+    {"_hmcdm_List2Array", (DL_FUNC) &_hmcdm_List2Array, 1},
+    {"_hmcdm_Array2List", (DL_FUNC) &_hmcdm_Array2List, 1},
     {"_hmcdm_point_estimates_learning", (DL_FUNC) &_hmcdm_point_estimates_learning, 7},
     {"_hmcdm_Learning_fit", (DL_FUNC) &_hmcdm_Learning_fit, 10},
     {"_hmcdm_parm_update_HO", (DL_FUNC) &_hmcdm_parm_update_HO, 16},

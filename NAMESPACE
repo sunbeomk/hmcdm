@@ -2,6 +2,7 @@
 
 export(ETAmat)
 export(Learning_fit)
+export(List2Array)
 export(MCMC_learning)
 export(OddsRatio)
 export(TPmat)

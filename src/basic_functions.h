@@ -30,6 +30,8 @@ arma::mat OddsRatio(unsigned int N,unsigned int J,const arma::mat& Yt);
 
 int getMode(arma::vec sorted_vec, int size);
 
+arma::cube List2Array(const Rcpp::List Q_List);
+Rcpp::List Array2List(const arma::cube Q_Array);
 
 
 #endif
