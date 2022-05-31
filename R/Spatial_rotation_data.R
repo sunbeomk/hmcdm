@@ -11,12 +11,11 @@
 
 #' List of Q matrices
 #' 
-#' This data set contains the Q matrices of the items in the Spatial Rotation Learning Program.
-#' @format A list of length 5 (number of item blocks). Each element of the list is a Jt-by-K matrix, containing the 
-#' item-skill relationship of items in the corresponding block.
+#' This data set contains the Q matrix of the items in the Spatial Rotation Learning Program.
+#' @format A J-by-K matrix, indicating the item-skill relationship.
 #' @source Spatial Rotation Learning Experiment at UIUC between Fall 2015 and Spring 2016.
 #' @author Shiyu Wang, Yan Yang, Jeff Douglas, and Steve Culpepper
-"Q_list"
+"Q_array"
 
 
 #' Array of Q matrices
@@ -57,7 +56,7 @@
 #' subjects' response accuracy to each item at that time point.
 #' @source Spatial Rotation Learning Experiment at UIUC between Fall 2015 and Spring 2016.
 #' @author Shiyu Wang, Yan Yang, Jeff Douglas, and Steve Culpepper
-"Y_real_list"
+"Y_real_array"
 
 
 #' Test block ordering of each test version
