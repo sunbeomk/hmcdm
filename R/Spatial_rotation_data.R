@@ -6,7 +6,7 @@
 #' subjects' response times in seconds to each item at that time point.
 #' @source Spatial Rotation Learning Experiment at UIUC between Fall 2015 and Spring 2016.
 #' @author Shiyu Wang, Yan Yang, Jeff Douglas, and Steve Culpepper
-"L_real_list"
+"L_real_array"
 
 
 #' List of Q matrices
