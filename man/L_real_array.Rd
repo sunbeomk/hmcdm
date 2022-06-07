@@ -5,7 +5,7 @@
 \alias{L_real_array}
 \title{Observed response times list}
 \format{
-A list of length 5 (number of time points). Each element of the list is an N-by-Jt matrix, containing the
+An array of dimensions 350-by-50-by-5. Each slice of the array is an N-by-J matrix, containing the
 subjects' response times in seconds to each item at that time point.
 }
 \source{

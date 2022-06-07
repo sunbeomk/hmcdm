@@ -48,19 +48,25 @@ Q_array <- rbind(Q_list[[1]],
 usethis::use_data(Q_array, overwrite=TRUE)
 
 
+## Design matrix (N*J*T)
+Design_array <- array(NA, dim=c(N, J, TT))
+for(i in 1:N){
+  test_version <- Test_versions[[i]]
+  for(t in 1:TT){
+    test_index <- test_order[test_version,t]
+    item_indices <- (10*(test_index-1)+1):(10*test_index)
+    Design_array[i,item_indices,t] <- 1
+  }
+}
+usethis::use_data(Design_array, overwrite=TRUE)
 
 
-# d. Item pars
 
-
-
-
-# e. Covariates
 
 test_order
 Test_versions
-Y_real_list
 Qs
+Y_real_list
 Q_examinee
 length(Q_examinee)
 dim(Q_examinee[[1]])

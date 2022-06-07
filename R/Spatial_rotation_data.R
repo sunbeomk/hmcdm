@@ -2,7 +2,7 @@
 #' 
 #' This data set contains the observed latencies of responses of all subjects to all questions in the Spatial Rotation 
 #' Learning Program.
-#' @format A list of length 5 (number of time points). Each element of the list is an N-by-Jt matrix, containing the
+#' @format An array of dimensions 350-by-50-by-5. Each slice of the array is an N-by-J matrix, containing the
 #' subjects' response times in seconds to each item at that time point.
 #' @source Spatial Rotation Learning Experiment at UIUC between Fall 2015 and Spring 2016.
 #' @author Shiyu Wang, Yan Yang, Jeff Douglas, and Steve Culpepper
@@ -68,3 +68,12 @@
 #' @source Spatial Rotation Learning Experiment at UIUC between Fall 2015 and Spring 2016.
 #' @author Shiyu Wang, Yan Yang, Jeff Douglas, and Steve Culpepper
 'test_order'
+
+
+#' Test design array
+#' 
+#' This data set contains the design matrix indicating the items exposed to the subjects at each time point.
+#' @format An NxJxT array.
+#' @source Spatial Rotation Learning Experiment at UIUC between Fall 2015 and Spring 2016.
+#' @author Shiyu Wang, Yan Yang, Jeff Douglas, and Steve Culpepper
+'Design_array'
