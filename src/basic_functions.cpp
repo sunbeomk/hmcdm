@@ -331,26 +331,62 @@ int getMode(arma::vec sorted_vec, int size){
 //' }
 //' @export
 // [[Rcpp::export]]
-arma::cube List2Array(const Rcpp::List Q_List){
-  arma::mat Q_mat = Rcpp::as<arma::mat> (Q_List[1]);
+arma::cube List2Array(const Rcpp::List Q_list){
+  arma::mat Q_mat = Rcpp::as<arma::mat> (Q_list[1]);
   unsigned int J = Q_mat.n_rows;
   unsigned int K = Q_mat.n_cols;
-  unsigned int T = Q_List.size();
+  unsigned int T = Q_list.size();
   
-  arma::cube Q_Array = arma::zeros<arma::cube>(J,K,T);
+  arma::cube Q_array = arma::zeros<arma::cube>(J,K,T);
   for(unsigned int i= 0; i<T; i++){
-    Q_Array.slice(i) = Rcpp::as<arma::mat>(Q_List[i]);
+    Q_array.slice(i) = Rcpp::as<arma::mat>(Q_list[i]);
   }
-  return Q_Array;
+  return Q_array;
 }
 
 // [[Rcpp::export]]
-Rcpp::List Array2List(const arma::cube Q_Array){
-  unsigned int T = Q_Array.n_slices;
-  Rcpp::List Q_List;
+Rcpp::List Array2List(const arma::cube Q_array){
+  unsigned int T = Q_array.n_slices;
+  Rcpp::List Q_list;
   for(unsigned int tt=0; tt<T; tt++){
-    Q_List.push_back(Q_Array.slice(tt));
+    Q_list.push_back(Q_array.slice(tt));
   }
-  return Q_List;
+  return Q_list;
 }
+
+
+//' @title Sparse2Dense
+//' @description Converts a N*J*T sparse response array to a N*Jt*T dense array.
+//' @param Y_real_array A N*J*T sparse response array
+//' @param test_order A test_order matrix
+//' @param Test_versions A vector of test versions
+//' @return Response An array of response
+//' @examples 
+//' \donttest{
+//' Sparse2Dense(Y_real_array, test_order, Test_versions)
+//' }
+//' @export
+// [[Rcpp::export]]
+arma::cube Sparse2Dense(const arma::cube Y_real_array,
+                        const arma::mat& test_order,
+                        const arma::vec& Test_versions){
+  unsigned int N = Test_versions.n_elem;
+  unsigned int J = Y_real_array.n_cols;
+  unsigned int T = Y_real_array.n_slices;
+  unsigned int Jt = J / T;
+
+  arma::cube Response(N,Jt,T);
+  for(unsigned int i=0; i<N; i++){
+    unsigned int test_version = Test_versions(i);
+    for(unsigned int t=0; t<T; t++){
+      unsigned int test_index = test_order(test_version-1,t);
+      for(unsigned int j=0; j<Jt; j++){
+        unsigned int item_index = (test_index-1)*Jt+j;
+        Response(i,j,t) = Y_real_array(i,item_index,t);
+      }
+    }
+  }
+  return Response;
+}
+
 

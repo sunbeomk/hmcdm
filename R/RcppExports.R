@@ -132,12 +132,27 @@ getMode <- function(sorted_vec, size) {
 #' List2Array(Q_List)
 #' }
 #' @export
-List2Array <- function(Q_List) {
-    .Call(`_hmcdm_List2Array`, Q_List)
+List2Array <- function(Q_list) {
+    .Call(`_hmcdm_List2Array`, Q_list)
 }
 
-Array2List <- function(Q_Array) {
-    .Call(`_hmcdm_Array2List`, Q_Array)
+Array2List <- function(Q_array) {
+    .Call(`_hmcdm_Array2List`, Q_array)
+}
+
+#' @title Sparse2Dense
+#' @description Converts a N*J*T sparse response array to a N*Jt*T dense array.
+#' @param Y_real_array A N*J*T sparse response array
+#' @param test_order A test_order matrix
+#' @param Test_versions A vector of test versions
+#' @return Response An array of response
+#' @examples 
+#' \donttest{
+#' Sparse2Dense(Y_real_array, test_order, Test_versions)
+#' }
+#' @export
+Sparse2Dense <- function(Y_real_array, test_order, Test_versions) {
+    .Call(`_hmcdm_Sparse2Dense`, Y_real_array, test_order, Test_versions)
 }
 
 #' @title Obtain learning model point estimates
@@ -292,8 +307,8 @@ Gibbs_DINA_FOHM <- function(Y, Q, burnin, chain_length) {
 #' output_FOHM = MCMC_learning(Y_real_list,Q_list,"DINA_FOHM",test_order,Test_versions,10000,5000)
 #' }
 #' @export
-MCMC_learning <- function(Response, Qs, model, test_order, Test_versions, chain_length, burn_in, Q_examinee = NULL, Latency_list = NULL, G_version = NA_integer_, theta_propose = 0., deltas_propose = NULL, R = NULL) {
-    .Call(`_hmcdm_MCMC_learning`, Response, Qs, model, test_order, Test_versions, chain_length, burn_in, Q_examinee, Latency_list, G_version, theta_propose, deltas_propose, R)
+MCMC_learning <- function(Y_real_array, Qs, model, test_order, Test_versions, chain_length, burn_in, Q_examinee = NULL, Latency_list = NULL, G_version = NA_integer_, theta_propose = 0., deltas_propose = NULL, R = NULL) {
+    .Call(`_hmcdm_MCMC_learning`, Y_real_array, Qs, model, test_order, Test_versions, chain_length, burn_in, Q_examinee, Latency_list, G_version, theta_propose, deltas_propose, R)
 }
 
 #' @title Simulate DINA model responses (single vector)

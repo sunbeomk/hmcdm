@@ -2336,11 +2336,11 @@ Rcpp::List Gibbs_DINA_FOHM(const arma::cube& Y,const arma::mat& Q,
 //' @author Susu Zhang
 //' @examples
 //' \donttest{
-//' output_FOHM = MCMC_learning(Y_real_list,Q_list,"DINA_FOHM",test_order,Test_versions,10000,5000)
+//' output_FOHM = MCMC_learning(Y_real_array,Qs,"DINA_FOHM",test_order,Test_versions,10000,5000)
 //' }
 //' @export
 // [[Rcpp::export]]
-Rcpp::List MCMC_learning(const arma::cube Response, const arma::cube Qs, 
+Rcpp::List MCMC_learning(const arma::cube Y_real_array, const arma::cube Qs, 
                          const std::string model, const arma::mat& test_order, const arma::vec& Test_versions,
                          const unsigned int chain_length, const unsigned int burn_in,
                          const Rcpp::Nullable<Rcpp::List> Q_examinee=R_NilValue,
@@ -2352,6 +2352,8 @@ Rcpp::List MCMC_learning(const arma::cube Response, const arma::cube Qs,
   unsigned int Jt = Qs.n_rows;
   unsigned int N = Test_versions.n_elem;
   arma::cube Latency(N,Jt,T);
+  arma::cube Response;
+  Response = Sparse2Dense(Y_real_array, test_order, Test_versions);
   for(unsigned int t = 0; t<T; t++){
     if(Latency_list.isNotNull()){
       Rcpp::List tmp = Rcpp::as<Rcpp::List>(Latency_list);

@@ -5,7 +5,7 @@
 \title{Gibbs sampler for learning models}
 \usage{
 MCMC_learning(
-  Response,
+  Y_real_array,
   Qs,
   model,
   test_order,

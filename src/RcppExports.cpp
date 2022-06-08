@@ -196,24 +196,37 @@ BEGIN_RCPP
 END_RCPP
 }
 // List2Array
-arma::cube List2Array(const Rcpp::List Q_List);
-RcppExport SEXP _hmcdm_List2Array(SEXP Q_ListSEXP) {
+arma::cube List2Array(const Rcpp::List Q_list);
+RcppExport SEXP _hmcdm_List2Array(SEXP Q_listSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const Rcpp::List >::type Q_List(Q_ListSEXP);
-    rcpp_result_gen = Rcpp::wrap(List2Array(Q_List));
+    Rcpp::traits::input_parameter< const Rcpp::List >::type Q_list(Q_listSEXP);
+    rcpp_result_gen = Rcpp::wrap(List2Array(Q_list));
     return rcpp_result_gen;
 END_RCPP
 }
 // Array2List
-Rcpp::List Array2List(const arma::cube Q_Array);
-RcppExport SEXP _hmcdm_Array2List(SEXP Q_ArraySEXP) {
+Rcpp::List Array2List(const arma::cube Q_array);
+RcppExport SEXP _hmcdm_Array2List(SEXP Q_arraySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::cube >::type Q_Array(Q_ArraySEXP);
-    rcpp_result_gen = Rcpp::wrap(Array2List(Q_Array));
+    Rcpp::traits::input_parameter< const arma::cube >::type Q_array(Q_arraySEXP);
+    rcpp_result_gen = Rcpp::wrap(Array2List(Q_array));
+    return rcpp_result_gen;
+END_RCPP
+}
+// Sparse2Dense
+arma::cube Sparse2Dense(const arma::cube Y_real_array, const arma::mat& test_order, const arma::vec& Test_versions);
+RcppExport SEXP _hmcdm_Sparse2Dense(SEXP Y_real_arraySEXP, SEXP test_orderSEXP, SEXP Test_versionsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::cube >::type Y_real_array(Y_real_arraySEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type test_order(test_orderSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type Test_versions(Test_versionsSEXP);
+    rcpp_result_gen = Rcpp::wrap(Sparse2Dense(Y_real_array, test_order, Test_versions));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -536,12 +549,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // MCMC_learning
-Rcpp::List MCMC_learning(const arma::cube Response, const arma::cube Qs, const std::string model, const arma::mat& test_order, const arma::vec& Test_versions, const unsigned int chain_length, const unsigned int burn_in, const Rcpp::Nullable<Rcpp::List> Q_examinee, const Rcpp::Nullable<Rcpp::List> Latency_list, const int G_version, const double theta_propose, const Rcpp::Nullable<Rcpp::NumericVector> deltas_propose, const Rcpp::Nullable<Rcpp::NumericMatrix> R);
-RcppExport SEXP _hmcdm_MCMC_learning(SEXP ResponseSEXP, SEXP QsSEXP, SEXP modelSEXP, SEXP test_orderSEXP, SEXP Test_versionsSEXP, SEXP chain_lengthSEXP, SEXP burn_inSEXP, SEXP Q_examineeSEXP, SEXP Latency_listSEXP, SEXP G_versionSEXP, SEXP theta_proposeSEXP, SEXP deltas_proposeSEXP, SEXP RSEXP) {
+Rcpp::List MCMC_learning(const arma::cube Y_real_array, const arma::cube Qs, const std::string model, const arma::mat& test_order, const arma::vec& Test_versions, const unsigned int chain_length, const unsigned int burn_in, const Rcpp::Nullable<Rcpp::List> Q_examinee, const Rcpp::Nullable<Rcpp::List> Latency_list, const int G_version, const double theta_propose, const Rcpp::Nullable<Rcpp::NumericVector> deltas_propose, const Rcpp::Nullable<Rcpp::NumericMatrix> R);
+RcppExport SEXP _hmcdm_MCMC_learning(SEXP Y_real_arraySEXP, SEXP QsSEXP, SEXP modelSEXP, SEXP test_orderSEXP, SEXP Test_versionsSEXP, SEXP chain_lengthSEXP, SEXP burn_inSEXP, SEXP Q_examineeSEXP, SEXP Latency_listSEXP, SEXP G_versionSEXP, SEXP theta_proposeSEXP, SEXP deltas_proposeSEXP, SEXP RSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::cube >::type Response(ResponseSEXP);
+    Rcpp::traits::input_parameter< const arma::cube >::type Y_real_array(Y_real_arraySEXP);
     Rcpp::traits::input_parameter< const arma::cube >::type Qs(QsSEXP);
     Rcpp::traits::input_parameter< const std::string >::type model(modelSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type test_order(test_orderSEXP);
@@ -554,7 +567,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type theta_propose(theta_proposeSEXP);
     Rcpp::traits::input_parameter< const Rcpp::Nullable<Rcpp::NumericVector> >::type deltas_propose(deltas_proposeSEXP);
     Rcpp::traits::input_parameter< const Rcpp::Nullable<Rcpp::NumericMatrix> >::type R(RSEXP);
-    rcpp_result_gen = Rcpp::wrap(MCMC_learning(Response, Qs, model, test_order, Test_versions, chain_length, burn_in, Q_examinee, Latency_list, G_version, theta_propose, deltas_propose, R));
+    rcpp_result_gen = Rcpp::wrap(MCMC_learning(Y_real_array, Qs, model, test_order, Test_versions, chain_length, burn_in, Q_examinee, Latency_list, G_version, theta_propose, deltas_propose, R));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -909,6 +922,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_hmcdm_getMode", (DL_FUNC) &_hmcdm_getMode, 2},
     {"_hmcdm_List2Array", (DL_FUNC) &_hmcdm_List2Array, 1},
     {"_hmcdm_Array2List", (DL_FUNC) &_hmcdm_Array2List, 1},
+    {"_hmcdm_Sparse2Dense", (DL_FUNC) &_hmcdm_Sparse2Dense, 3},
     {"_hmcdm_point_estimates_learning", (DL_FUNC) &_hmcdm_point_estimates_learning, 7},
     {"_hmcdm_Learning_fit", (DL_FUNC) &_hmcdm_Learning_fit, 10},
     {"_hmcdm_parm_update_HO", (DL_FUNC) &_hmcdm_parm_update_HO, 16},

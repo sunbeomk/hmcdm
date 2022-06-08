@@ -4,7 +4,7 @@
 \alias{List2Array}
 \title{List to Array}
 \usage{
-List2Array(Q_List)
+List2Array(Q_list)
 }
 \arguments{
 \item{Q_List}{A list of Q matrices}

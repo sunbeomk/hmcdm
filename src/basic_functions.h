@@ -33,5 +33,6 @@ int getMode(arma::vec sorted_vec, int size);
 arma::cube List2Array(const Rcpp::List Q_List);
 Rcpp::List Array2List(const arma::cube Q_Array);
 
+arma::cube Sparse2Dense(const arma::cube Y_real_array, const arma::mat& test_order, const arma::vec& Test_versions);
 
 #endif
