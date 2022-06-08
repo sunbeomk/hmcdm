@@ -5,8 +5,8 @@
 \title{Gibbs sampler for learning models}
 \usage{
 MCMC_learning(
-  Response_list,
-  Q_list,
+  Response,
+  Qs,
   model,
   test_order,
   Test_versions,
@@ -21,10 +21,6 @@ MCMC_learning(
 )
 }
 \arguments{
-\item{Response_list}{A \code{list} of dichotomous item responses. t-th element is an N-by-Jt matrix of responses at time t.}
-
-\item{Q_list}{A \code{list} of Q-matrices. b-th element is a Jt-by-K Q-matrix for items in block b.}
-
 \item{model}{A \code{charactor} of the type of model fitted with the MCMC sampler, possible selections are
 "DINA_HO": Higher-Order Hidden Markov Diagnostic Classification Model with DINA responses;
 "DINA_HO_RT_joint": Higher-Order Hidden Markov DCM with DINA responses, log-Normal response times, and joint modeling of latent
@@ -56,6 +52,10 @@ subjects with different attribute trajectories)}
 \item{deltas_propose}{Optional. A \code{vector} for the band widths of each lambda's proposal distribution in the MH sampling step.}
 
 \item{R}{Optional. A reachability \code{matrix} for the hierarchical relationship between attributes.}
+
+\item{Response_list}{A \code{list} of dichotomous item responses. t-th element is an N-by-Jt matrix of responses at time t.}
+
+\item{Q_list}{A \code{list} of Q-matrices. b-th element is a Jt-by-K Q-matrix for items in block b.}
 }
 \value{
 A \code{list} of parameter samples and Metropolis-Hastings acceptance rates (if applicable).

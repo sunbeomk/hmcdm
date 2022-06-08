@@ -292,8 +292,8 @@ Gibbs_DINA_FOHM <- function(Y, Q, burnin, chain_length) {
 #' output_FOHM = MCMC_learning(Y_real_list,Q_list,"DINA_FOHM",test_order,Test_versions,10000,5000)
 #' }
 #' @export
-MCMC_learning <- function(Response_list, Q_list, model, test_order, Test_versions, chain_length, burn_in, Q_examinee = NULL, Latency_list = NULL, G_version = NA_integer_, theta_propose = 0., deltas_propose = NULL, R = NULL) {
-    .Call(`_hmcdm_MCMC_learning`, Response_list, Q_list, model, test_order, Test_versions, chain_length, burn_in, Q_examinee, Latency_list, G_version, theta_propose, deltas_propose, R)
+MCMC_learning <- function(Response, Qs, model, test_order, Test_versions, chain_length, burn_in, Q_examinee = NULL, Latency_list = NULL, G_version = NA_integer_, theta_propose = 0., deltas_propose = NULL, R = NULL) {
+    .Call(`_hmcdm_MCMC_learning`, Response, Qs, model, test_order, Test_versions, chain_length, burn_in, Q_examinee, Latency_list, G_version, theta_propose, deltas_propose, R)
 }
 
 #' @title Simulate DINA model responses (single vector)
