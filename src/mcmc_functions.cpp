@@ -2340,7 +2340,7 @@ Rcpp::List Gibbs_DINA_FOHM(const arma::cube& Y,const arma::mat& Q,
 //' }
 //' @export
 // [[Rcpp::export]]
-Rcpp::List MCMC_learning(const Rcpp::List Response_list, const Rcpp::List Q_list, 
+Rcpp::List MCMC_learning(const arma::cube Response, const arma::cube Qs, 
                          const std::string model, const arma::mat& test_order, const arma::vec& Test_versions,
                          const unsigned int chain_length, const unsigned int burn_in,
                          const Rcpp::Nullable<Rcpp::List> Q_examinee=R_NilValue,
@@ -2349,16 +2349,10 @@ Rcpp::List MCMC_learning(const Rcpp::List Response_list, const Rcpp::List Q_list
                          const Rcpp::Nullable<Rcpp::NumericMatrix> R = R_NilValue){
   Rcpp::List output;
   unsigned int T = test_order.n_rows;
-  arma::mat temp = Rcpp::as<arma::mat>(Q_list[0]);
-  unsigned int Jt = temp.n_rows;
-  unsigned int K = temp.n_cols;
+  unsigned int Jt = Qs.n_rows;
   unsigned int N = Test_versions.n_elem;
-  arma::cube Response(N,Jt,T);
   arma::cube Latency(N,Jt,T);
-  arma::cube Qs(Jt,K,T);
   for(unsigned int t = 0; t<T; t++){
-    Response.slice(t) = Rcpp::as<arma::mat>(Response_list[t]);
-    Qs.slice(t) = Rcpp::as<arma::mat>(Q_list[t]);
     if(Latency_list.isNotNull()){
       Rcpp::List tmp = Rcpp::as<Rcpp::List>(Latency_list);
       Latency.slice(t) = Rcpp::as<arma::mat>(tmp[t]);
