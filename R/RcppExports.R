@@ -304,7 +304,7 @@ Gibbs_DINA_FOHM <- function(Y, Q, burnin, chain_length) {
 #' @author Susu Zhang
 #' @examples
 #' \donttest{
-#' output_FOHM = MCMC_learning(Y_real_list,Q_list,"DINA_FOHM",test_order,Test_versions,10000,5000)
+#' output_FOHM = MCMC_learning(Y_real_array,Qs,"DINA_FOHM",test_order,Test_versions,10000,5000)
 #' }
 #' @export
 MCMC_learning <- function(Y_real_array, Qs, model, test_order, Test_versions, chain_length, burn_in, Q_examinee = NULL, Latency_list = NULL, G_version = NA_integer_, theta_propose = 0., deltas_propose = NULL, R = NULL) {

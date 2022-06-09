@@ -1537,7 +1537,7 @@ void parm_update_rRUM(const unsigned int N, const unsigned int Jt, const unsigne
   double pi_ik,aik_nmrtr_k,aik_dnmntr_k,c_aik_1,c_aik_0,ptranspost_1,ptranspost_0,ptransprev_1,ptransprev_0;
   arma::vec aik_nmrtr(K);
   arma::vec aik_dnmntr(K);
-  double D_bar = 0;
+  // double D_bar = 0;
   arma::mat Classes(N,(T));
   
   // update X
@@ -1637,7 +1637,7 @@ void parm_update_rRUM(const unsigned int N, const unsigned int Jt, const unsigne
       }
       alphas.slice(t).row(i) = alpha_i.t();
       // Get DIC
-      D_bar += log(pYit_rRUM(alpha_i,Yi,pi_star_it,r_star_it,Q_it));
+      // D_bar += log(pYit_rRUM(alpha_i,Yi,pi_star_it,r_star_it,Q_it));
     }
   }
   
@@ -1828,7 +1828,7 @@ void parm_update_NIDA_indept(const unsigned int N, const unsigned int Jt, const 
   double pi_ik,aik_nmrtr_k,aik_dnmntr_k,c_aik_1,c_aik_0,ptranspost_1,ptranspost_0,ptransprev_1,ptransprev_0;
   arma::vec aik_nmrtr(K);
   arma::vec aik_dnmntr(K);
-  double D_bar = 0;
+  // double D_bar = 0;
   arma::mat Classes(N,(T));
   
   // update X
@@ -1922,7 +1922,7 @@ void parm_update_NIDA_indept(const unsigned int N, const unsigned int Jt, const 
       // Get DIC
       arma::vec Svec = Smats.slice(0).row(0).t();
       arma::vec Gvec = Gmats.slice(0).row(0).t();
-      D_bar += log(pYit_NIDA(alpha_i,Yi,Svec,Gvec,Q_it));
+      // D_bar += log(pYit_NIDA(alpha_i,Yi,Svec,Gvec,Q_it));
     }
   }
   
