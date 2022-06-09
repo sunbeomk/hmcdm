@@ -155,6 +155,10 @@ Sparse2Dense <- function(Y_real_array, test_order, Test_versions) {
     .Call(`_hmcdm_Sparse2Dense`, Y_real_array, test_order, Test_versions)
 }
 
+Mat2Array <- function(Q_matrix, T) {
+    .Call(`_hmcdm_Mat2Array`, Q_matrix, T)
+}
+
 #' @title Obtain learning model point estimates
 #' @description Obtain EAPs of continuous parameters and EAP or MAP of the attribute trajectory estimates under
 #' the CDM learning models based on the MCMC output
@@ -304,11 +308,11 @@ Gibbs_DINA_FOHM <- function(Y, Q, burnin, chain_length) {
 #' @author Susu Zhang
 #' @examples
 #' \donttest{
-#' output_FOHM = MCMC_learning(Y_real_array,Qs,"DINA_FOHM",test_order,Test_versions,10000,5000)
+#' output_FOHM = MCMC_learning(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
 #' }
 #' @export
-MCMC_learning <- function(Y_real_array, Qs, model, test_order, Test_versions, chain_length, burn_in, Q_examinee = NULL, Latency_list = NULL, G_version = NA_integer_, theta_propose = 0., deltas_propose = NULL, R = NULL) {
-    .Call(`_hmcdm_MCMC_learning`, Y_real_array, Qs, model, test_order, Test_versions, chain_length, burn_in, Q_examinee, Latency_list, G_version, theta_propose, deltas_propose, R)
+MCMC_learning <- function(Y_real_array, Q_matrix, model, test_order, Test_versions, chain_length, burn_in, Q_examinee = NULL, Latency_list = NULL, G_version = NA_integer_, theta_propose = 0., deltas_propose = NULL, R = NULL) {
+    .Call(`_hmcdm_MCMC_learning`, Y_real_array, Q_matrix, model, test_order, Test_versions, chain_length, burn_in, Q_examinee, Latency_list, G_version, theta_propose, deltas_propose, R)
 }
 
 #' @title Simulate DINA model responses (single vector)

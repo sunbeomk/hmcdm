@@ -5,7 +5,7 @@
 \alias{Y_real_array}
 \title{Observed response accuracy list}
 \format{
-A list of length 5 (number of time points). Each element of the list is an N-by-Jt matrix, containing the
+An array of dimensions N-by-J-by-T. Each slice of the array is an N-by-J matrix, containing the
 subjects' response accuracy to each item at that time point.
 }
 \source{

@@ -35,4 +35,6 @@ Rcpp::List Array2List(const arma::cube Q_Array);
 
 arma::cube Sparse2Dense(const arma::cube Y_real_array, const arma::mat& test_order, const arma::vec& Test_versions);
 
+arma::cube Mat2Array(const arma::mat Q_matrix, unsigned int T);
+  
 #endif

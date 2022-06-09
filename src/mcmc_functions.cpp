@@ -2336,11 +2336,11 @@ Rcpp::List Gibbs_DINA_FOHM(const arma::cube& Y,const arma::mat& Q,
 //' @author Susu Zhang
 //' @examples
 //' \donttest{
-//' output_FOHM = MCMC_learning(Y_real_array,Qs,"DINA_FOHM",test_order,Test_versions,10000,5000)
+//' output_FOHM = MCMC_learning(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
 //' }
 //' @export
 // [[Rcpp::export]]
-Rcpp::List MCMC_learning(const arma::cube Y_real_array, const arma::cube Qs, 
+Rcpp::List MCMC_learning(const arma::cube Y_real_array, const arma::mat Q_matrix, 
                          const std::string model, const arma::mat& test_order, const arma::vec& Test_versions,
                          const unsigned int chain_length, const unsigned int burn_in,
                          const Rcpp::Nullable<Rcpp::List> Q_examinee=R_NilValue,
@@ -2349,7 +2349,8 @@ Rcpp::List MCMC_learning(const arma::cube Y_real_array, const arma::cube Qs,
                          const Rcpp::Nullable<Rcpp::NumericMatrix> R = R_NilValue){
   Rcpp::List output;
   unsigned int T = test_order.n_rows;
-  unsigned int Jt = Qs.n_rows;
+  unsigned int J = Q_matrix.n_rows;
+  unsigned int Jt = J/T;
   unsigned int N = Test_versions.n_elem;
   arma::cube Latency(N,Jt,T);
   arma::cube Response;
@@ -2360,6 +2361,9 @@ Rcpp::List MCMC_learning(const arma::cube Y_real_array, const arma::cube Qs,
       Latency.slice(t) = Rcpp::as<arma::mat>(tmp[t]);
     }
   }
+  arma::cube Qs;
+  Qs = Mat2Array(Q_matrix, T);
+  
   if(model == "DINA_HO"){
     
     output = Gibbs_DINA_HO(Response, Qs, Rcpp::as<Rcpp::List>(Q_examinee), test_order, Test_versions, theta_propose, Rcpp::as<arma::vec>(deltas_propose),

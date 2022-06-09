@@ -40,12 +40,12 @@ usethis::use_data(L_real_array, overwrite=T)
 
 # c. Convert `Q_list` to an J*K matrix
 length(Q_list)
-Q_array <- rbind(Q_list[[1]],
+Q_matrix <- rbind(Q_list[[1]],
                  Q_list[[2]],
                  Q_list[[3]],
                  Q_list[[4]],
                  Q_list[[5]])
-usethis::use_data(Q_array, overwrite=TRUE)
+usethis::use_data(Q_matrix, overwrite=TRUE)
 
 
 ## Design matrix (N*J*T)
@@ -70,6 +70,8 @@ Y_real_list
 Q_examinee
 length(Q_examinee)
 dim(Q_examinee[[1]])
+
+
 
 
 

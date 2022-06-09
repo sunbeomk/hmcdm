@@ -296,8 +296,6 @@ arma::mat OddsRatio(unsigned int N,unsigned int J,const arma::mat& Yt){
 }
 
 
-
-
 // [[Rcpp::export]]
 int getMode(arma::vec sorted_vec, int size){
   int counter = 1;
@@ -387,6 +385,25 @@ arma::cube Sparse2Dense(const arma::cube Y_real_array,
     }
   }
   return Response;
+}
+
+
+// [[Rcpp::export]]
+arma::cube Mat2Array(const arma::mat Q_matrix, unsigned int T){
+  unsigned int J = Q_matrix.n_rows;
+  unsigned int K = Q_matrix.n_cols;  
+  unsigned int Jt = J / T;
+  
+  arma::cube Q_array(Jt,K,T);
+  for(unsigned int t=0; t<T; t++){
+    for(unsigned int j=0; j<Jt; j++){
+      for(unsigned int k=0; k<K; k++){
+        unsigned int item_index = t*Jt+j;
+        Q_array(j,k,t) = Q_matrix(item_index, k);
+      }
+    }
+  }
+  return Q_array;
 }
 
 

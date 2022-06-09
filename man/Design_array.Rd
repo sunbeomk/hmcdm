@@ -5,7 +5,7 @@
 \alias{Design_array}
 \title{Test design array}
 \format{
-An NxJxT array.
+An N-by-J-by-T array.
 }
 \source{
 Spatial Rotation Learning Experiment at UIUC between Fall 2015 and Spring 2016.

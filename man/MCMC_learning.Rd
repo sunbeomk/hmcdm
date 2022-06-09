@@ -6,7 +6,7 @@
 \usage{
 MCMC_learning(
   Y_real_array,
-  Qs,
+  Q_matrix,
   model,
   test_order,
   Test_versions,
@@ -65,7 +65,7 @@ Runs MCMC to estimate parameters of any of the listed learning models.
 }
 \examples{
 \donttest{
-output_FOHM = MCMC_learning(Y_real_list,Q_list,"DINA_FOHM",test_order,Test_versions,10000,5000)
+output_FOHM = MCMC_learning(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
 }
 }
 \author{
