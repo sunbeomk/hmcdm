@@ -54,16 +54,13 @@ arma::vec sim_resp_DINA(unsigned int J, unsigned int K, const arma::mat& ETA,
 //' @return An \code{array} of DINA item responses of examinees across all time points
 //' @examples
 //' N = length(Test_versions)
-//' Jt = nrow(Q_list[[1]])
-//' K = ncol(Q_list[[1]])
+//' J = nrow(Q_matrix)
+//' K = ncol(Q_matrix)
 //' T = nrow(test_order)
-//' J = Jt*T
+//' Jt = J/T
 //' itempars_true <- array(runif(Jt*2*T,.1,.2), dim = c(Jt,2,T))
 //' 
-//' ETAs <- array(NA,dim = c(Jt,2^K,T)) 
-//' for(t in 1:T){
-//'   ETAs[,,t] <- ETAmat(K,Jt,Q_list[[t]])
-//' }
+//' ETAs <- ETAmat(K,J,Q_matrix)
 //' class_0 <- sample(1:2^K, N, replace = T)
 //' Alphas_0 <- matrix(0,N,K)
 //' mu_thetatau = c(0,0)
@@ -82,12 +79,13 @@ arma::vec sim_resp_DINA(unsigned int J, unsigned int K, const arma::mat& ETA,
 //' Y_sim <- simDINA(Alphas,itempars_true,ETAs,test_order,Test_versions)
 //' @export
 // [[Rcpp::export]]
-arma::cube simDINA(const arma::cube& alphas, const arma::cube& itempars, const arma::cube& ETA,
+arma::cube simDINA(const arma::cube& alphas, const arma::cube& itempars, const arma::mat& ETA,
                    const arma::mat& test_order, const arma::vec& Test_versions){
   unsigned int N = alphas.n_rows;
   unsigned int Jt = itempars.n_rows;
   unsigned int K = alphas.n_cols;
   unsigned int T = alphas.n_slices;
+  arma:: cube ETAs = Mat2Array(ETA, T);
   arma::cube Y(N,Jt,T);
   arma::vec svec,gvec;
   arma::vec vv = bijectionvector(K);
@@ -99,7 +97,7 @@ arma::cube simDINA(const arma::cube& alphas, const arma::cube& itempars, const a
       gvec = itempars.slice(test_block_it).col(1);
       arma::vec one_m_s = arma::ones<arma::vec>(Jt) - svec;
       double class_it = arma::dot(alphas.slice(t).row(i),vv);
-      arma::vec eta_it = ETA.slice(test_block_it).col(class_it);
+      arma::vec eta_it = ETAs.slice(test_block_it).col(class_it);
       arma::vec us = arma::randu<arma::vec>(Jt);
       arma::vec one_m_eta = arma::ones<arma::vec>(Jt) - eta_it;
       arma::vec ps = one_m_s%eta_it + gvec%one_m_eta;
@@ -108,9 +106,9 @@ arma::cube simDINA(const arma::cube& alphas, const arma::cube& itempars, const a
       Y.subcube(i,0,t,i,Jt-1,t) = compare;
     }
   }
-  return(Y);
+  arma::cube Y_sim = Dense2Sparse(Y, test_order, Test_versions);
+  return(Y_sim);
 }
-
 
 
 // [[Rcpp::export]]
@@ -181,6 +179,7 @@ arma::vec sim_resp_rRUM(unsigned int J, unsigned int K, const arma::mat& Q,
   return Yi;  
 }
 
+
 //' @title Simulate rRUM model responses (entire cube)
 //' @description Simulate a cube of rRUM responses for all persons on items across all time points
 //' @param alphas An N-by-K-by-T \code{array} of attribute patterns of all persons across T time points 
@@ -192,10 +191,10 @@ arma::vec sim_resp_rRUM(unsigned int J, unsigned int K, const arma::mat& Q,
 //' @return An \code{array} of rRUM item responses of examinees across all time points
 //' @examples
 //' N = length(Test_versions)
-//' Jt = nrow(Q_list[[1]])
-//' K = ncol(Q_list[[1]])
+//' J = nrow(Q_matrix)
+//' K = ncol(Q_matrix)
 //' T = nrow(test_order)
-//' J = Jt*T
+//' Jt = J/T
 //' Smats <- array(runif(Jt*K*(T),.1,.3),c(Jt,K,(T)))
 //' Gmats <- array(runif(Jt*K*(T),.1,.3),c(Jt,K,(T)))
 //' r_stars <- array(NA,c(Jt,K,T))
@@ -229,11 +228,12 @@ arma::vec sim_resp_rRUM(unsigned int J, unsigned int K, const arma::mat& Q,
 //' @export
 // [[Rcpp::export]]
 arma::cube simrRUM(const arma::cube& alphas, const arma::cube& r_stars, const arma::mat& pi_stars, 
-                   const arma::cube Qs, const arma::mat& test_order, const arma::vec& Test_versions){
+                   const arma::mat Q_matrix, const arma::mat& test_order, const arma::vec& Test_versions){
   unsigned int N = alphas.n_rows;
   unsigned int Jt = pi_stars.n_rows;
   unsigned int K = alphas.n_cols;
   unsigned int T = alphas.n_slices;
+  arma::cube Qs = Mat2Array(Q_matrix, T);
   arma::cube Y(N,Jt,T);
   for(unsigned int i=0;i<N;i++){
     int test_version_i = Test_versions(i)-1;
@@ -246,8 +246,10 @@ arma::cube simrRUM(const arma::cube& alphas, const arma::cube& r_stars, const ar
       Y.slice(t).row(i) = sim_resp_rRUM(Jt,K,Q_it,rstar_it,pistar_it,alpha_it).t();
     }
   }
-  return(Y);
+  arma::cube Y_sim = Dense2Sparse(Y, test_order, Test_versions);
+  return(Y_sim);
 }
+
 
 // [[Rcpp::export]]
 double pYit_rRUM(const arma::vec& alpha_it, const arma::vec& Y_it, const arma::vec& pi_star_it, 
@@ -270,6 +272,7 @@ double pYit_rRUM(const arma::vec& alpha_it, const arma::vec& Y_it, const arma::v
   
   return arma::prod(probs);
 }
+
 
 //' @title Simulate NIDA model responses (single vector)
 //' @description Simulate a single vector of NIDA responses for a person on a set of items
@@ -315,6 +318,7 @@ arma::vec sim_resp_NIDA(const unsigned int J, const unsigned int K, const arma::
   return Yi;  
 }
 
+
 //' @title Simulate NIDA model responses (entire cube)
 //' @description Simulate a cube of NIDA responses for all persons on items across all time points
 //' @param alphas An N-by-K-by-T \code{array} of attribute patterns of all persons across T time points 
@@ -326,10 +330,10 @@ arma::vec sim_resp_NIDA(const unsigned int J, const unsigned int K, const arma::
 //' @return An \code{array} of NIDA item responses of examinees across all time points
 //' @examples
 //' N = length(Test_versions)
-//' Jt = nrow(Q_list[[1]])
-//' K = ncol(Q_list[[1]])
+//' J = nrow(Q_matrix)
+//' K = ncol(Q_matrix)
 //' T = nrow(test_order)
-//' J = Jt*T
+//' Jt = J/T
 //' Svec <- runif(K,.1,.3)
 //' Gvec <- runif(K,.1,.3)
 //' Test_versions_sim <- sample(1:5,N,replace = T)
@@ -357,11 +361,13 @@ arma::vec sim_resp_NIDA(const unsigned int J, const unsigned int K, const arma::
 //' @export
 // [[Rcpp::export]]
 arma::cube simNIDA(const arma::cube& alphas, const arma::vec& Svec, const arma::vec& Gvec, 
-                   const arma::cube Qs, const arma::mat& test_order, const arma::vec& Test_versions){
+                   const arma::mat Q_matrix, const arma::mat& test_order, const arma::vec& Test_versions){
   unsigned int N = alphas.n_rows;
-  unsigned int Jt = Qs.n_rows;
+  unsigned int J = Q_matrix.n_rows;
   unsigned int K = alphas.n_cols;
   unsigned int T = alphas.n_slices;
+  unsigned int Jt = J/T;
+  arma::cube Qs = Mat2Array(Q_matrix, T);
   arma::cube Y(N,Jt,T);
   for(unsigned int i=0;i<N;i++){
     int test_version_i = Test_versions(i)-1;
@@ -372,8 +378,10 @@ arma::cube simNIDA(const arma::cube& alphas, const arma::vec& Svec, const arma::
       Y.slice(t).row(i) = sim_resp_NIDA(Jt,K,Q_it,Svec,Gvec,alpha_it).t();
     }
   }
-  return(Y);
+  arma::cube Y_sim = Dense2Sparse(Y, test_order, Test_versions);
+  return(Y_sim);
 }
+
 
 // [[Rcpp::export]]
 double pYit_NIDA(const arma::vec& alpha_it, const arma::vec& Y_it, const arma::vec& Svec, 
@@ -394,3 +402,4 @@ double pYit_NIDA(const arma::vec& alpha_it, const arma::vec& Y_it, const arma::v
   
   return arma::prod(probs);
 }
+

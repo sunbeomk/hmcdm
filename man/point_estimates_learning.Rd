@@ -39,11 +39,11 @@ the CDM learning models based on the MCMC output
 \examples{
 \donttest{
 N = length(Test_versions)
-Jt = nrow(Q_list[[1]])
-K = ncol(Q_list[[1]])
+J = nrow(Q_matrix)
+K = ncol(Q_matrix)
 T = nrow(test_order)
-J = Jt*T
-output_FOHM = MCMC_learning(Y_real_list,Q_list,"DINA_FOHM",test_order,Test_versions,10000,5000)
+Jt = J/T
+output_FOHM = MCMC_learning(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
 point_estimates = point_estimates_learning(output_FOHM,"DINA_FOHM",N,Jt,K,T,alpha_EAP = T)
 }
 }

@@ -122,37 +122,12 @@ getMode <- function(sorted_vec, size) {
     .Call(`_hmcdm_getMode`, sorted_vec, size)
 }
 
-#' @title List to Array
-#' @description Takes a list of (J*K) Q matrices as an input and returns an 
-#' array of Q matrices as an output.
-#' @param Q_List A list of Q matrices
-#' @return Q_Array An array of Q matrices
-#' @examples 
-#' \donttest{
-#' List2Array(Q_List)
-#' }
-#' @export
-List2Array <- function(Q_list) {
-    .Call(`_hmcdm_List2Array`, Q_list)
-}
-
-Array2List <- function(Q_array) {
-    .Call(`_hmcdm_Array2List`, Q_array)
-}
-
-#' @title Sparse2Dense
-#' @description Converts a N*J*T sparse response array to a N*Jt*T dense array.
-#' @param Y_real_array A N*J*T sparse response array
-#' @param test_order A test_order matrix
-#' @param Test_versions A vector of test versions
-#' @return Response An array of response
-#' @examples 
-#' \donttest{
-#' Sparse2Dense(Y_real_array, test_order, Test_versions)
-#' }
-#' @export
 Sparse2Dense <- function(Y_real_array, test_order, Test_versions) {
     .Call(`_hmcdm_Sparse2Dense`, Y_real_array, test_order, Test_versions)
+}
+
+Dense2Sparse <- function(Y_sim, test_order, Test_versions) {
+    .Call(`_hmcdm_Dense2Sparse`, Y_sim, test_order, Test_versions)
 }
 
 Mat2Array <- function(Q_matrix, T) {
@@ -182,11 +157,11 @@ Mat2Array <- function(Q_matrix, T) {
 #' @examples
 #' \donttest{
 #' N = length(Test_versions)
-#' Jt = nrow(Q_list[[1]])
-#' K = ncol(Q_list[[1]])
+#' J = nrow(Q_matrix)
+#' K = ncol(Q_matrix)
 #' T = nrow(test_order)
-#' J = Jt*T
-#' output_FOHM = MCMC_learning(Y_real_list,Q_list,"DINA_FOHM",test_order,Test_versions,10000,5000)
+#' Jt = J/T
+#' output_FOHM = MCMC_learning(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
 #' point_estimates = point_estimates_learning(output_FOHM,"DINA_FOHM",N,Jt,K,T,alpha_EAP = T)
 #' }
 #' @export
@@ -207,8 +182,8 @@ point_estimates_learning <- function(output, model, N, Jt, K, T, alpha_EAP = TRU
 #' "rRUM_indept": Simple independent transition probability model with rRUM responses
 #' "NIDA_indept": Simple independent transition probability model with NIDA responses
 #' "DINA_FOHM": First Order Hidden Markov model with DINA responses
-#' @param Response_list A \code{list} of dichotomous item responses. t-th element is an N-by-Jt matrix of responses at time t.
-#' @param Q_list A \code{list} of Q-matrices. b-th element is a Jt-by-K Q-matrix for items in block b. 
+#' @param Y_real_array A \code{list} of dichotomous item responses. t-th element is an N-by-Jt matrix of responses at time t.
+#' @param Q_matrix A \code{list} of Q-matrices. b-th element is a Jt-by-K Q-matrix for items in block b. 
 #' @param test_order A \code{matrix} of the order of item blocks for each test version.
 #' @param Test_versions A \code{vector} of the test version of each learner.
 #' @param Q_examinee Optional. A \code{list} of the Q matrix for each learner. i-th element is a J-by-K Q-matrix for all items learner i was administered.
@@ -223,12 +198,12 @@ point_estimates_learning <- function(output, model, N, Jt, K, T, alpha_EAP = TRU
 #' empirical data.
 #' @examples
 #' \donttest{
-#' output_FOHM = MCMC_learning(Y_real_list,Q_list,"DINA_FOHM",test_order,Test_versions,10000,5000)
-#' FOHM_fit <- Learning_fit(output_FOHM,"DINA_FOHM",Y_real_list,Q_list,test_order,Test_versions)
+#' output_FOHM = MCMC_learning(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
+#' FOHM_fit <- Learning_fit(output_FOHM,"DINA_FOHM",Y_real_array,Q_matrix,test_order,Test_versions)
 #' }
 #' @export
-Learning_fit <- function(output, model, Response_list, Q_list, test_order, Test_versions, Q_examinee = NULL, Latency_list = NULL, G_version = NA_integer_, R = NULL) {
-    .Call(`_hmcdm_Learning_fit`, output, model, Response_list, Q_list, test_order, Test_versions, Q_examinee, Latency_list, G_version, R)
+Learning_fit <- function(output, model, Y_real_array, Q_matrix, test_order, Test_versions, Q_examinee = NULL, Latency_list = NULL, G_version = NA_integer_, R = NULL) {
+    .Call(`_hmcdm_Learning_fit`, output, model, Y_real_array, Q_matrix, test_order, Test_versions, Q_examinee, Latency_list, G_version, R)
 }
 
 parm_update_HO <- function(N, Jt, K, T, alphas, pi, lambdas, thetas, response, itempars, Qs, Q_examinee, test_order, Test_versions, theta_propose, deltas_propose) {
@@ -281,8 +256,8 @@ Gibbs_DINA_FOHM <- function(Y, Q, burnin, chain_length) {
 
 #' @title Gibbs sampler for learning models
 #' @description Runs MCMC to estimate parameters of any of the listed learning models. 
-#' @param Response_list A \code{list} of dichotomous item responses. t-th element is an N-by-Jt matrix of responses at time t.
-#' @param Q_list A \code{list} of Q-matrices. b-th element is a Jt-by-K Q-matrix for items in block b. 
+#' @param Y_real_array An \code{array} of dichotomous item responses. t-th element is an N-by-Jt matrix of responses at time t.
+#' @param Q_matrix A J-by-K Q-matrix. 
 #' @param model A \code{charactor} of the type of model fitted with the MCMC sampler, possible selections are 
 #' "DINA_HO": Higher-Order Hidden Markov Diagnostic Classification Model with DINA responses;
 #' "DINA_HO_RT_joint": Higher-Order Hidden Markov DCM with DINA responses, log-Normal response times, and joint modeling of latent
@@ -348,16 +323,13 @@ sim_resp_DINA <- function(J, K, ETA, Svec, Gvec, alpha) {
 #' @return An \code{array} of DINA item responses of examinees across all time points
 #' @examples
 #' N = length(Test_versions)
-#' Jt = nrow(Q_list[[1]])
-#' K = ncol(Q_list[[1]])
+#' J = nrow(Q_matrix)
+#' K = ncol(Q_matrix)
 #' T = nrow(test_order)
-#' J = Jt*T
+#' Jt = J/T
 #' itempars_true <- array(runif(Jt*2*T,.1,.2), dim = c(Jt,2,T))
 #' 
-#' ETAs <- array(NA,dim = c(Jt,2^K,T)) 
-#' for(t in 1:T){
-#'   ETAs[,,t] <- ETAmat(K,Jt,Q_list[[t]])
-#' }
+#' ETAs <- ETAmat(K,J,Q_matrix)
 #' class_0 <- sample(1:2^K, N, replace = T)
 #' Alphas_0 <- matrix(0,N,K)
 #' mu_thetatau = c(0,0)
@@ -423,10 +395,10 @@ sim_resp_rRUM <- function(J, K, Q, rstar, pistar, alpha) {
 #' @return An \code{array} of rRUM item responses of examinees across all time points
 #' @examples
 #' N = length(Test_versions)
-#' Jt = nrow(Q_list[[1]])
-#' K = ncol(Q_list[[1]])
+#' J = nrow(Q_matrix)
+#' K = ncol(Q_matrix)
 #' T = nrow(test_order)
-#' J = Jt*T
+#' Jt = J/T
 #' Smats <- array(runif(Jt*K*(T),.1,.3),c(Jt,K,(T)))
 #' Gmats <- array(runif(Jt*K*(T),.1,.3),c(Jt,K,(T)))
 #' r_stars <- array(NA,c(Jt,K,T))
@@ -458,8 +430,8 @@ sim_resp_rRUM <- function(J, K, Q, rstar, pistar, alpha) {
 #' Alphas <- simulate_alphas_indept(tau,Alphas_0,T,R) 
 #' Y_sim = simrRUM(Alphas,r_stars,pi_stars,Qs,test_order,Test_versions_sim)
 #' @export
-simrRUM <- function(alphas, r_stars, pi_stars, Qs, test_order, Test_versions) {
-    .Call(`_hmcdm_simrRUM`, alphas, r_stars, pi_stars, Qs, test_order, Test_versions)
+simrRUM <- function(alphas, r_stars, pi_stars, Q_matrix, test_order, Test_versions) {
+    .Call(`_hmcdm_simrRUM`, alphas, r_stars, pi_stars, Q_matrix, test_order, Test_versions)
 }
 
 pYit_rRUM <- function(alpha_it, Y_it, pi_star_it, r_star_it, Q_it) {
@@ -499,10 +471,10 @@ sim_resp_NIDA <- function(J, K, Q, Svec, Gvec, alpha) {
 #' @return An \code{array} of NIDA item responses of examinees across all time points
 #' @examples
 #' N = length(Test_versions)
-#' Jt = nrow(Q_list[[1]])
-#' K = ncol(Q_list[[1]])
+#' J = nrow(Q_matrix)
+#' K = ncol(Q_matrix)
 #' T = nrow(test_order)
-#' J = Jt*T
+#' Jt = J/T
 #' Svec <- runif(K,.1,.3)
 #' Gvec <- runif(K,.1,.3)
 #' Test_versions_sim <- sample(1:5,N,replace = T)
@@ -528,8 +500,8 @@ sim_resp_NIDA <- function(J, K, Q, Svec, Gvec, alpha) {
 #'    Alphas <- simulate_alphas_indept(tau,Alphas_0,T,R) 
 #' Y_sim = simNIDA(Alphas,Svec,Gvec,Qs,test_order,Test_versions_sim)
 #' @export
-simNIDA <- function(alphas, Svec, Gvec, Qs, test_order, Test_versions) {
-    .Call(`_hmcdm_simNIDA`, alphas, Svec, Gvec, Qs, test_order, Test_versions)
+simNIDA <- function(alphas, Svec, Gvec, Q_matrix, test_order, Test_versions) {
+    .Call(`_hmcdm_simNIDA`, alphas, Svec, Gvec, Q_matrix, test_order, Test_versions)
 }
 
 pYit_NIDA <- function(alpha_it, Y_it, Svec, Gvec, Q_it) {

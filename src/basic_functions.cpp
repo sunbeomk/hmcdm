@@ -193,7 +193,6 @@ arma::mat ETAmat(unsigned int K,unsigned int J,const arma::mat& Q) {
 }
 
 
-
 //' @title Generate monotonicity matrix
 //' @description Based on the latent attribute space, generate a matrix indicating whether it is possible to
 //' transition from pattern cc to cc' under the monotonicity learning assumption.
@@ -240,7 +239,6 @@ arma::mat crosstab(const arma::vec& V1,const arma::vec& V2,const arma::mat& TP,
   
   return CTmat;
 }
-
 
 // [[Rcpp::export]]
 arma::cube resp_miss(const arma::cube& Responses, const arma::mat& test_order, 
@@ -295,7 +293,6 @@ arma::mat OddsRatio(unsigned int N,unsigned int J,const arma::mat& Yt){
   return M2_temp;
 }
 
-
 // [[Rcpp::export]]
 int getMode(arma::vec sorted_vec, int size){
   int counter = 1;
@@ -317,53 +314,6 @@ int getMode(arma::vec sorted_vec, int size){
   return mode;
 }
 
-
-//' @title List to Array
-//' @description Takes a list of (J*K) Q matrices as an input and returns an 
-//' array of Q matrices as an output.
-//' @param Q_List A list of Q matrices
-//' @return Q_Array An array of Q matrices
-//' @examples 
-//' \donttest{
-//' List2Array(Q_List)
-//' }
-//' @export
-// [[Rcpp::export]]
-arma::cube List2Array(const Rcpp::List Q_list){
-  arma::mat Q_mat = Rcpp::as<arma::mat> (Q_list[1]);
-  unsigned int J = Q_mat.n_rows;
-  unsigned int K = Q_mat.n_cols;
-  unsigned int T = Q_list.size();
-  
-  arma::cube Q_array = arma::zeros<arma::cube>(J,K,T);
-  for(unsigned int i= 0; i<T; i++){
-    Q_array.slice(i) = Rcpp::as<arma::mat>(Q_list[i]);
-  }
-  return Q_array;
-}
-
-// [[Rcpp::export]]
-Rcpp::List Array2List(const arma::cube Q_array){
-  unsigned int T = Q_array.n_slices;
-  Rcpp::List Q_list;
-  for(unsigned int tt=0; tt<T; tt++){
-    Q_list.push_back(Q_array.slice(tt));
-  }
-  return Q_list;
-}
-
-
-//' @title Sparse2Dense
-//' @description Converts a N*J*T sparse response array to a N*Jt*T dense array.
-//' @param Y_real_array A N*J*T sparse response array
-//' @param test_order A test_order matrix
-//' @param Test_versions A vector of test versions
-//' @return Response An array of response
-//' @examples 
-//' \donttest{
-//' Sparse2Dense(Y_real_array, test_order, Test_versions)
-//' }
-//' @export
 // [[Rcpp::export]]
 arma::cube Sparse2Dense(const arma::cube Y_real_array,
                         const arma::mat& test_order,
@@ -387,6 +337,28 @@ arma::cube Sparse2Dense(const arma::cube Y_real_array,
   return Response;
 }
 
+// [[Rcpp::export]]
+arma::cube Dense2Sparse(const arma::cube Y_sim,
+                        const arma::mat& test_order,
+                        const arma::vec& Test_versions){
+  unsigned int N = Test_versions.n_elem;
+  unsigned int Jt = Y_sim.n_cols;
+  unsigned int T = Y_sim.n_slices;
+  unsigned int J = Jt*T;
+  
+  arma::cube Y_sim_sparse(N,J,T);
+  for(unsigned int i=0; i<N; i++){
+    unsigned int test_version = Test_versions(i);
+    for(unsigned int t=0; t<T; t++){
+      unsigned int test_index = test_order(test_version-1,t);
+      for(unsigned int j=0; j<Jt; j++){
+        unsigned int item_index = (test_index-1)*Jt+j;
+        Y_sim_sparse(i,item_index,t) = Y_sim(i,j,t);
+      }
+    }
+  }
+  return Y_sim_sparse;
+}
 
 // [[Rcpp::export]]
 arma::cube Mat2Array(const arma::mat Q_matrix, unsigned int T){

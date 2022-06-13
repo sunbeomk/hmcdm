@@ -2,10 +2,8 @@
 
 export(ETAmat)
 export(Learning_fit)
-export(List2Array)
 export(MCMC_learning)
 export(OddsRatio)
-export(Sparse2Dense)
 export(TPmat)
 export(inv_bijectionvector)
 export(point_estimates_learning)

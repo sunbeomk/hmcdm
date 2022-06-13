@@ -2309,8 +2309,8 @@ Rcpp::List Gibbs_DINA_FOHM(const arma::cube& Y,const arma::mat& Q,
 
 //' @title Gibbs sampler for learning models
 //' @description Runs MCMC to estimate parameters of any of the listed learning models. 
-//' @param Response_list A \code{list} of dichotomous item responses. t-th element is an N-by-Jt matrix of responses at time t.
-//' @param Q_list A \code{list} of Q-matrices. b-th element is a Jt-by-K Q-matrix for items in block b. 
+//' @param Y_real_array An \code{array} of dichotomous item responses. t-th element is an N-by-Jt matrix of responses at time t.
+//' @param Q_matrix A J-by-K Q-matrix. 
 //' @param model A \code{charactor} of the type of model fitted with the MCMC sampler, possible selections are 
 //' "DINA_HO": Higher-Order Hidden Markov Diagnostic Classification Model with DINA responses;
 //' "DINA_HO_RT_joint": Higher-Order Hidden Markov DCM with DINA responses, log-Normal response times, and joint modeling of latent

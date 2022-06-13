@@ -25,16 +25,13 @@ Simulate a cube of DINA responses for all persons on items across all time point
 }
 \examples{
 N = length(Test_versions)
-Jt = nrow(Q_list[[1]])
-K = ncol(Q_list[[1]])
+J = nrow(Q_matrix)
+K = ncol(Q_matrix)
 T = nrow(test_order)
-J = Jt*T
+Jt = J/T
 itempars_true <- array(runif(Jt*2*T,.1,.2), dim = c(Jt,2,T))
 
-ETAs <- array(NA,dim = c(Jt,2^K,T)) 
-for(t in 1:T){
-  ETAs[,,t] <- ETAmat(K,Jt,Q_list[[t]])
-}
+ETAs <- ETAmat(K,J,Q_matrix)
 class_0 <- sample(1:2^K, N, replace = T)
 Alphas_0 <- matrix(0,N,K)
 mu_thetatau = c(0,0)

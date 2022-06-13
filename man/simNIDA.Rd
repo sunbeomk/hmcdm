@@ -4,7 +4,7 @@
 \alias{simNIDA}
 \title{Simulate NIDA model responses (entire cube)}
 \usage{
-simNIDA(alphas, Svec, Gvec, Qs, test_order, Test_versions)
+simNIDA(alphas, Svec, Gvec, Q_matrix, test_order, Test_versions)
 }
 \arguments{
 \item{alphas}{An N-by-K-by-T \code{array} of attribute patterns of all persons across T time points}
@@ -13,11 +13,11 @@ simNIDA(alphas, Svec, Gvec, Qs, test_order, Test_versions)
 
 \item{Gvec}{A length K \code{vector} of guessing probability in applying mastered skills}
 
-\item{Qs}{A J-by-K-by-T  \code{cube} of Q-matrices across all item blocks}
-
 \item{test_order}{A N_versions-by-T \code{matrix} indicating which block of items were administered to examinees with specific test version.}
 
 \item{Test_versions}{A length N \code{vector} of the test version of each examinee}
+
+\item{Qs}{A J-by-K-by-T  \code{cube} of Q-matrices across all item blocks}
 }
 \value{
 An \code{array} of NIDA item responses of examinees across all time points
@@ -27,10 +27,10 @@ Simulate a cube of NIDA responses for all persons on items across all time point
 }
 \examples{
 N = length(Test_versions)
-Jt = nrow(Q_list[[1]])
-K = ncol(Q_list[[1]])
+J = nrow(Q_matrix)
+K = ncol(Q_matrix)
 T = nrow(test_order)
-J = Jt*T
+Jt = J/T
 Svec <- runif(K,.1,.3)
 Gvec <- runif(K,.1,.3)
 Test_versions_sim <- sample(1:5,N,replace = T)
