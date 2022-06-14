@@ -22,10 +22,10 @@
 //' @return An N-by-K-by-T \code{array} of attribute patterns of subjects at each time point.
 //' @examples
 //' N = length(Test_versions)
-//' Jt = nrow(Q_list[[1]])
-//' K = ncol(Q_list[[1]])
+//' J = nrow(Q_matrix)
+//' K = ncol(Q_matrix)
 //' T = nrow(test_order)
-//' J = Jt*T
+//' Jt = J/T
 //' class_0 <- sample(1:2^K, N, replace = T)
 //' Alphas_0 <- matrix(0,N,K)
 //' thetas_true = rnorm(N)
@@ -120,10 +120,10 @@ double pTran_HO_sep(const arma::vec& alpha_prev, const arma::vec& alpha_post, co
 //' @return An N-by-K-by-T \code{array} of attribute patterns of subjects at each time point.
 //' @examples
 //' N = length(Test_versions)
-//' Jt = nrow(Q_list[[1]])
-//' K = ncol(Q_list[[1]])
+//' J = nrow(Q_matrix)
+//' K = ncol(Q_matrix)
 //' T = nrow(test_order)
-//' J = Jt*T
+//' Jt = J/T
 //' class_0 <- sample(1:2^K, N, replace = T)
 //' Alphas_0 <- matrix(0,N,K)
 //' mu_thetatau = c(0,0)
@@ -220,10 +220,10 @@ double pTran_HO_joint(const arma::vec& alpha_prev, const arma::vec& alpha_post, 
 //' @return An N-by-K-by-T \code{array} of attribute patterns of subjects at each time point.
 //' @examples
 //' N = length(Test_versions)
-//' Jt = nrow(Q_list[[1]])
-//' K = ncol(Q_list[[1]])
+//' J = nrow(Q_matrix)
+//' K = ncol(Q_matrix)
 //' T = nrow(test_order)
-//' J = Jt*T
+//' Jt = J/T
 //' tau <- numeric(K)
 //' for(k in 1:K){
 //'   tau[k] <- runif(1,.2,.6)
@@ -310,10 +310,10 @@ double pTran_indept(const arma::vec& alpha_prev, const arma::vec& alpha_post, co
 //' @return An N-by-K-by-T \code{array} of attribute patterns of subjects at each time point. 
 //' @examples
 //' N = length(Test_versions)
-//' Jt = nrow(Q_list[[1]])
-//' K = ncol(Q_list[[1]])
+//' J = nrow(Q_matrix)
+//' K = ncol(Q_matrix)
 //' T = nrow(test_order)
-//' J = Jt*T
+//' Jt = J/T
 //' TP <- TPmat(K)
 //' Omega_true <- rOmega(TP)
 //' class_0 <- sample(1:2^K, N, replace = T)
@@ -382,10 +382,10 @@ arma::mat rAlpha(const arma::mat& Omega,unsigned int N,unsigned int T,
 //' the TPmat function 
 //' @examples
 //' N = length(Test_versions)
-//' Jt = nrow(Q_list[[1]])
-//' K = ncol(Q_list[[1]])
+//' J = nrow(Q_matrix)
+//' K = ncol(Q_matrix)
 //' T = nrow(test_order)
-//' J = Jt*T
+//' Jt = J/T
 //' TP = TPmat(K)
 //' Omega_sim = rOmega(TP)
 //' @export

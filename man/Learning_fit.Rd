@@ -7,8 +7,8 @@
 Learning_fit(
   output,
   model,
-  Response_list,
-  Q_list,
+  Y_real_array,
+  Q_matrix,
   test_order,
   Test_versions,
   Q_examinee = NULL,
@@ -30,6 +30,10 @@ speed and learning ability;
 "NIDA_indept": Simple independent transition probability model with NIDA responses
 "DINA_FOHM": First Order Hidden Markov model with DINA responses}
 
+\item{Y_real_array}{A \code{list} of dichotomous item responses. t-th element is an N-by-Jt matrix of responses at time t.}
+
+\item{Q_matrix}{A \code{list} of Q-matrices. b-th element is a Jt-by-K Q-matrix for items in block b.}
+
 \item{test_order}{A \code{matrix} of the order of item blocks for each test version.}
 
 \item{Test_versions}{A \code{vector} of the test version of each learner.}
@@ -43,10 +47,6 @@ current item are mastered; 2: G cumulates practice effect on previous items usin
 subjects with different attribute trajectories)}
 
 \item{R}{Optional. A reachability \code{matrix} for the hierarchical relationship between attributes.}
-
-\item{Y_real_array}{A \code{list} of dichotomous item responses. t-th element is an N-by-Jt matrix of responses at time t.}
-
-\item{Q_matrix}{A \code{list} of Q-matrices. b-th element is a Jt-by-K Q-matrix for items in block b.}
 }
 \value{
 A list of DIC matrix, with deviance decomposed to that of the transition model, response model, response time model (if applicable),

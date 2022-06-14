@@ -30,10 +30,10 @@ of all subjects across time. General learning ability is regarded as a random in
 }
 \examples{
 N = length(Test_versions)
-Jt = nrow(Q_list[[1]])
-K = ncol(Q_list[[1]])
+J = nrow(Q_matrix)
+K = ncol(Q_matrix)
 T = nrow(test_order)
-J = Jt*T
+Jt = J/T
 class_0 <- sample(1:2^K, N, replace = T)
 Alphas_0 <- matrix(0,N,K)
 mu_thetatau = c(0,0)

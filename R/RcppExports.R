@@ -108,11 +108,11 @@ resp_miss <- function(Responses, test_order, Test_versions) {
 #' @examples 
 #' \donttest{
 #' N = length(Test_versions)
-#' Jt = nrow(Q_list[[1]])
-#' K = ncol(Q_list[[1]])
+#' J = nrow(Q_matrix)
+#' K = ncol(Q_matrix)
 #' T = nrow(test_order)
-#' J = Jt*T
-#' OddsRatio(N,Jt,Y_real_list[[1]])}
+#' Jt = J/T
+#' OddsRatio(N,J,Y_real_array[,,1])}
 #' @export
 OddsRatio <- function(N, J, Yt) {
     .Call(`_hmcdm_OddsRatio`, N, J, Yt)
@@ -389,7 +389,7 @@ sim_resp_rRUM <- function(J, K, Q, rstar, pistar, alpha) {
 #' @param alphas An N-by-K-by-T \code{array} of attribute patterns of all persons across T time points 
 #' @param r_stars A J-by-K-by-T \code{cube} of item penalty parameters for missing skills across all item blocks
 #' @param pi_stars A J-by-T \code{matrix} of item correct response probability with all requisite skills across blocks
-#' @param Qs A J-by-K-by-T  \code{cube} of Q-matrices across all item blocks
+#' @param Q_matrix A J-by-K of Q-matrix
 #' @param test_order A N_versions-by-T \code{matrix} indicating which block of items were administered to examinees with specific test version.
 #' @param Test_versions A length N \code{vector} of the test version of each examinee
 #' @return An \code{array} of rRUM item responses of examinees across all time points
@@ -403,6 +403,7 @@ sim_resp_rRUM <- function(J, K, Q, rstar, pistar, alpha) {
 #' Gmats <- array(runif(Jt*K*(T),.1,.3),c(Jt,K,(T)))
 #' r_stars <- array(NA,c(Jt,K,T))
 #' pi_stars <- matrix(NA,Jt,(T))
+#' Qs <- Mat2Array(Q_matrix, T)
 #' for(t in 1:T){
 #'   pi_stars[,t] <- apply(((1-Smats[,,t])^Qs[,,t]),1,prod)
 #'   r_stars[,,t] <- Gmats[,,t]/(1-Smats[,,t])
@@ -428,7 +429,7 @@ sim_resp_rRUM <- function(J, K, Q, rstar, pistar, alpha) {
 #'   }
 #' }
 #' Alphas <- simulate_alphas_indept(tau,Alphas_0,T,R) 
-#' Y_sim = simrRUM(Alphas,r_stars,pi_stars,Qs,test_order,Test_versions_sim)
+#' Y_sim = simrRUM(Alphas,r_stars,pi_stars,Q_matrix,test_order,Test_versions_sim)
 #' @export
 simrRUM <- function(alphas, r_stars, pi_stars, Q_matrix, test_order, Test_versions) {
     .Call(`_hmcdm_simrRUM`, alphas, r_stars, pi_stars, Q_matrix, test_order, Test_versions)
@@ -465,7 +466,7 @@ sim_resp_NIDA <- function(J, K, Q, Svec, Gvec, alpha) {
 #' @param alphas An N-by-K-by-T \code{array} of attribute patterns of all persons across T time points 
 #' @param Svec A length K \code{vector} of slipping probability in applying mastered skills
 #' @param Gvec A length K \code{vector} of guessing probability in applying mastered skills
-#' @param Qs A J-by-K-by-T  \code{cube} of Q-matrices across all item blocks
+#' @param Q_matrix A J-by-K Q-matrix
 #' @param test_order A N_versions-by-T \code{matrix} indicating which block of items were administered to examinees with specific test version.
 #' @param Test_versions A length N \code{vector} of the test version of each examinee
 #' @return An \code{array} of NIDA item responses of examinees across all time points
@@ -498,7 +499,7 @@ sim_resp_NIDA <- function(J, K, Q, Svec, Gvec, alpha) {
 #'       }
 #'     }
 #'    Alphas <- simulate_alphas_indept(tau,Alphas_0,T,R) 
-#' Y_sim = simNIDA(Alphas,Svec,Gvec,Qs,test_order,Test_versions_sim)
+#' Y_sim = simNIDA(Alphas,Svec,Gvec,Q_matrix,test_order,Test_versions_sim)
 #' @export
 simNIDA <- function(alphas, Svec, Gvec, Q_matrix, test_order, Test_versions) {
     .Call(`_hmcdm_simNIDA`, alphas, Svec, Gvec, Q_matrix, test_order, Test_versions)
@@ -532,10 +533,10 @@ G2vec_efficient <- function(ETA, J_incidence, alphas_i, test_version_i, test_ord
 #' @return A \code{cube} of response times of subjects on each item across time
 #' @examples
 #' N = length(Test_versions)
-#' Jt = nrow(Q_list[[1]])
-#' K = ncol(Q_list[[1]])
+#' J = nrow(Q_matrix)
+#' K = ncol(Q_matrix)
 #' T = nrow(test_order)
-#' J = Jt*T
+#' Jt = J/T
 #' class_0 <- sample(1:2^K, N, replace = T)
 #' Alphas_0 <- matrix(0,N,K)
 #' mu_thetatau = c(0,0)
@@ -584,10 +585,10 @@ dLit <- function(G_it, L_it, RT_itempars_it, tau_i, phi) {
 #' @return An N-by-K-by-T \code{array} of attribute patterns of subjects at each time point.
 #' @examples
 #' N = length(Test_versions)
-#' Jt = nrow(Q_list[[1]])
-#' K = ncol(Q_list[[1]])
+#' J = nrow(Q_matrix)
+#' K = ncol(Q_matrix)
 #' T = nrow(test_order)
-#' J = Jt*T
+#' Jt = J/T
 #' class_0 <- sample(1:2^K, N, replace = T)
 #' Alphas_0 <- matrix(0,N,K)
 #' thetas_true = rnorm(N)
@@ -619,10 +620,10 @@ pTran_HO_sep <- function(alpha_prev, alpha_post, lambdas, theta_i, Q_i, Jt, t) {
 #' @return An N-by-K-by-T \code{array} of attribute patterns of subjects at each time point.
 #' @examples
 #' N = length(Test_versions)
-#' Jt = nrow(Q_list[[1]])
-#' K = ncol(Q_list[[1]])
+#' J = nrow(Q_matrix)
+#' K = ncol(Q_matrix)
 #' T = nrow(test_order)
-#' J = Jt*T
+#' Jt = J/T
 #' class_0 <- sample(1:2^K, N, replace = T)
 #' Alphas_0 <- matrix(0,N,K)
 #' mu_thetatau = c(0,0)
@@ -654,10 +655,10 @@ pTran_HO_joint <- function(alpha_prev, alpha_post, lambdas, theta_i, Q_i, Jt, t)
 #' @return An N-by-K-by-T \code{array} of attribute patterns of subjects at each time point.
 #' @examples
 #' N = length(Test_versions)
-#' Jt = nrow(Q_list[[1]])
-#' K = ncol(Q_list[[1]])
+#' J = nrow(Q_matrix)
+#' K = ncol(Q_matrix)
 #' T = nrow(test_order)
-#' J = Jt*T
+#' Jt = J/T
 #' tau <- numeric(K)
 #' for(k in 1:K){
 #'   tau[k] <- runif(1,.2,.6)
@@ -696,10 +697,10 @@ pTran_indept <- function(alpha_prev, alpha_post, taus, R) {
 #' @return An N-by-K-by-T \code{array} of attribute patterns of subjects at each time point. 
 #' @examples
 #' N = length(Test_versions)
-#' Jt = nrow(Q_list[[1]])
-#' K = ncol(Q_list[[1]])
+#' J = nrow(Q_matrix)
+#' K = ncol(Q_matrix)
 #' T = nrow(test_order)
-#' J = Jt*T
+#' Jt = J/T
 #' TP <- TPmat(K)
 #' Omega_true <- rOmega(TP)
 #' class_0 <- sample(1:2^K, N, replace = T)
@@ -723,10 +724,10 @@ rAlpha <- function(Omega, N, T, alpha1) {
 #' the TPmat function 
 #' @examples
 #' N = length(Test_versions)
-#' Jt = nrow(Q_list[[1]])
-#' K = ncol(Q_list[[1]])
+#' J = nrow(Q_matrix)
+#' K = ncol(Q_matrix)
 #' T = nrow(test_order)
-#' J = Jt*T
+#' Jt = J/T
 #' TP = TPmat(K)
 #' Omega_sim = rOmega(TP)
 #' @export

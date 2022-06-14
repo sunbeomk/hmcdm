@@ -13,11 +13,11 @@ simrRUM(alphas, r_stars, pi_stars, Q_matrix, test_order, Test_versions)
 
 \item{pi_stars}{A J-by-T \code{matrix} of item correct response probability with all requisite skills across blocks}
 
+\item{Q_matrix}{A J-by-K of Q-matrix}
+
 \item{test_order}{A N_versions-by-T \code{matrix} indicating which block of items were administered to examinees with specific test version.}
 
 \item{Test_versions}{A length N \code{vector} of the test version of each examinee}
-
-\item{Qs}{A J-by-K-by-T  \code{cube} of Q-matrices across all item blocks}
 }
 \value{
 An \code{array} of rRUM item responses of examinees across all time points
@@ -35,6 +35,7 @@ Smats <- array(runif(Jt*K*(T),.1,.3),c(Jt,K,(T)))
 Gmats <- array(runif(Jt*K*(T),.1,.3),c(Jt,K,(T)))
 r_stars <- array(NA,c(Jt,K,T))
 pi_stars <- matrix(NA,Jt,(T))
+Qs <- Mat2Array(Q_matrix, T)
 for(t in 1:T){
   pi_stars[,t] <- apply(((1-Smats[,,t])^Qs[,,t]),1,prod)
   r_stars[,,t] <- Gmats[,,t]/(1-Smats[,,t])
@@ -60,5 +61,5 @@ for(i in 1:N){
   }
 }
 Alphas <- simulate_alphas_indept(tau,Alphas_0,T,R) 
-Y_sim = simrRUM(Alphas,r_stars,pi_stars,Qs,test_order,Test_versions_sim)
+Y_sim = simrRUM(Alphas,r_stars,pi_stars,Q_matrix,test_order,Test_versions_sim)
 }

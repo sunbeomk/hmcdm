@@ -6,16 +6,13 @@
 #' ############################################################
 #' # Load the spatial rotation data
 #' N = length(Test_versions)
-#' Jt = nrow(Q_list[[1]])
-#' K = ncol(Q_list[[1]])
+#' J = nrow(Q_matrix)
+#' K = ncol(Q_matrix)
 #' T = nrow(test_order)
-#' J = Jt*T
+#' Jt = J/T
 #' 
-#' # Create the ideal response cube, where each slice is the ideal response matrix for an item block
-#' ETAs <- array(NA,dim = c(Jt,2^K,T)) 
-#' for(t in 1:T){
-#'   ETAs[,,t] <- ETAmat(K,Jt,Q_list[[t]])
-#' }
+#' # Create the ideal response matrix
+#' ETAs <- ETAmat(K, J, Q_matrix)
 #' 
 #' # Get the Q matrix for the entire test
 #' Q_test <- matrix(NA,J,K)
@@ -43,10 +40,7 @@
 #' 
 #' itempars_true <- array(runif(Jt*2*T,.1,.2), dim = c(Jt,2,T))
 #' 
-#' ETAs <- array(NA,dim = c(Jt,2^K,T)) 
-#' for(t in 1:T){
-#'   ETAs[,,t] <- ETAmat(K,Jt,Q_list[[t]])
-#' }
+#' ETAs <- ETAmat(K, J, Q_matrix)
 #' 
 #' Y_sim <- simDINA(Alphas,itempars_true,ETAs,test_order,Test_versions)
 #' Y_sim_list <- list()

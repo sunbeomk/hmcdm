@@ -272,11 +272,11 @@ arma::cube resp_miss(const arma::cube& Responses, const arma::mat& test_order,
 //' @examples 
 //' \donttest{
 //' N = length(Test_versions)
-//' Jt = nrow(Q_list[[1]])
-//' K = ncol(Q_list[[1]])
+//' J = nrow(Q_matrix)
+//' K = ncol(Q_matrix)
 //' T = nrow(test_order)
-//' J = Jt*T
-//' OddsRatio(N,Jt,Y_real_list[[1]])}
+//' Jt = J/T
+//' OddsRatio(N,J,Y_real_array[,,1])}
 //' @export
 // [[Rcpp::export]]
 arma::mat OddsRatio(unsigned int N,unsigned int J,const arma::mat& Yt){
