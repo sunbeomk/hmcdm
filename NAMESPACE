@@ -3,6 +3,7 @@
 export(ETAmat)
 export(Learning_fit)
 export(MCMC_learning)
+export(Mat2Array)
 export(OddsRatio)
 export(TPmat)
 export(inv_bijectionvector)

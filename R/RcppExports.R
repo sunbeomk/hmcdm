@@ -130,6 +130,16 @@ Dense2Sparse <- function(Y_sim, test_order, Test_versions) {
     .Call(`_hmcdm_Dense2Sparse`, Y_sim, test_order, Test_versions)
 }
 
+#' @title Convert a J-by-K matrix to a Jt-by-K-by-T array
+#' @description Obtain an Jt-by-K-by-T array of Q-matrices each slice containing a Jt*K Q_matrix
+#' @param Q_matrix A J*K Q_matrix of the test
+#' @param T The number of time points
+#' @return A Jt-by-K-by-T array of Q_matrices
+#' @examples 
+#' \donttest{
+#' T = 5
+#' Mat2Array(Q_matrix, T)}
+#' @export
 Mat2Array <- function(Q_matrix, T) {
     .Call(`_hmcdm_Mat2Array`, Q_matrix, T)
 }
@@ -182,12 +192,12 @@ point_estimates_learning <- function(output, model, N, Jt, K, T, alpha_EAP = TRU
 #' "rRUM_indept": Simple independent transition probability model with rRUM responses
 #' "NIDA_indept": Simple independent transition probability model with NIDA responses
 #' "DINA_FOHM": First Order Hidden Markov model with DINA responses
-#' @param Y_real_array A \code{list} of dichotomous item responses. t-th element is an N-by-Jt matrix of responses at time t.
+#' @param Y_real_array A \code{array} of dichotomous item responses. t-th slice is an N-by-J matrix of responses at time t.
 #' @param Q_matrix A \code{list} of Q-matrices. b-th element is a Jt-by-K Q-matrix for items in block b. 
 #' @param test_order A \code{matrix} of the order of item blocks for each test version.
 #' @param Test_versions A \code{vector} of the test version of each learner.
 #' @param Q_examinee Optional. A \code{list} of the Q matrix for each learner. i-th element is a J-by-K Q-matrix for all items learner i was administered.
-#' @param Latency_list Optional. A \code{list} of the response times. t-th element is an N-by-Jt matrix of response times at time t.
+#' @param Latency_array Optional. A \code{array} of the response times. t-th slice is an N-by-J matrix of response times at time t.
 #' @param G_version Optional. An \code{int} of the type of covariate for increased fluency (1: G is dichotomous depending on whether all skills required for
 #' current item are mastered; 2: G cumulates practice effect on previous items using mastered skills; 3: G is a time block effect invariant across 
 #' subjects with different attribute trajectories)
@@ -521,10 +531,10 @@ G2vec_efficient <- function(ETA, J_incidence, alphas_i, test_version_i, test_ord
 #' @description Simulate a cube of subjects' response times across time points according to a variant of the logNormal model
 #' @param alphas An N-by-K-by-T \code{array} of attribute patterns of all persons across T time points 
 #' @param RT_itempars A J-by-2-by-T \code{array} of item time discrimination and time intensity parameters across item blocks
-#' @param Qs A J-by-K-by-T  \code{cube} of Q-matrices across all item blocks
+#' @param Q_matrix A J-by-K  Q-matrix for the test
 #' @param taus A length N \code{vector} of latent speed of each person
 #' @param phi A \code{scalar} of slope of increase in fluency over time due to covariates (G)
-#' @param ETA A J-by-2^K-by-T \code{array} of ideal responses across all item blocks, with each slice generated with ETAmat function
+#' @param ETAs A J-by-2^K \code{matrix} of ideal responses across all item blocks generated with ETAmat function
 #' @param G_version An \code{int} of the type of covariate for increased fluency (1: G is dichotomous depending on whether all skills required for
 #' current item are mastered; 2: G cumulates practice effect on previous items using mastered skills; 3: G is a time block effect invariant across 
 #' subjects with different attribute trajectories)
@@ -555,11 +565,8 @@ G2vec_efficient <- function(ETA, J_incidence, alphas_i, test_version_i, test_ord
 #' RT_itempars_true <- array(NA, dim = c(Jt,2,T))
 #' RT_itempars_true[,2,] <- rnorm(Jt*T,3.45,.5)
 #' RT_itempars_true[,1,] <- runif(Jt*T,1.5,2)
-#' ETAs <- array(NA,dim = c(Jt,2^K,T)) 
-#' for(t in 1:T){
-#'   ETAs[,,t] <- ETAmat(K,Jt,Q_list[[t]])
-#' }
-#' L_sim <- sim_RT(Alphas,RT_itempars_true,Qs,taus_true,phi_true,ETAs,
+#' ETAs <- ETAmat(K,J,Q_matrix)
+#' L_sim <- sim_RT(Alphas,RT_itempars_true,Q_matrix,taus_true,phi_true,ETAs,
 #' G_version,test_order,Test_versions)
 #' @export
 sim_RT <- function(alphas, RT_itempars, Q_matrix, taus, phi, ETAs, G_version, test_order, Test_versions) {

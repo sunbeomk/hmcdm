@@ -12,7 +12,7 @@ Learning_fit(
   test_order,
   Test_versions,
   Q_examinee = NULL,
-  Latency_list = NULL,
+  Latency_array = NULL,
   G_version = NA_integer_,
   R = NULL
 )
@@ -30,7 +30,7 @@ speed and learning ability;
 "NIDA_indept": Simple independent transition probability model with NIDA responses
 "DINA_FOHM": First Order Hidden Markov model with DINA responses}
 
-\item{Y_real_array}{A \code{list} of dichotomous item responses. t-th element is an N-by-Jt matrix of responses at time t.}
+\item{Y_real_array}{A \code{array} of dichotomous item responses. t-th slice is an N-by-J matrix of responses at time t.}
 
 \item{Q_matrix}{A \code{list} of Q-matrices. b-th element is a Jt-by-K Q-matrix for items in block b.}
 
@@ -40,7 +40,7 @@ speed and learning ability;
 
 \item{Q_examinee}{Optional. A \code{list} of the Q matrix for each learner. i-th element is a J-by-K Q-matrix for all items learner i was administered.}
 
-\item{Latency_list}{Optional. A \code{list} of the response times. t-th element is an N-by-Jt matrix of response times at time t.}
+\item{Latency_array}{Optional. A \code{array} of the response times. t-th slice is an N-by-J matrix of response times at time t.}
 
 \item{G_version}{Optional. An \code{int} of the type of covariate for increased fluency (1: G is dichotomous depending on whether all skills required for
 current item are mastered; 2: G cumulates practice effect on previous items using mastered skills; 3: G is a time block effect invariant across

@@ -360,6 +360,16 @@ arma::cube Dense2Sparse(const arma::cube Y_sim,
   return Y_sim_sparse;
 }
 
+//' @title Convert a J-by-K matrix to a Jt-by-K-by-T array
+//' @description Obtain an Jt-by-K-by-T array of Q-matrices each slice containing a Jt*K Q_matrix
+//' @param Q_matrix A J*K Q_matrix of the test
+//' @param T The number of time points
+//' @return A Jt-by-K-by-T array of Q_matrices
+//' @examples 
+//' \donttest{
+//' T = 5
+//' Mat2Array(Q_matrix, T)}
+//' @export
 // [[Rcpp::export]]
 arma::cube Mat2Array(const arma::mat Q_matrix, unsigned int T){
   unsigned int J = Q_matrix.n_rows;

@@ -21,7 +21,7 @@ MCMC_learning(
 )
 }
 \arguments{
-\item{Y_real_array}{An \code{array} of dichotomous item responses. t-th element is an N-by-Jt matrix of responses at time t.}
+\item{Y_real_array}{An \code{array} of dichotomous item responses. t-th slice is an N-by-J matrix of responses at time t.}
 
 \item{Q_matrix}{A J-by-K Q-matrix.}
 
@@ -51,11 +51,11 @@ subjects with different attribute trajectories)}
 
 \item{theta_propose}{Optional. A \code{scalar} for the standard deviation of theta's proposal distribution in the MH sampling step.}
 
+\item{Latency_array}{Optional. A \code{array} of the response times. t-th slice is an N-by-J matrix of response times at time t.}
+
 \item{deltas_propose}{Optional. A \code{vector} for the band widths of each lambda's proposal distribution in the MH sampling step.}
 
 \item{R}{Optional. A reachability \code{matrix} for the hierarchical relationship between attributes.}
-
-\item{Latency_list}{Optional. A \code{list} of the response times. t-th element is an N-by-Jt matrix of response times at time t.}
 }
 \value{
 A \code{list} of parameter samples and Metropolis-Hastings acceptance rates (if applicable).

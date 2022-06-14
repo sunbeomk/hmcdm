@@ -64,10 +64,10 @@ arma::vec G2vec_efficient(const arma::cube& ETA, const arma::cube& J_incidence, 
 //' @description Simulate a cube of subjects' response times across time points according to a variant of the logNormal model
 //' @param alphas An N-by-K-by-T \code{array} of attribute patterns of all persons across T time points 
 //' @param RT_itempars A J-by-2-by-T \code{array} of item time discrimination and time intensity parameters across item blocks
-//' @param Qs A J-by-K-by-T  \code{cube} of Q-matrices across all item blocks
+//' @param Q_matrix A J-by-K  Q-matrix for the test
 //' @param taus A length N \code{vector} of latent speed of each person
 //' @param phi A \code{scalar} of slope of increase in fluency over time due to covariates (G)
-//' @param ETA A J-by-2^K-by-T \code{array} of ideal responses across all item blocks, with each slice generated with ETAmat function
+//' @param ETAs A J-by-2^K \code{matrix} of ideal responses across all item blocks generated with ETAmat function
 //' @param G_version An \code{int} of the type of covariate for increased fluency (1: G is dichotomous depending on whether all skills required for
 //' current item are mastered; 2: G cumulates practice effect on previous items using mastered skills; 3: G is a time block effect invariant across 
 //' subjects with different attribute trajectories)
@@ -98,11 +98,8 @@ arma::vec G2vec_efficient(const arma::cube& ETA, const arma::cube& J_incidence, 
 //' RT_itempars_true <- array(NA, dim = c(Jt,2,T))
 //' RT_itempars_true[,2,] <- rnorm(Jt*T,3.45,.5)
 //' RT_itempars_true[,1,] <- runif(Jt*T,1.5,2)
-//' ETAs <- array(NA,dim = c(Jt,2^K,T)) 
-//' for(t in 1:T){
-//'   ETAs[,,t] <- ETAmat(K,Jt,Q_list[[t]])
-//' }
-//' L_sim <- sim_RT(Alphas,RT_itempars_true,Qs,taus_true,phi_true,ETAs,
+//' ETAs <- ETAmat(K,J,Q_matrix)
+//' L_sim <- sim_RT(Alphas,RT_itempars_true,Q_matrix,taus_true,phi_true,ETAs,
 //' G_version,test_order,Test_versions)
 //' @export
 // [[Rcpp::export]]
