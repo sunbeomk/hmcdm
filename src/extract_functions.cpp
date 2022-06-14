@@ -288,7 +288,8 @@ Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
                         const arma::cube Y_real_array, const arma::mat Q_matrix,
                         const arma::mat test_order, const arma::vec Test_versions,
                         const Rcpp::Nullable<Rcpp::List> Q_examinee=R_NilValue,
-                        const Rcpp::Nullable<Rcpp::List> Latency_list = R_NilValue, const int G_version = NA_INTEGER,
+                        const Rcpp::Nullable<arma::cube> Latency_array = R_NilValue, 
+                        const int G_version = NA_INTEGER,
                         const Rcpp::Nullable<Rcpp::NumericMatrix> R = R_NilValue){
   
   unsigned int T = test_order.n_rows;
@@ -296,15 +297,13 @@ Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
   unsigned int Jt = J/T;
   unsigned int K = Q_matrix.n_cols;
   unsigned int N = Test_versions.n_elem;
-  arma::cube Response = Sparse2Dense(Y_real_array, test_order, Test_versions);
-  arma::cube Latency(N,Jt,T);
-  arma::cube Qs = Mat2Array(Q_matrix, T);
-  for(unsigned int t = 0; t<T; t++){
-    if(Latency_list.isNotNull()){
-      Rcpp::List tmp = Rcpp::as<Rcpp::List>(Latency_list);
-      Latency.slice(t) = Rcpp::as<arma::mat>(tmp[t]);
-    }
+  arma::cube Latency(N, Jt, T);
+  if(Latency_array.isNotNull()){
+    arma::cube Latency_temp = Rcpp::as<arma::cube>(Latency_array);
+    Latency = Sparse2Dense(Latency_temp, test_order, Test_versions);
   }
+  arma::cube Response = Sparse2Dense(Y_real_array, test_order, Test_versions);
+  arma::cube Qs = Mat2Array(Q_matrix, T);
   arma::mat Traject = Rcpp::as<arma::mat>(output["trajectories"]);
   arma::mat pis = Rcpp::as<arma::mat>(output["pis"]);
   arma::vec pis_EAP = arma::mean(pis,1);
@@ -497,8 +496,9 @@ Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
       arma::cube Y_sim_sparse = simDINA(alphas,itempars_cube,ETA,test_order,Test_versions);
       arma::cube Y_sim = Sparse2Dense(Y_sim_sparse, test_order, Test_versions);
       arma::mat Y_sim_collapsed(N,Jt*T);
-      arma::cube L_sim = sim_RT(alphas, RT_itempars_cube,Qs,taus.col(tt),phis(tt,0),
-                                ETAs, G_version, test_order, Test_versions);
+      arma::cube L_sim_sparse = sim_RT(alphas, RT_itempars_cube,Q_matrix,taus.col(tt),phis(tt,0),
+                                ETA, G_version, test_order, Test_versions);
+      arma::cube L_sim = Sparse2Dense(L_sim_sparse, test_order, Test_versions);
       arma::mat L_sim_collapsed(N,Jt*T);
       
       // next compute deviance part
@@ -653,8 +653,9 @@ Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
       arma::cube Y_sim_sparse = simDINA(alphas,itempars_cube,ETA,test_order,Test_versions);
       arma::cube Y_sim = Sparse2Dense(Y_sim_sparse, test_order, Test_versions);
       arma::mat Y_sim_collapsed(N,Jt*T);
-      arma::cube L_sim = sim_RT(alphas, RT_itempars_cube,Qs,taus.col(tt),phis(tt,0),
-                                ETAs, G_version, test_order, Test_versions);
+      arma::cube L_sim_sparse = sim_RT(alphas, RT_itempars_cube,Q_matrix,taus.col(tt),phis(tt,0),
+                                ETA, G_version, test_order, Test_versions);
+      arma::cube L_sim = Sparse2Dense(L_sim_sparse, test_order, Test_versions);
       arma::mat L_sim_collapsed(N,Jt*T);
       
       // next compute deviance part
@@ -783,7 +784,7 @@ Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
         r_stars_cube.slice(t) = r_stars.slice(tt).rows(Jt*t,(Jt*(t+1)-1));
         pi_stars_mat.col(t) = pi_stars.col(tt).subvec(Jt*t,(Jt*(t+1)-1));
       }
-      arma::cube Y_sim_sparse = simrRUM(alphas, r_stars_cube, pi_stars_mat,Qs,test_order,Test_versions);
+      arma::cube Y_sim_sparse = simrRUM(alphas, r_stars_cube, pi_stars_mat,Q_matrix,test_order,Test_versions);
       arma::cube Y_sim = Sparse2Dense(Y_sim_sparse, test_order, Test_versions);
       arma::mat Y_sim_collapsed(N,Jt*T);
       
@@ -900,7 +901,7 @@ Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
         }
       }
       
-      arma::cube Y_sim_sparse = simNIDA(alphas,ss.col(tt),gs.col(tt),Qs,test_order,Test_versions);
+      arma::cube Y_sim_sparse = simNIDA(alphas,ss.col(tt),gs.col(tt),Q_matrix,test_order,Test_versions);
       arma::cube Y_sim = Sparse2Dense(Y_sim_sparse, test_order, Test_versions);
       arma::mat Y_sim_collapsed(N,Jt*T);
       

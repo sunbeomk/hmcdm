@@ -106,13 +106,15 @@ arma::vec G2vec_efficient(const arma::cube& ETA, const arma::cube& J_incidence, 
 //' G_version,test_order,Test_versions)
 //' @export
 // [[Rcpp::export]]
-arma::cube sim_RT(const arma::cube& alphas, const arma::cube& RT_itempars, const arma::cube& Qs,
-                  const arma::vec& taus, double phi, const arma::cube ETA, int G_version,
+arma::cube sim_RT(const arma::cube& alphas, const arma::cube& RT_itempars, const arma::mat& Q_matrix,
+                  const arma::vec& taus, double phi, const arma::mat ETAs, int G_version,
                   const arma::mat& test_order, arma::vec Test_versions){
   unsigned int N = alphas.n_rows;
   unsigned int Jt = RT_itempars.n_rows;
   unsigned int K = alphas.n_cols;
   unsigned int T = alphas.n_slices;
+  arma::cube ETA = Mat2Array(ETAs, T);
+  arma::cube Qs = Mat2Array(Q_matrix, T);
   arma::cube J_incidence = J_incidence_cube(test_order,Qs);
   arma::uvec practice_items;
   arma::vec vv = bijectionvector(K);
@@ -143,7 +145,8 @@ arma::cube sim_RT(const arma::cube& alphas, const arma::cube& RT_itempars, const
     }
   }
   
-  return(L);
+  arma::cube L_sparse = Dense2Sparse(L, test_order, Test_versions);
+  return(L_sparse);
 }
 
 

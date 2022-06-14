@@ -7,10 +7,10 @@
 sim_RT(
   alphas,
   RT_itempars,
-  Qs,
+  Q_matrix,
   taus,
   phi,
-  ETA,
+  ETAs,
   G_version,
   test_order,
   Test_versions
@@ -21,13 +21,9 @@ sim_RT(
 
 \item{RT_itempars}{A J-by-2-by-T \code{array} of item time discrimination and time intensity parameters across item blocks}
 
-\item{Qs}{A J-by-K-by-T  \code{cube} of Q-matrices across all item blocks}
-
 \item{taus}{A length N \code{vector} of latent speed of each person}
 
 \item{phi}{A \code{scalar} of slope of increase in fluency over time due to covariates (G)}
-
-\item{ETA}{A J-by-2^K-by-T \code{array} of ideal responses across all item blocks, with each slice generated with ETAmat function}
 
 \item{G_version}{An \code{int} of the type of covariate for increased fluency (1: G is dichotomous depending on whether all skills required for
 current item are mastered; 2: G cumulates practice effect on previous items using mastered skills; 3: G is a time block effect invariant across
@@ -36,6 +32,10 @@ subjects with different attribute trajectories)}
 \item{test_order}{A N_versions-by-T \code{matrix} indicating which block of items were administered to examinees with specific test version.}
 
 \item{Test_versions}{A length N \code{vector} of the test version of each examinee}
+
+\item{Qs}{A J-by-K-by-T  \code{cube} of Q-matrices across all item blocks}
+
+\item{ETA}{A J-by-2^K-by-T \code{array} of ideal responses across all item blocks, with each slice generated with ETAmat function}
 }
 \value{
 A \code{cube} of response times of subjects on each item across time

@@ -13,9 +13,9 @@ MCMC_learning(
   chain_length,
   burn_in,
   Q_examinee = NULL,
-  Latency_list = NULL,
   G_version = NA_integer_,
   theta_propose = 0,
+  Latency_array = NULL,
   deltas_propose = NULL,
   R = NULL
 )
@@ -45,8 +45,6 @@ speed and learning ability;
 
 \item{Q_examinee}{Optional. A \code{list} of the Q matrix for each learner. i-th element is a J-by-K Q-matrix for all items learner i was administered.}
 
-\item{Latency_list}{Optional. A \code{list} of the response times. t-th element is an N-by-Jt matrix of response times at time t.}
-
 \item{G_version}{Optional. An \code{int} of the type of covariate for increased fluency (1: G is dichotomous depending on whether all skills required for
 current item are mastered; 2: G cumulates practice effect on previous items using mastered skills; 3: G is a time block effect invariant across
 subjects with different attribute trajectories)}
@@ -56,6 +54,8 @@ subjects with different attribute trajectories)}
 \item{deltas_propose}{Optional. A \code{vector} for the band widths of each lambda's proposal distribution in the MH sampling step.}
 
 \item{R}{Optional. A reachability \code{matrix} for the hierarchical relationship between attributes.}
+
+\item{Latency_list}{Optional. A \code{list} of the response times. t-th element is an N-by-Jt matrix of response times at time t.}
 }
 \value{
 A \code{list} of parameter samples and Metropolis-Hastings acceptance rates (if applicable).

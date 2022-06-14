@@ -2309,7 +2309,7 @@ Rcpp::List Gibbs_DINA_FOHM(const arma::cube& Y,const arma::mat& Q,
 
 //' @title Gibbs sampler for learning models
 //' @description Runs MCMC to estimate parameters of any of the listed learning models. 
-//' @param Y_real_array An \code{array} of dichotomous item responses. t-th element is an N-by-Jt matrix of responses at time t.
+//' @param Y_real_array An \code{array} of dichotomous item responses. t-th slice is an N-by-J matrix of responses at time t.
 //' @param Q_matrix A J-by-K Q-matrix. 
 //' @param model A \code{charactor} of the type of model fitted with the MCMC sampler, possible selections are 
 //' "DINA_HO": Higher-Order Hidden Markov Diagnostic Classification Model with DINA responses;
@@ -2325,7 +2325,7 @@ Rcpp::List Gibbs_DINA_FOHM(const arma::cube& Y,const arma::mat& Q,
 //' @param chain_length An \code{int} of the MCMC chain length.
 //' @param burn_in An \code{int} of the MCMC burn-in chain length.
 //' @param Q_examinee Optional. A \code{list} of the Q matrix for each learner. i-th element is a J-by-K Q-matrix for all items learner i was administered.
-//' @param Latency_list Optional. A \code{list} of the response times. t-th element is an N-by-Jt matrix of response times at time t.
+//' @param Latency_array Optional. A \code{array} of the response times. t-th slice is an N-by-J matrix of response times at time t.
 //' @param G_version Optional. An \code{int} of the type of covariate for increased fluency (1: G is dichotomous depending on whether all skills required for
 //' current item are mastered; 2: G cumulates practice effect on previous items using mastered skills; 3: G is a time block effect invariant across 
 //' subjects with different attribute trajectories)
@@ -2344,25 +2344,24 @@ Rcpp::List MCMC_learning(const arma::cube Y_real_array, const arma::mat Q_matrix
                          const std::string model, const arma::mat& test_order, const arma::vec& Test_versions,
                          const unsigned int chain_length, const unsigned int burn_in,
                          const Rcpp::Nullable<Rcpp::List> Q_examinee=R_NilValue,
-                         const Rcpp::Nullable<Rcpp::List> Latency_list = R_NilValue, const int G_version = NA_INTEGER,
-                         const double theta_propose = 0., const Rcpp::Nullable<Rcpp::NumericVector> deltas_propose = R_NilValue,
+                         const int G_version = NA_INTEGER,
+                         const double theta_propose = 0., 
+                         const Rcpp::Nullable<arma::cube> Latency_array = R_NilValue,
+                         const Rcpp::Nullable<Rcpp::NumericVector> deltas_propose = R_NilValue,
                          const Rcpp::Nullable<Rcpp::NumericMatrix> R = R_NilValue){
   Rcpp::List output;
   unsigned int T = test_order.n_rows;
   unsigned int J = Q_matrix.n_rows;
   unsigned int Jt = J/T;
   unsigned int N = Test_versions.n_elem;
-  arma::cube Latency(N,Jt,T);
-  arma::cube Response;
-  Response = Sparse2Dense(Y_real_array, test_order, Test_versions);
-  for(unsigned int t = 0; t<T; t++){
-    if(Latency_list.isNotNull()){
-      Rcpp::List tmp = Rcpp::as<Rcpp::List>(Latency_list);
-      Latency.slice(t) = Rcpp::as<arma::mat>(tmp[t]);
-    }
+  arma::cube Latency(N, Jt, T);
+  if(Latency_array.isNotNull()){
+    arma::cube Latency_temp = Rcpp::as<arma::cube>(Latency_array);
+    Latency = Sparse2Dense(Latency_temp, test_order, Test_versions);
   }
-  arma::cube Qs;
-  Qs = Mat2Array(Q_matrix, T);
+
+  arma::cube Response = Sparse2Dense(Y_real_array, test_order, Test_versions);
+  arma::cube Qs = Mat2Array(Q_matrix, T);
   
   if(model == "DINA_HO"){
     

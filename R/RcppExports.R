@@ -202,8 +202,8 @@ point_estimates_learning <- function(output, model, N, Jt, K, T, alpha_EAP = TRU
 #' FOHM_fit <- Learning_fit(output_FOHM,"DINA_FOHM",Y_real_array,Q_matrix,test_order,Test_versions)
 #' }
 #' @export
-Learning_fit <- function(output, model, Y_real_array, Q_matrix, test_order, Test_versions, Q_examinee = NULL, Latency_list = NULL, G_version = NA_integer_, R = NULL) {
-    .Call(`_hmcdm_Learning_fit`, output, model, Y_real_array, Q_matrix, test_order, Test_versions, Q_examinee, Latency_list, G_version, R)
+Learning_fit <- function(output, model, Y_real_array, Q_matrix, test_order, Test_versions, Q_examinee = NULL, Latency_array = NULL, G_version = NA_integer_, R = NULL) {
+    .Call(`_hmcdm_Learning_fit`, output, model, Y_real_array, Q_matrix, test_order, Test_versions, Q_examinee, Latency_array, G_version, R)
 }
 
 parm_update_HO <- function(N, Jt, K, T, alphas, pi, lambdas, thetas, response, itempars, Qs, Q_examinee, test_order, Test_versions, theta_propose, deltas_propose) {
@@ -256,7 +256,7 @@ Gibbs_DINA_FOHM <- function(Y, Q, burnin, chain_length) {
 
 #' @title Gibbs sampler for learning models
 #' @description Runs MCMC to estimate parameters of any of the listed learning models. 
-#' @param Y_real_array An \code{array} of dichotomous item responses. t-th element is an N-by-Jt matrix of responses at time t.
+#' @param Y_real_array An \code{array} of dichotomous item responses. t-th slice is an N-by-J matrix of responses at time t.
 #' @param Q_matrix A J-by-K Q-matrix. 
 #' @param model A \code{charactor} of the type of model fitted with the MCMC sampler, possible selections are 
 #' "DINA_HO": Higher-Order Hidden Markov Diagnostic Classification Model with DINA responses;
@@ -272,7 +272,7 @@ Gibbs_DINA_FOHM <- function(Y, Q, burnin, chain_length) {
 #' @param chain_length An \code{int} of the MCMC chain length.
 #' @param burn_in An \code{int} of the MCMC burn-in chain length.
 #' @param Q_examinee Optional. A \code{list} of the Q matrix for each learner. i-th element is a J-by-K Q-matrix for all items learner i was administered.
-#' @param Latency_list Optional. A \code{list} of the response times. t-th element is an N-by-Jt matrix of response times at time t.
+#' @param Latency_array Optional. A \code{array} of the response times. t-th slice is an N-by-J matrix of response times at time t.
 #' @param G_version Optional. An \code{int} of the type of covariate for increased fluency (1: G is dichotomous depending on whether all skills required for
 #' current item are mastered; 2: G cumulates practice effect on previous items using mastered skills; 3: G is a time block effect invariant across 
 #' subjects with different attribute trajectories)
@@ -286,8 +286,8 @@ Gibbs_DINA_FOHM <- function(Y, Q, burnin, chain_length) {
 #' output_FOHM = MCMC_learning(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
 #' }
 #' @export
-MCMC_learning <- function(Y_real_array, Q_matrix, model, test_order, Test_versions, chain_length, burn_in, Q_examinee = NULL, Latency_list = NULL, G_version = NA_integer_, theta_propose = 0., deltas_propose = NULL, R = NULL) {
-    .Call(`_hmcdm_MCMC_learning`, Y_real_array, Q_matrix, model, test_order, Test_versions, chain_length, burn_in, Q_examinee, Latency_list, G_version, theta_propose, deltas_propose, R)
+MCMC_learning <- function(Y_real_array, Q_matrix, model, test_order, Test_versions, chain_length, burn_in, Q_examinee = NULL, G_version = NA_integer_, theta_propose = 0., Latency_array = NULL, deltas_propose = NULL, R = NULL) {
+    .Call(`_hmcdm_MCMC_learning`, Y_real_array, Q_matrix, model, test_order, Test_versions, chain_length, burn_in, Q_examinee, G_version, theta_propose, Latency_array, deltas_propose, R)
 }
 
 #' @title Simulate DINA model responses (single vector)
@@ -562,8 +562,8 @@ G2vec_efficient <- function(ETA, J_incidence, alphas_i, test_version_i, test_ord
 #' L_sim <- sim_RT(Alphas,RT_itempars_true,Qs,taus_true,phi_true,ETAs,
 #' G_version,test_order,Test_versions)
 #' @export
-sim_RT <- function(alphas, RT_itempars, Qs, taus, phi, ETA, G_version, test_order, Test_versions) {
-    .Call(`_hmcdm_sim_RT`, alphas, RT_itempars, Qs, taus, phi, ETA, G_version, test_order, Test_versions)
+sim_RT <- function(alphas, RT_itempars, Q_matrix, taus, phi, ETAs, G_version, test_order, Test_versions) {
+    .Call(`_hmcdm_sim_RT`, alphas, RT_itempars, Q_matrix, taus, phi, ETAs, G_version, test_order, Test_versions)
 }
 
 dLit <- function(G_it, L_it, RT_itempars_it, tau_i, phi) {
