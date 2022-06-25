@@ -291,32 +291,33 @@ Rcpp::List Gibbs_DINA_HO(const arma::cube& Response,
       Rcpp::Rcout << tt << std::endl;
     }
   }
-  return Rcpp::List::create(Rcpp::Named("trajectories",Trajectories),
-                            Rcpp::Named("ss",ss),
-                            Rcpp::Named("gs",gs),
-                            Rcpp::Named("pis", pis),
-                            Rcpp::Named("thetas",thetas),
-                            Rcpp::Named("lambdas",lambdas),
-                            Rcpp::Named("accept_rate_theta",accept_rate_theta),
-                            Rcpp::Named("accept_rate_lambdas",accept_rate_lambdas)
-                              // Rcpp::Named("accept_rate_tau", accept_rate_tau),
-                              // Rcpp::Named("time_pp", time_pp),
-                              // Rcpp::Named("res_pp", res_pp),
-                              // Rcpp::Named("Deviance",Deviance),
-                              // Rcpp::Named("D_DINA", Deviance_DINA),
-                              // Rcpp::Named("D_tran",Deviance_tran)
+  Rcpp::List res = Rcpp::List::create(Rcpp::Named("trajectories",Trajectories),
+                                         Rcpp::Named("ss",ss),
+                                         Rcpp::Named("gs",gs),
+                                         Rcpp::Named("pis", pis),
+                                         Rcpp::Named("thetas",thetas),
+                                         Rcpp::Named("lambdas",lambdas),
+                                         Rcpp::Named("accept_rate_theta",accept_rate_theta),
+                                         Rcpp::Named("accept_rate_lambdas",accept_rate_lambdas),
+                                         
+                                         Rcpp::Named("N", N),
+                                         Rcpp::Named("Jt", Jt),
+                                         Rcpp::Named("K", K),
+                                         Rcpp::Named("T", T),
+                                         Rcpp::Named("Model", "DINA_HO"),
+                                         Rcpp::Named("chain_length", chain_length),
+                                         Rcpp::Named("burn_in", burn_in),
+                                         
+                                         Rcpp::Named("Response", Response),
+                                         Rcpp::Named("Qs", Qs),
+                                         Rcpp::Named("test_order", test_order),
+                                         Rcpp::Named("Test_versions", Test_versions),
+                                         Rcpp::Named("Q_examinee", Q_examinee)
   );
+  res.attr("class") = "hmcdm.DINA_HO";
+  return res;
+  
 }
-
-
-
-
-
-
-
-
-
-
 
 
 // [[Rcpp::export]]
