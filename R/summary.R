@@ -1,10 +1,17 @@
+
+
 #' @export
-print.hmcdm.DINA_HO <- function(x, ...){
+print.hmcdm <- function(x, ...){
+  N <- dim(x$input_data$Response)[1]
+  Jt <- dim(x$input_data$Qs)[1]
+  K <- dim(x$input_data$Qs)[2]
+  T <- dim(x$input_data$Qs)[3]
+  J <- Jt*T
   cat("\nModel:",formatC(x$Model),"\n")
   
-  cat("\nSample Size:", x$N)
-  cat("\nNumber of Items:", x$Jt*x$T)
-  cat("\nNumber of Time Points:", x$T,"\n")
+  cat("\nSample Size:", N)
+  cat("\nNumber of Items:", J)
+  cat("\nNumber of Time Points:", T,"\n")
   
   cat("\nChain Length:",x$chain_length)
   cat(", burn-in:",x$burn_in,"\n")
@@ -12,97 +19,416 @@ print.hmcdm.DINA_HO <- function(x, ...){
 
 
 #' @export
-summary.hmcdm.DINA_HO <- function(object, ...){
-  point_estimates <- point_estimates_learning(object,"DINA_HO",
-                                              object$N,
-                                              object$Jt,
-                                              object$K,
-                                              object$T,
-                                              alpha_EAP = F)
-  N <- object$N
-  T <- object$T
-  Jt <- object$Jt
+summary.hmcdm <- function(object, ...){
+  N <- nrow(object$input_data$Response)[1]
+  Jt <- dim(object$input_data$Qs)[1]
+  K <- dim(object$input_data$Qs)[2]
+  T <- dim(object$input_data$Qs)[3]
   J <- Jt*T
-  Y_sim <- Dense2Sparse(object$Response, object$test_order, object$Test_versions)
-  Q_matrix <- object$Qs[,,1]
-  if(T > 1){
-    for(i in 2:T){
-      Q_matrix <- rbind(Q_matrix, object$Qs[,,i])
+  # DINA_HO
+  if(object$Model == "DINA_HO"){
+    Y_sim <- Dense2Sparse(object$input_data$Response, object$input_data$test_order, object$input_data$Test_versions)
+    Q_matrix <- object$input_data$Qs[,,1]
+    if(T > 1){
+      for(i in 2:T){
+        Q_matrix <- rbind(Q_matrix, object$input_data$Qs[,,i])
+      }
     }
-  }
-  HMDCM_fit <- Learning_fit(object, "DINA_HO", Y_sim,Q_matrix, object$test_order, object$Test_versions, object$Q_examinee)
-  PPP_total_scores <- matrix(NA,N,T)
-  Y_sim_array <- Sparse2Dense(Y_sim, object$test_order, object$Test_versions)
-  for(i in 1:N){
-    for(t in 1:T){
-      f <- stats::ecdf(HMDCM_fit$PPs$total_score_PP[i,t,])
-      tot_it = sum(Y_sim_array[i,,t])
-      PPP_total_scores[i,t] = f(tot_it)
+    point_estimates <- point_estimates_learning(object,"DINA_HO",N,Jt,K,T,alpha_EAP = F)
+    HMDCM_fit <- Learning_fit(object, "DINA_HO", Y_sim,Q_matrix, 
+                              object$input_data$test_order, object$input_data$Test_versions, object$input_data$Q_examinee)
+    PPP_total_scores <- matrix(NA,N,T)
+    Y_sim_array <- Sparse2Dense(Y_sim, object$input_data$test_order, object$input_data$Test_versions)
+    for(i in 1:N){
+      for(t in 1:T){
+        f <- stats::ecdf(HMDCM_fit$PPs$total_score_PP[i,t,])
+        tot_it = sum(Y_sim_array[i,,t])
+        PPP_total_scores[i,t] = f(tot_it)
+      }
     }
-  }
-  PPP_item_means <- numeric(J)
-  PPP_item_ORs <- matrix(NA,J,J)
-  Y_sim_collapsed <- matrix(NA,N,J)
-  for(i in 1:N){
-    test_i <- object$Test_versions[i]
-    for(t in 1:T){
-      t_i = object$test_order[test_i,t]
-      Y_sim_collapsed[i,(Jt*(t_i-1)+1):(Jt*t_i)] <- Y_sim_array[i,,t]
+    PPP_item_means <- numeric(J)
+    PPP_item_ORs <- matrix(NA,J,J)
+    Y_sim_collapsed <- matrix(NA,N,J)
+    for(i in 1:N){
+      test_i <- object$input_data$Test_versions[i]
+      for(t in 1:T){
+        t_i = object$input_data$test_order[test_i,t]
+        Y_sim_collapsed[i,(Jt*(t_i-1)+1):(Jt*t_i)] <- Y_sim_array[i,,t]
+      }
     }
-  }
-  Observed_ORs <- OddsRatio(N,J,Y_sim_collapsed)
-  for(j in 1:J){
-    f1 <- stats::ecdf(HMDCM_fit$PPs$item_mean_PP[j,])
-    mean_obs <- mean(Y_sim_collapsed[,j])
-    PPP_item_means[j] = f1(mean_obs)
-  }
-  for(j in 1:(J-1)){
-    for(jp in (j+1):J){
-      f2 <- stats::ecdf(HMDCM_fit$PPs$item_OR_PP[j,jp,])
-      PPP_item_ORs[j,jp] <- f2(Observed_ORs[j,jp])
+    Observed_ORs <- OddsRatio(N,J,Y_sim_collapsed)
+    for(j in 1:J){
+      f1 <- stats::ecdf(HMDCM_fit$PPs$item_mean_PP[j,])
+      mean_obs <- mean(Y_sim_collapsed[,j])
+      PPP_item_means[j] = f1(mean_obs)
     }
+    for(j in 1:(J-1)){
+      for(jp in (j+1):J){
+        f2 <- stats::ecdf(HMDCM_fit$PPs$item_OR_PP[j,jp,])
+        PPP_item_ORs[j,jp] <- f2(Observed_ORs[j,jp])
+      }
+    }
+    res <- list(Model = "DINA_HO",
+                Alphas_est = point_estimates$Alphas_est,
+                ss_EAP = point_estimates$ss_EAP,
+                gs_EAP = point_estimates$gs_EAP,
+                thetas_EAP = point_estimates$thetas_EAP,
+                pis_EAP = point_estimates$pis_EAP,
+                lambdas_EAP = point_estimates$lambdas_EAP,
+                
+                DIC = HMDCM_fit$DIC,
+                PPP_total_scores = PPP_total_scores,
+                PPP_item_means = PPP_item_means,
+                PPP_item_ORs = PPP_item_ORs)
   }
   
-  item_parameters <- cbind(point_estimates$ss_EAP,point_estimates$gs_EAP)
-  colnames(item_parameters) <- c("Slipping","Guessing")
-  pis <- point_estimates$pis_EAP
-  colnames(pis) <- "Class Probabilities"
-  lambdas <- point_estimates$lambdas_EAP
-  colnames(lambdas) <- "lambdas"
   
-  res <- list(model = "DINA_HO",
-                 item_parameters = item_parameters,
-                 class_probabilities = pis,
-                 transition_coefficients = lambdas,
-                 DIC = HMDCM_fit$DIC,
-                 PPP_total_scores = PPP_total_scores,
-                 PPP_item_means = PPP_total_scores,
-                 PPP_item_ORs = PPP_item_ORs)
-  class(res) <- "summary.hmcdm.DINA_HO"
-  res
+  # DINA_HO_RT_sep
+  if(object$Model == "DINA_HO_RT_sep"){
+    Y_sim <- Dense2Sparse(object$input_data$Response, object$input_data$test_order, object$input_data$Test_versions)
+    L_sim <- Dense2Sparse(object$input_data$Latency, object$input_data$test_order, object$input_data$Test_versions)
+    Q_matrix <- object$input_data$Qs[,,1]
+    if(T > 1){
+      for(i in 2:T){
+        Q_matrix <- rbind(Q_matrix, object$input_data$Qs[,,i])
+      }
+    }
+    point_estimates <- point_estimates_learning(object,"DINA_HO_RT_sep",N,Jt,K,T,alpha_EAP = F)
+    HO_RT_sep_fit <- Learning_fit(object,"DINA_HO_RT_sep",Y_sim,Q_matrix,
+                              object$input_data$test_order,object$input_data$Test_versions,
+                              Q_examinee=object$input_data$Q_examinee,
+                              Latency_array = object$input_data$Latency, G_version = object$input_data$G_version)
+    PPP_total_scores <- PPP_total_RTs <- matrix(NA,N,T)
+    Y_sim_array <- Sparse2Dense(Y_sim, object$input_data$test_order, object$input_data$Test_versions)
+    L_sim_array <- Sparse2Dense(L_sim, object$input_data$test_order, object$input_data$Test_versions)
+    for(i in 1:N){
+      for(t in 1:T){
+        f1 <- ecdf(HO_RT_sep_fit$PPs$total_score_PP[i,t,])
+        tot_score_it = sum(Y_sim_array[i,,t])
+        PPP_total_scores[i,t] = f1(tot_score_it)
+        
+        f2 <- ecdf(HO_RT_sep_fit$PPs$total_time_PP[i,t,])
+        tot_time_it = sum(L_sim_array[i,,t])
+        PPP_total_RTs[i,t] = f2(tot_time_it)
+      }
+    }
+    PPP_item_means <- PPP_item_mean_RTs <- numeric(J)
+    PPP_item_ORs <- matrix(NA,J,J)
+    Y_sim_collapsed <- L_sim_collapsed <- matrix(NA,N,J)
+    for(i in 1:N){
+      test_i <- object$input_data$Test_versions[i]
+      for(t in 1:T){
+        t_i = object$input_data$test_order[test_i,t]
+        Y_sim_collapsed[i,(Jt*(t_i-1)+1):(Jt*t_i)] <- Y_sim_array[i,,t]
+        L_sim_collapsed[i,(Jt*(t_i-1)+1):(Jt*t_i)] <- L_sim_array[i,,t]
+      }
+    }
+    Observed_ORs <- OddsRatio(N,J,Y_sim_collapsed)
+    for(j in 1:J){
+      f1 <- ecdf(HO_RT_sep_fit$PPs$item_mean_PP[j,])
+      mean_obs <- mean(Y_sim_collapsed[,j])
+      PPP_item_means[j] = f1(mean_obs)
+      
+      f3 <- ecdf(HO_RT_sep_fit$PPs$RT_mean_PP[j,])
+      mean_RT_obs <- mean(L_sim_collapsed[,j])
+      PPP_item_mean_RTs[j] = f3(mean_RT_obs)
+    }
+    for(j in 1:(J-1)){
+      for(jp in (j+1):J){
+        f2 <- ecdf(HO_RT_sep_fit$PPs$item_OR_PP[j,jp,])
+        PPP_item_ORs[j,jp] <- f2(Observed_ORs[j,jp])
+      }
+    }
+    response_times_coefficients <- list(as_EAP = point_estimates$as_EAP,
+                                        gammas_EAP = point_estimates$gammas_EAP,
+                                        taus_EAP = point_estimates$taus_EAP,
+                                        phis = point_estimates$phis,
+                                        tauvar_EAP = point_estimates$tauvar_EAP)
+    item_parameters <- cbind(point_estimates$ss_EAP,point_estimates$gs_EAP); colnames(item_parameters) <- c("Slipping","Guessing")
+    res <- list(Model = "DINA_HO_RT_sep",
+                Alphas_est = point_estimates$Alphas_est,
+                ss_EAP = point_estimates$ss_EAP,
+                gs_EAP = point_estimates$gs_EAP,
+                thetas_EAP = point_estimates$thetas_EAP,
+                pis_EAP = point_estimates$pis_EAP,
+                lambdas_EAP = point_estimates$lambdas_EAP,
+                response_times_coefficients = response_times_coefficients,
+                
+                DIC = HO_RT_sep_fit$DIC,
+                PPP_total_scores = PPP_total_scores,
+                PPP_total_RTs = PPP_total_RTs,
+                PPP_item_means = PPP_item_means,
+                PPP_item_mean_RTs = PPP_item_mean_RTs,
+                PPP_item_ORs = PPP_item_ORs)
+  }
+  
+  
+  # DINA_HO_RT_joint
+  if(object$Model=="DINA_HO_RT_joint"){
+    Y_sim <- Dense2Sparse(object$input_data$Response, object$input_data$test_order, object$input_data$Test_versions)
+    L_sim <- Dense2Sparse(object$input_data$Latency, object$input_data$test_order, object$input_data$Test_versions)
+    Q_matrix <- object$input_data$Qs[,,1]
+    if(T > 1){
+      for(i in 2:T){
+        Q_matrix <- rbind(Q_matrix, object$input_data$Qs[,,i])
+      }
+    }
+    point_estimates <- point_estimates_learning(object,"DINA_HO_RT_joint",N,Jt,K,T,alpha_EAP = F)
+    HO_RT_joint_fit <- Learning_fit(object,"DINA_HO_RT_joint",Y_sim,Q_matrix,
+                                  object$input_data$test_order,object$input_data$Test_versions,
+                                  Q_examinee=object$input_data$Q_examinee,
+                                  Latency_array = object$input_data$Latency, G_version = object$input_data$G_version)
+    PPP_total_scores <- PPP_total_RTs <- matrix(NA,N,T)
+    Y_sim_array <- Sparse2Dense(Y_sim, object$input_data$test_order, object$input_data$Test_versions)
+    L_sim_array <- Sparse2Dense(L_sim, object$input_data$test_order, object$input_data$Test_versions)
+    for(i in 1:N){
+      for(t in 1:T){
+        f1 <- ecdf(HO_RT_joint_fit$PPs$total_score_PP[i,t,])
+        tot_score_it = sum(Y_sim_array[i,,t])
+        PPP_total_scores[i,t] = f1(tot_score_it)
+        
+        f2 <- ecdf(HO_RT_joint_fit$PPs$total_time_PP[i,t,])
+        tot_time_it = sum(L_sim_array[i,,t])
+        PPP_total_RTs[i,t] = f2(tot_time_it)
+      }
+    }
+    PPP_item_means <- PPP_item_mean_RTs <- numeric(J)
+    PPP_item_ORs <- matrix(NA,J,J)
+    Y_sim_collapsed <- L_sim_collapsed <- matrix(NA,N,J)
+    for(i in 1:N){
+      test_i <- object$input_data$Test_versions[i]
+      for(t in 1:T){
+        t_i = object$input_data$test_order[test_i,t]
+        Y_sim_collapsed[i,(Jt*(t_i-1)+1):(Jt*t_i)] <- Y_sim_array[i,,t]
+        L_sim_collapsed[i,(Jt*(t_i-1)+1):(Jt*t_i)] <- L_sim_array[i,,t]
+      }
+    }
+    Observed_ORs <- OddsRatio(N,J,Y_sim_collapsed)
+    for(j in 1:J){
+      f1 <- ecdf(HO_RT_joint_fit$PPs$item_mean_PP[j,])
+      mean_obs <- mean(Y_sim_collapsed[,j])
+      PPP_item_means[j] = f1(mean_obs)
+      
+      f3 <- ecdf(HO_RT_joint_fit$PPs$RT_mean_PP[j,])
+      mean_RT_obs <- mean(L_sim_collapsed[,j])
+      PPP_item_mean_RTs[j] = f3(mean_RT_obs)
+    }
+    for(j in 1:(J-1)){
+      for(jp in (j+1):J){
+        f2 <- ecdf(HO_RT_joint_fit$PPs$item_OR_PP[j,jp,])
+        PPP_item_ORs[j,jp] <- f2(Observed_ORs[j,jp])
+      }
+    }
+    response_times_coefficients <- list(as_EAP = point_estimates$as_EAP,
+                                        gammas_EAP = point_estimates$gammas_EAP,
+                                        taus_EAP = point_estimates$taus_EAP,
+                                        phis = point_estimates$phis,
+                                        Sigs_EAP = point_estimates$Sigs_EAP)
+    res <- list(Model = "DINA_HO_RT_joint",
+                Alphas_est = point_estimates$Alphas_est,
+                ss_EAP = point_estimates$ss_EAP,
+                gs_EAP = point_estimates$gs_EAP,
+                thetas_EAP = point_estimates$thetas_EAP,
+                pis_EAP = point_estimates$pis_EAP,
+                lambdas_EAP = point_estimates$lambdas_EAP,
+                response_times_coefficients = response_times_coefficients,
+                
+                DIC = HO_RT_joint_fit$DIC,
+                PPP_total_scores = PPP_total_scores,
+                PPP_total_RTs = PPP_total_RTs,
+                PPP_item_means = PPP_item_means,
+                PPP_item_mean_RTs = PPP_item_mean_RTs,
+                PPP_item_ORs = PPP_item_ORs)
+  }
+  
+  
+  # rRUM_indept
+  if(object$Model=="rRUM_indept"){
+    Y_sim <- Dense2Sparse(object$input_data$Response, object$input_data$test_order, object$input_data$Test_versions)
+    Q_matrix <- object$input_data$Qs[,,1]
+    if(T > 1){
+      for(i in 2:T){
+        Q_matrix <- rbind(Q_matrix, object$input_data$Qs[,,i])
+      }
+    }
+    point_estimates = point_estimates_learning(object,"rRUM_indept",N,Jt,K,T,alpha_EAP = T)
+    rRUM_indept_fit <- Learning_fit(object,"rRUM_indept",Y_sim,Q_matrix,
+                                    object$input_data$test_order,object$input_data$Test_versions,
+                                    R=object$input_data$R)
+    PPP_total_scores <- matrix(NA,N,T)
+    Y_sim_array <- Sparse2Dense(Y_sim, object$input_data$test_order, object$input_data$Test_versions)
+    for(i in 1:N){
+      for(t in 1:T){
+        f <- stats::ecdf(rRUM_indept_fit$PPs$total_score_PP[i,t,])
+        tot_it = sum(Y_sim_array[i,,t])
+        PPP_total_scores[i,t] = f(tot_it)
+      }
+    }
+    PPP_item_means <- numeric(J)
+    PPP_item_ORs <- matrix(NA,J,J)
+    Y_sim_collapsed <- matrix(NA,N,J)
+    for(i in 1:N){
+      test_i <- object$input_data$Test_versions[i]
+      for(t in 1:T){
+        t_i = object$input_data$test_order[test_i,t]
+        Y_sim_collapsed[i,(Jt*(t_i-1)+1):(Jt*t_i)] <- Y_sim_array[i,,t]
+      }
+    }
+    Observed_ORs <- OddsRatio(N,J,Y_sim_collapsed)
+    for(j in 1:J){
+      f1 <- stats::ecdf(rRUM_indept_fit$PPs$item_mean_PP[j,])
+      mean_obs <- mean(Y_sim_collapsed[,j])
+      PPP_item_means[j] = f1(mean_obs)
+    }
+    for(j in 1:(J-1)){
+      for(jp in (j+1):J){
+        f2 <- stats::ecdf(rRUM_indept_fit$PPs$item_OR_PP[j,jp,])
+        PPP_item_ORs[j,jp] <- f2(Observed_ORs[j,jp])
+      }
+    }
+    res <- list(Model = "rRUM_indept",
+                Alphas_est = point_estimates$Alphas_est,
+                taus_EAP = point_estimates$taus_EAP,
+                r_stars_EAP = point_estimates$r_stars_EAP,
+                pi_stars_EPA = point_estimates$pi_stars_EAP,
+                thetas_EAP = point_estimates$thetas_EAP,
+                pis_EAP = point_estimates$pis_EAP,
+                lambdas_EAP = point_estimates$lambdas_EAP,
+                
+                DIC = rRUM_indept_fit$DIC,
+                PPP_total_scores = PPP_total_scores,
+                PPP_item_means = PPP_item_means,
+                PPP_item_ORs = PPP_item_ORs)
+
+  }
+  
+  # NIDA_indept
+  if(object$Model=="NIDA_indept"){
+    Y_sim <- Dense2Sparse(object$input_data$Response, object$input_data$test_order, object$input_data$Test_versions)
+    Q_matrix <- object$input_data$Qs[,,1]
+    if(T > 1){
+      for(i in 2:T){
+        Q_matrix <- rbind(Q_matrix, object$input_data$Qs[,,i])
+      }
+    }
+    point_estimates = point_estimates_learning(object,"NIDA_indept",N,Jt,K,T,alpha_EAP = T)
+    NIDA_indept_fit <- Learning_fit(object,"NIDA_indept",Y_sim,Q_matrix,
+                                    object$input_data$test_order,object$input_data$Test_versions,
+                                    R=object$input_data$R)
+    PPP_total_scores <- matrix(NA,N,T)
+    Y_sim_array <- Sparse2Dense(Y_sim, object$input_data$test_order, object$input_data$Test_versions)
+    for(i in 1:N){
+      for(t in 1:T){
+        f <- stats::ecdf(NIDA_indept_fit$PPs$total_score_PP[i,t,])
+        tot_it = sum(Y_sim_array[i,,t])
+        PPP_total_scores[i,t] = f(tot_it)
+      }
+    }
+    PPP_item_means <- numeric(J)
+    PPP_item_ORs <- matrix(NA,J,J)
+    Y_sim_collapsed <- matrix(NA,N,J)
+    for(i in 1:N){
+      test_i <- object$input_data$Test_versions[i]
+      for(t in 1:T){
+        t_i = object$input_data$test_order[test_i,t]
+        Y_sim_collapsed[i,(Jt*(t_i-1)+1):(Jt*t_i)] <- Y_sim_array[i,,t]
+      }
+    }
+    Observed_ORs <- OddsRatio(N,J,Y_sim_collapsed)
+    for(j in 1:J){
+      f1 <- stats::ecdf(NIDA_indept_fit$PPs$item_mean_PP[j,])
+      mean_obs <- mean(Y_sim_collapsed[,j])
+      PPP_item_means[j] = f1(mean_obs)
+    }
+    for(j in 1:(J-1)){
+      for(jp in (j+1):J){
+        f2 <- stats::ecdf(NIDA_indept_fit$PPs$item_OR_PP[j,jp,])
+        PPP_item_ORs[j,jp] <- f2(Observed_ORs[j,jp])
+      }
+    }
+    res <- list(Model = "NIDA_indept",
+                Alphas_est = point_estimates$Alphas_est,
+                ss_EAP = point_estimates$ss_EAP,
+                gs_EAP = point_estimates$gs_EAP,
+                taus_EAP = point_estimates$taus_EAP,
+                pis_EAP = point_estimates$pis_EAP,
+
+                DIC = NIDA_indept_fit$DIC,
+                PPP_total_scores = PPP_total_scores,
+                PPP_item_means = PPP_item_means,
+                PPP_item_ORs = PPP_item_ORs)
+  }
+  
+  # DINA_FOHM
+  if(object$Model=="DINA_FOHM"){
+    Y_sim <- Dense2Sparse(object$input_data$Response, object$input_data$test_order, object$input_data$Test_versions)
+    Q_matrix <- object$input_data$Qs[,,1]
+    if(T > 1){
+      for(i in 2:T){
+        Q_matrix <- rbind(Q_matrix, object$input_data$Qs[,,i])
+      }
+    }
+    point_estimates = point_estimates_learning(object,"DINA_FOHM",N,Jt,K,T,alpha_EAP = T)
+    DINA_FOHM_fit <- Learning_fit(object,"DINA_FOHM",Y_sim,Q_matrix,
+                             object$input_data$test_order,object$input_data$Test_versions)
+    PPP_total_scores <- matrix(NA,N,T)
+    Y_sim_array <- Sparse2Dense(Y_sim, object$input_data$test_order, object$input_data$Test_versions)
+    for(i in 1:N){
+      for(t in 1:T){
+        f <- stats::ecdf(DINA_FOHM_fit$PPs$total_score_PP[i,t,])
+        tot_it = sum(Y_sim_array[i,,t])
+        PPP_total_scores[i,t] = f(tot_it)
+      }
+    }
+    PPP_item_means <- numeric(J)
+    PPP_item_ORs <- matrix(NA,J,J)
+    Y_sim_collapsed <- matrix(NA,N,J)
+    for(i in 1:N){
+      test_i <- object$input_data$Test_versions[i]
+      for(t in 1:T){
+        t_i = object$input_data$test_order[test_i,t]
+        Y_sim_collapsed[i,(Jt*(t_i-1)+1):(Jt*t_i)] <- Y_sim_array[i,,t]
+      }
+    }
+    Observed_ORs <- OddsRatio(N,J,Y_sim_collapsed)
+    for(j in 1:J){
+      f1 <- stats::ecdf(DINA_FOHM_fit$PPs$item_mean_PP[j,])
+      mean_obs <- mean(Y_sim_collapsed[,j])
+      PPP_item_means[j] = f1(mean_obs)
+    }
+    for(j in 1:(J-1)){
+      for(jp in (j+1):J){
+        f2 <- stats::ecdf(DINA_FOHM_fit$PPs$item_OR_PP[j,jp,])
+        PPP_item_ORs[j,jp] <- f2(Observed_ORs[j,jp])
+      }
+    }
+    res <- list(Model = "DINA_FOHM",
+                Alphas_est = point_estimates$Alphas_est,
+                ss_EAP = point_estimates$ss_EAP,
+                gs_EAP = point_estimates$gs_EAP,
+                omegas_EAP = point_estimates$omegas_EAP,
+                pis_EAP = point_estimates$pis_EAP,
+                
+                DIC = DINA_FOHM_fit$DIC,
+                PPP_total_scores = PPP_total_scores,
+                PPP_item_means = PPP_item_means,
+                PPP_item_ORs = PPP_item_ORs)
+  }
+  
+  class(res) <- "summary.hmcdm"
+  return(res)
 }
 
 
 #' @export
-print.summary.hmcdm.DINA_HO <- function(x, ...){
-  
+print.summary.hmcdm <- function(x, ...){
   digits <- max(3, getOption("digits") - 3)
-  
-  cat("\nModel:",x$model,"\n")
-  
-  cat("\nItem Parameters:\n")
-  print(x$item_parameters, digits=digits)
-  
+  cat("\nModel:",x$Model,"\n")
   cat("\nClass Probabilities:\n")
-  print(x$class_probabilities, digits=digits)
-  
-  cat("\nTransition Coefficients:\n")
-  print(x$transition_coefficients, digits=digits)
-  
+  print(x$pis_EAP, digits=digits)
   cat("\nModel Fit Measures:\n")
-  cat("DIC:")
+  cat("Deviance Information Criterion(DIC):\n")
   print(x$DIC[3,], digits=digits+3)
-  
   invisible(x)
 }
 

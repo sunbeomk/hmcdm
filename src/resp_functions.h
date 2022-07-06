@@ -11,7 +11,7 @@ double pYit_DINA(const arma::vec& ETA_it,const arma::vec& Y_it, const arma::mat&
 arma::vec sim_resp_rRUM(unsigned int J, unsigned int K, const arma::mat& Q,const arma::mat& rstar, const arma::vec& pistar,
                         const arma::vec& alpha);
 
-arma::cube simrRUM(const arma::cube& alphas, const arma::cube& r_stars, const arma::mat& pi_stars, 
+arma::cube simrRUM(const arma::cube& alphas, const arma::mat& r_stars_mat, const arma::mat& pi_stars_mat, 
                    const arma::mat Q_matrix, const arma::mat& test_order, const arma::vec& Test_versions);
                    
 double pYit_rRUM(const arma::vec& alpha_it, const arma::vec& Y_it, const arma::vec& pi_star_it, 

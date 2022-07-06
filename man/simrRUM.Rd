@@ -4,14 +4,14 @@
 \alias{simrRUM}
 \title{Simulate rRUM model responses (entire cube)}
 \usage{
-simrRUM(alphas, r_stars, pi_stars, Q_matrix, test_order, Test_versions)
+simrRUM(alphas, r_stars_mat, pi_stars, Q_matrix, test_order, Test_versions)
 }
 \arguments{
 \item{alphas}{An N-by-K-by-T \code{array} of attribute patterns of all persons across T time points}
 
-\item{r_stars}{A J-by-K-by-T \code{cube} of item penalty parameters for missing skills across all item blocks}
+\item{r_stars_mat}{A J-by-K \code{cube} of item penalty parameters for missing skills across all item blocks}
 
-\item{pi_stars}{A J-by-T \code{matrix} of item correct response probability with all requisite skills across blocks}
+\item{pi_stars}{A Jt-by-T \code{matrix} of item correct response probability with all requisite skills across blocks}
 
 \item{Q_matrix}{A J-by-K of Q-matrix}
 
@@ -31,15 +31,10 @@ J = nrow(Q_matrix)
 K = ncol(Q_matrix)
 T = nrow(test_order)
 Jt = J/T
-Smats <- array(runif(Jt*K*(T),.1,.3),c(Jt,K,(T)))
-Gmats <- array(runif(Jt*K*(T),.1,.3),c(Jt,K,(T)))
-r_stars <- array(NA,c(Jt,K,T))
-pi_stars <- matrix(NA,Jt,(T))
-Qs <- Mat2Array(Q_matrix, T)
-for(t in 1:T){
-  pi_stars[,t] <- apply(((1-Smats[,,t])^Qs[,,t]),1,prod)
-  r_stars[,,t] <- Gmats[,,t]/(1-Smats[,,t])
-}
+Smats <- matrix(runif(J*K,.1,.3),c(J,K))
+Gmats <- matrix(runif(J*K,.1,.3),c(J,K))
+r_stars <- Gmats / (1-Smats)
+pi_stars <- matrix(apply((1-Smats)^Q_matrix, 1, prod), nrow=Jt, ncol=T, byrow=T)
 Test_versions_sim <- sample(1:5,N,replace = T)
 tau <- numeric(K)
   for(k in 1:K){

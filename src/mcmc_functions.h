@@ -71,8 +71,9 @@ void parm_update_DINA_FOHM(unsigned int N,unsigned int J,unsigned int K,unsigned
                            const arma::mat& ETA,arma::vec& ss,arma::vec& gs,arma::mat& CLASS,
                            arma::vec& pi,arma::mat& Omega);
 
-Rcpp::List Gibbs_DINA_FOHM(const arma::cube& Y,const arma::mat& Q,
-                           unsigned int burnin,unsigned int chain_length);
+Rcpp::List Gibbs_DINA_FOHM(const arma::cube& Response,const arma::cube& Qs,
+                           const arma::mat& test_order, const arma::vec& Test_versions,
+                           const unsigned int chain_length, const unsigned int burn_in);
 
 Rcpp::List MCMC_learning(const arma::cube Y_real_array, const arma::mat Q_matrix, 
                          const std::string model, const arma::mat& test_order, const arma::vec& Test_versions,

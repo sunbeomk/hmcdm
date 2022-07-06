@@ -233,6 +233,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// Array2Mat
+arma::mat Array2Mat(const arma::cube r_stars);
+RcppExport SEXP _hmcdm_Array2Mat(SEXP r_starsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::cube >::type r_stars(r_starsSEXP);
+    rcpp_result_gen = Rcpp::wrap(Array2Mat(r_stars));
+    return rcpp_result_gen;
+END_RCPP
+}
 // point_estimates_learning
 Rcpp::List point_estimates_learning(const Rcpp::List output, const std::string model, const unsigned int N, const unsigned int Jt, const unsigned int K, const unsigned int T, bool alpha_EAP);
 RcppExport SEXP _hmcdm_point_estimates_learning(SEXP outputSEXP, SEXP modelSEXP, SEXP NSEXP, SEXP JtSEXP, SEXP KSEXP, SEXP TSEXP, SEXP alpha_EAPSEXP) {
@@ -538,16 +549,18 @@ BEGIN_RCPP
 END_RCPP
 }
 // Gibbs_DINA_FOHM
-Rcpp::List Gibbs_DINA_FOHM(const arma::cube& Y, const arma::mat& Q, unsigned int burnin, unsigned int chain_length);
-RcppExport SEXP _hmcdm_Gibbs_DINA_FOHM(SEXP YSEXP, SEXP QSEXP, SEXP burninSEXP, SEXP chain_lengthSEXP) {
+Rcpp::List Gibbs_DINA_FOHM(const arma::cube& Response, const arma::cube& Qs, const arma::mat& test_order, const arma::vec& Test_versions, const unsigned int chain_length, const unsigned int burn_in);
+RcppExport SEXP _hmcdm_Gibbs_DINA_FOHM(SEXP ResponseSEXP, SEXP QsSEXP, SEXP test_orderSEXP, SEXP Test_versionsSEXP, SEXP chain_lengthSEXP, SEXP burn_inSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::cube& >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type Q(QSEXP);
-    Rcpp::traits::input_parameter< unsigned int >::type burnin(burninSEXP);
-    Rcpp::traits::input_parameter< unsigned int >::type chain_length(chain_lengthSEXP);
-    rcpp_result_gen = Rcpp::wrap(Gibbs_DINA_FOHM(Y, Q, burnin, chain_length));
+    Rcpp::traits::input_parameter< const arma::cube& >::type Response(ResponseSEXP);
+    Rcpp::traits::input_parameter< const arma::cube& >::type Qs(QsSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type test_order(test_orderSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type Test_versions(Test_versionsSEXP);
+    Rcpp::traits::input_parameter< const unsigned int >::type chain_length(chain_lengthSEXP);
+    Rcpp::traits::input_parameter< const unsigned int >::type burn_in(burn_inSEXP);
+    rcpp_result_gen = Rcpp::wrap(Gibbs_DINA_FOHM(Response, Qs, test_order, Test_versions, chain_length, burn_in));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -635,18 +648,18 @@ BEGIN_RCPP
 END_RCPP
 }
 // simrRUM
-arma::cube simrRUM(const arma::cube& alphas, const arma::cube& r_stars, const arma::mat& pi_stars, const arma::mat Q_matrix, const arma::mat& test_order, const arma::vec& Test_versions);
-RcppExport SEXP _hmcdm_simrRUM(SEXP alphasSEXP, SEXP r_starsSEXP, SEXP pi_starsSEXP, SEXP Q_matrixSEXP, SEXP test_orderSEXP, SEXP Test_versionsSEXP) {
+arma::cube simrRUM(const arma::cube& alphas, const arma::mat& r_stars_mat, const arma::mat& pi_stars, const arma::mat Q_matrix, const arma::mat& test_order, const arma::vec& Test_versions);
+RcppExport SEXP _hmcdm_simrRUM(SEXP alphasSEXP, SEXP r_stars_matSEXP, SEXP pi_starsSEXP, SEXP Q_matrixSEXP, SEXP test_orderSEXP, SEXP Test_versionsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::cube& >::type alphas(alphasSEXP);
-    Rcpp::traits::input_parameter< const arma::cube& >::type r_stars(r_starsSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type r_stars_mat(r_stars_matSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type pi_stars(pi_starsSEXP);
     Rcpp::traits::input_parameter< const arma::mat >::type Q_matrix(Q_matrixSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type test_order(test_orderSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type Test_versions(Test_versionsSEXP);
-    rcpp_result_gen = Rcpp::wrap(simrRUM(alphas, r_stars, pi_stars, Q_matrix, test_order, Test_versions));
+    rcpp_result_gen = Rcpp::wrap(simrRUM(alphas, r_stars_mat, pi_stars, Q_matrix, test_order, Test_versions));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -926,6 +939,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_hmcdm_Sparse2Dense", (DL_FUNC) &_hmcdm_Sparse2Dense, 3},
     {"_hmcdm_Dense2Sparse", (DL_FUNC) &_hmcdm_Dense2Sparse, 3},
     {"_hmcdm_Mat2Array", (DL_FUNC) &_hmcdm_Mat2Array, 2},
+    {"_hmcdm_Array2Mat", (DL_FUNC) &_hmcdm_Array2Mat, 1},
     {"_hmcdm_point_estimates_learning", (DL_FUNC) &_hmcdm_point_estimates_learning, 7},
     {"_hmcdm_Learning_fit", (DL_FUNC) &_hmcdm_Learning_fit, 10},
     {"_hmcdm_parm_update_HO", (DL_FUNC) &_hmcdm_parm_update_HO, 16},
@@ -939,7 +953,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_hmcdm_parm_update_NIDA_indept", (DL_FUNC) &_hmcdm_parm_update_NIDA_indept, 16},
     {"_hmcdm_Gibbs_NIDA_indept", (DL_FUNC) &_hmcdm_Gibbs_NIDA_indept, 7},
     {"_hmcdm_parm_update_DINA_FOHM", (DL_FUNC) &_hmcdm_parm_update_DINA_FOHM, 13},
-    {"_hmcdm_Gibbs_DINA_FOHM", (DL_FUNC) &_hmcdm_Gibbs_DINA_FOHM, 4},
+    {"_hmcdm_Gibbs_DINA_FOHM", (DL_FUNC) &_hmcdm_Gibbs_DINA_FOHM, 6},
     {"_hmcdm_MCMC_learning", (DL_FUNC) &_hmcdm_MCMC_learning, 13},
     {"_hmcdm_sim_resp_DINA", (DL_FUNC) &_hmcdm_sim_resp_DINA, 6},
     {"_hmcdm_simDINA", (DL_FUNC) &_hmcdm_simDINA, 5},

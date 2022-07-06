@@ -765,7 +765,9 @@ Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
     
     posterior_predictives = Rcpp::List::create(Rcpp::Named("item_mean_PP", item_mean_PP),
                                                Rcpp::Named("item_OR_PP",item_OR_PP),
-                                               Rcpp::Named("total_score_PP",total_score_PP));
+                                               Rcpp::Named("RT_mean_PP",RT_mean_PP),
+                                               Rcpp::Named("total_score_PP",total_score_PP),
+                                               Rcpp::Named("total_time_PP",total_time_PP));
     
   }
   
@@ -776,7 +778,6 @@ Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
     arma::vec pi_stars_EAP = arma::mean(pi_stars,1);
     arma::mat taus = Rcpp::as<arma::mat>(output["taus"]);
     arma::vec taus_EAP = arma::mean(taus,1);
-    
     for(unsigned int tt = 0; tt < n_its; tt++){
       arma::cube r_stars_cube(Jt,K,T);
       arma::mat pi_stars_mat(Jt,T);
@@ -784,7 +785,8 @@ Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
         r_stars_cube.slice(t) = r_stars.slice(tt).rows(Jt*t,(Jt*(t+1)-1));
         pi_stars_mat.col(t) = pi_stars.col(tt).subvec(Jt*t,(Jt*(t+1)-1));
       }
-      arma::cube Y_sim_sparse = simrRUM(alphas, r_stars_cube, pi_stars_mat,Q_matrix,test_order,Test_versions);
+      arma::mat r_stars_mat = Array2Mat(r_stars_cube);
+      arma::cube Y_sim_sparse = simrRUM(alphas, r_stars_mat, pi_stars_mat,Q_matrix,test_order,Test_versions);
       arma::cube Y_sim = Sparse2Dense(Y_sim_sparse, test_order, Test_versions);
       arma::mat Y_sim_collapsed(N,Jt*T);
       
@@ -830,7 +832,7 @@ Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
       // Posterior predictive
       item_mean_PP.col(tt) = arma::mean(Y_sim_collapsed,0).t();
       item_OR_PP.slice(tt) = OddsRatio(N,Jt*T,Y_sim_collapsed);
-      
+
     }
     DIC(0,0) = -2. * arma::mean(d_tran);
     DIC(0,1) = -2. * arma::mean(d_time);

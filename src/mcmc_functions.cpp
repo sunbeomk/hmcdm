@@ -291,6 +291,12 @@ Rcpp::List Gibbs_DINA_HO(const arma::cube& Response,
       Rcpp::Rcout << tt << std::endl;
     }
   }
+  Rcpp::List input_data = Rcpp::List::create(Rcpp::Named("Response",Response),
+                                             Rcpp::Named("Qs",Qs),
+                                             Rcpp::Named("test_order",test_order),
+                                             Rcpp::Named("Test_versions",Test_versions),
+                                             Rcpp::Named("Q_examinee",Q_examinee)
+  );
   Rcpp::List res = Rcpp::List::create(Rcpp::Named("trajectories",Trajectories),
                                          Rcpp::Named("ss",ss),
                                          Rcpp::Named("gs",gs),
@@ -300,21 +306,13 @@ Rcpp::List Gibbs_DINA_HO(const arma::cube& Response,
                                          Rcpp::Named("accept_rate_theta",accept_rate_theta),
                                          Rcpp::Named("accept_rate_lambdas",accept_rate_lambdas),
                                          
-                                         Rcpp::Named("N", N),
-                                         Rcpp::Named("Jt", Jt),
-                                         Rcpp::Named("K", K),
-                                         Rcpp::Named("T", T),
                                          Rcpp::Named("Model", "DINA_HO"),
                                          Rcpp::Named("chain_length", chain_length),
                                          Rcpp::Named("burn_in", burn_in),
                                          
-                                         Rcpp::Named("Response", Response),
-                                         Rcpp::Named("Qs", Qs),
-                                         Rcpp::Named("test_order", test_order),
-                                         Rcpp::Named("Test_versions", Test_versions),
-                                         Rcpp::Named("Q_examinee", Q_examinee)
+                                         Rcpp::Named("input_data",input_data)
   );
-  res.attr("class") = "hmcdm.DINA_HO";
+  res.attr("class") = "hmcdm";
   return res;
   
 }
@@ -901,27 +899,37 @@ Rcpp::List Gibbs_DINA_HO_RT_sep(const arma::cube& Response, const arma::cube& La
     }
     
   }
-  return Rcpp::List::create(Rcpp::Named("trajectories",Trajectories),
-                            Rcpp::Named("ss",ss),
-                            Rcpp::Named("gs",gs),
-                            Rcpp::Named("as",RT_as),
-                            Rcpp::Named("gammas",RT_gammas),
-                            Rcpp::Named("pis", pis),
-                            Rcpp::Named("thetas",thetas),
-                            Rcpp::Named("taus",taus),
-                            Rcpp::Named("lambdas",lambdas),
-                            Rcpp::Named("phis",phis),
-                            Rcpp::Named("tauvar", tauvar),
-                            Rcpp::Named("accept_rate_theta",accept_rate_theta),
-                            Rcpp::Named("accept_rate_lambdas",accept_rate_lambdas)
-                              // Rcpp::Named("accept_rate_tau", accept_rate_tau),
-                              // Rcpp::Named("time_pp", time_pp),
-                              // Rcpp::Named("res_pp", res_pp),
-                              // Rcpp::Named("Deviance",Deviance),
-                              // Rcpp::Named("D_DINA", Deviance_DINA),
-                              // Rcpp::Named("D_RT", Deviance_RT),
-                              // Rcpp::Named("D_tran",Deviance_tran)
+  Rcpp::List input_data = Rcpp::List::create(Rcpp::Named("Response",Response),
+                                             Rcpp::Named("Latency",Latency),
+                                             Rcpp::Named("G_version",G_version),
+                                             Rcpp::Named("Qs",Qs),
+                                             Rcpp::Named("test_order",test_order),
+                                             Rcpp::Named("Test_versions",Test_versions),
+                                             Rcpp::Named("Q_examinee",Q_examinee)
   );
+  Rcpp::List res = Rcpp::List::create(Rcpp::Named("trajectories",Trajectories),
+                                      Rcpp::Named("ss",ss),
+                                      Rcpp::Named("gs",gs),
+                                      Rcpp::Named("as",RT_as),
+                                      Rcpp::Named("gammas",RT_gammas),
+                                      Rcpp::Named("pis", pis),
+                                      Rcpp::Named("thetas",thetas),
+                                      Rcpp::Named("taus",taus),
+                                      Rcpp::Named("lambdas",lambdas),
+                                      Rcpp::Named("phis",phis),
+                                      Rcpp::Named("tauvar", tauvar),
+                                      Rcpp::Named("accept_rate_theta",accept_rate_theta),
+                                      Rcpp::Named("accept_rate_lambdas",accept_rate_lambdas),
+                                      
+                                      Rcpp::Named("Model", "DINA_HO_RT_sep"),
+                                      Rcpp::Named("chain_length",chain_length),
+                                      Rcpp::Named("burn_in", burn_in),
+                                      
+                                      Rcpp::Named("input_data",input_data)
+  );
+  
+  res.attr("class") = "hmcdm";
+  return res;
 }
 
 
@@ -1501,28 +1509,39 @@ Rcpp::List Gibbs_DINA_HO_RT_joint(const arma::cube& Response, const arma::cube& 
       Rcpp::Rcout<<tt<<std::endl;
     }
   }
-  
-  return Rcpp::List::create(Rcpp::Named("trajectories",Trajectories),
-                            Rcpp::Named("ss",ss),
-                            Rcpp::Named("gs",gs),
-                            Rcpp::Named("as",RT_as),
-                            Rcpp::Named("gammas",RT_gammas),
-                            Rcpp::Named("pis", pis),
-                            Rcpp::Named("thetas",thetas),
-                            Rcpp::Named("taus",taus),
-                            Rcpp::Named("lambdas",lambdas),
-                            Rcpp::Named("phis",phis),
-                            Rcpp::Named("Sigs",Sigs),
-                            Rcpp::Named("accept_rate_theta",accept_rate_theta),
-                            Rcpp::Named("accept_rate_lambdas",accept_rate_lambdas)
-                              // Rcpp::Named("time_pp", time_pp),
-                              // Rcpp::Named("res_pp", res_pp),
-                              // Rcpp::Named("Deviance",Deviance),
-                              // Rcpp::Named("D_DINA", Deviance_DINA),
-                              // Rcpp::Named("D_RT", Deviance_RT),
-                              // Rcpp::Named("D_tran",Deviance_tran),
-                              // Rcpp::Named("D_joint",Deviance_joint)
+  Rcpp::List input_data = Rcpp::List::create(Rcpp::Named("Response",Response),
+                                             Rcpp::Named("Latency",Latency),
+                                             Rcpp::Named("G_version",G_version),
+                                             Rcpp::Named("Qs",Qs),
+                                             Rcpp::Named("test_order",test_order),
+                                             Rcpp::Named("Test_versions",Test_versions),
+                                             Rcpp::Named("Q_examinee",Q_examinee)
   );
+  Rcpp::List res = Rcpp::List::create(Rcpp::Named("trajectories",Trajectories),
+                                      Rcpp::Named("ss",ss),
+                                      Rcpp::Named("gs",gs),
+                                      Rcpp::Named("as",RT_as),
+                                      Rcpp::Named("gammas",RT_gammas),
+                                      Rcpp::Named("pis", pis),
+                                      Rcpp::Named("thetas",thetas),
+                                      Rcpp::Named("taus",taus),
+                                      Rcpp::Named("lambdas",lambdas),
+                                      Rcpp::Named("phis",phis),
+                                      Rcpp::Named("Sigs",Sigs),
+                                      Rcpp::Named("accept_rate_theta",accept_rate_theta),
+                                      Rcpp::Named("accept_rate_lambdas",accept_rate_lambdas),
+                                      Rcpp::Named("accept_rate_theta",accept_rate_theta),
+                                      Rcpp::Named("accept_rate_lambdas",accept_rate_lambdas),
+                                      
+                                      Rcpp::Named("Model", "DINA_HO_RT_joint"),
+                                      Rcpp::Named("chain_length",chain_length),
+                                      Rcpp::Named("burn_in", burn_in),
+                                      
+                                      Rcpp::Named("input_data",input_data)
+  );
+  
+  res.attr("class") = "hmcdm";
+  return res;
 }
 
 
@@ -1809,12 +1828,28 @@ Rcpp::List Gibbs_rRUM_indept(const arma::cube& Response, const arma::cube& Qs, c
       Rcpp::Rcout<<tt<<std::endl;
     }
   }
+  Rcpp::List input_data = Rcpp::List::create(Rcpp::Named("Response",Response),
+                                             Rcpp::Named("Qs",Qs),
+                                             Rcpp::Named("test_order",test_order),
+                                             Rcpp::Named("Test_versions",Test_versions),
+                                             Rcpp::Named("R",R)
+  );
+  Rcpp::List res = Rcpp::List::create(Rcpp::Named("trajectories",Trajectories),
+                                      Rcpp::Named("r_stars",r_stars),
+                                      Rcpp::Named("pi_stars",pi_stars),
+                                      Rcpp::Named("pis",pis),
+                                      Rcpp::Named("taus",taus),
+                                      
+                                      Rcpp::Named("Model", "rRUM_indept"),
+                                      Rcpp::Named("chain_length", chain_length),
+                                      Rcpp::Named("burn_in", burn_in),
+                                      
+                                      Rcpp::Named("input_data",input_data)
+  );
   
-  return Rcpp::List::create(Rcpp::Named("trajectories",Trajectories),
-                            Rcpp::Named("r_stars",r_stars),
-                            Rcpp::Named("pi_stars",pi_stars),
-                            Rcpp::Named("pis",pis),
-                            Rcpp::Named("taus",taus));
+  
+  res.attr("class") = "hmcdm";
+  return res;
 }
 
 
@@ -2078,12 +2113,26 @@ Rcpp::List Gibbs_NIDA_indept(const arma::cube& Response, const arma::cube& Qs, c
       Rcpp::Rcout<<tt<<std::endl;
     }
   }
-  
-  return Rcpp::List::create(Rcpp::Named("trajectories",Trajectories),
-                            Rcpp::Named("ss",Ss),
-                            Rcpp::Named("gs",Gs),
-                            Rcpp::Named("pis",pis),
-                            Rcpp::Named("taus",taus));
+  Rcpp::List input_data = Rcpp::List::create(Rcpp::Named("Response",Response),
+                                             Rcpp::Named("Qs",Qs),
+                                             Rcpp::Named("test_order",test_order),
+                                             Rcpp::Named("Test_versions",Test_versions),
+                                             Rcpp::Named("R",R)
+  );
+  Rcpp::List res = Rcpp::List::create(Rcpp::Named("trajectories",Trajectories),
+                                      Rcpp::Named("ss",Ss),
+                                      Rcpp::Named("gs",Gs),
+                                      Rcpp::Named("pis",pis),
+                                      Rcpp::Named("taus",taus),
+                                      
+                                      Rcpp::Named("Model", "NIDA_indept"),
+                                      Rcpp::Named("chain_length", chain_length),
+                                      Rcpp::Named("burn_in", burn_in),
+                                      
+                                      Rcpp::Named("input_data",input_data)
+  );
+  res.attr("class") = "hmcdm";
+  return res;
 }
 
 
@@ -2240,14 +2289,17 @@ void parm_update_DINA_FOHM(unsigned int N,unsigned int J,unsigned int K,unsigned
 
 
 // [[Rcpp::export]]
-Rcpp::List Gibbs_DINA_FOHM(const arma::cube& Y,const arma::mat& Q,
-                           unsigned int burnin,unsigned int chain_length){
+Rcpp::List Gibbs_DINA_FOHM(const arma::cube& Response,const arma::cube& Qs,
+                           const arma::mat& test_order, const arma::vec& Test_versions,
+                           const unsigned int chain_length, const unsigned int burn_in){
+  arma::cube Y = resp_miss(Response, test_order, Test_versions);
+  arma::mat Q = Array2Mat(Qs);
   unsigned int N = Y.n_rows;
   unsigned int J = Y.n_cols;
   unsigned int nT = Y.n_slices;
   unsigned int K = Q.n_cols;
   unsigned int C = pow(2,K);
-  unsigned int chain_m_burn = chain_length-burnin;
+  unsigned int chain_m_burn = chain_length-burn_in;
   unsigned int tmburn;
   
   arma::vec vv = bijectionvector(K);
@@ -2277,8 +2329,8 @@ Rcpp::List Gibbs_DINA_FOHM(const arma::cube& Y,const arma::mat& Q,
   for(unsigned int t = 0; t < chain_length; t++){
     parm_update_DINA_FOHM(N,J,K,C,nT,Y,TP,ETA,ss,gs,CLASS,pis,Omega);
     
-    if(t>=burnin){
-      tmburn = t-burnin;
+    if(t>=burn_in){
+      tmburn = t-burn_in;
       //update parameter value via pointer. save classes and PIs
       SS.col(tmburn)       = ss;
       GS.col(tmburn)       = gs;
@@ -2298,12 +2350,25 @@ Rcpp::List Gibbs_DINA_FOHM(const arma::cube& Y,const arma::mat& Q,
     
     
   }
-  return Rcpp::List::create(Rcpp::Named("ss",SS),
-                            Rcpp::Named("gs",GS),
-                            Rcpp::Named("pis",PIs),
-                            Rcpp::Named("omegas",OMEGAS),
-                            Rcpp::Named("trajectories",Trajectories)
+  Rcpp::List input_data = Rcpp::List::create(Rcpp::Named("Response",Response),
+                                             Rcpp::Named("Qs",Qs),
+                                             Rcpp::Named("test_order",test_order),
+                                             Rcpp::Named("Test_versions",Test_versions)
   );
+  Rcpp::List res = Rcpp::List::create(Rcpp::Named("ss",SS),
+                                      Rcpp::Named("gs",GS),
+                                      Rcpp::Named("pis",PIs),
+                                      Rcpp::Named("omegas",OMEGAS),
+                                      Rcpp::Named("trajectories",Trajectories),
+                                      
+                                      Rcpp::Named("Model", "DINA_FOHM"),
+                                      Rcpp::Named("chain_length", chain_length),
+                                      Rcpp::Named("burn_in", burn_in),
+                                      
+                                      Rcpp::Named("input_data",input_data)
+  );
+  res.attr("class") = "hmcdm";
+  return res;
 }
 
 
@@ -2365,7 +2430,6 @@ Rcpp::List MCMC_learning(const arma::cube Y_real_array, const arma::mat Q_matrix
   arma::cube Qs = Mat2Array(Q_matrix, T);
   
   if(model == "DINA_HO"){
-    
     output = Gibbs_DINA_HO(Response, Qs, Rcpp::as<Rcpp::List>(Q_examinee), test_order, Test_versions, theta_propose, Rcpp::as<arma::vec>(deltas_propose),
                            chain_length, burn_in);
   }
@@ -2384,15 +2448,7 @@ Rcpp::List MCMC_learning(const arma::cube Y_real_array, const arma::mat Q_matrix
     output = Gibbs_NIDA_indept(Response, Qs, Rcpp::as<arma::mat>(R), test_order, Test_versions, chain_length, burn_in);
   }
   if(model == "DINA_FOHM"){
-    arma::cube Y_miss = resp_miss(Response, test_order, Test_versions);
-    unsigned int Jt = Qs.n_rows;
-    unsigned int T = Qs.n_slices;
-    unsigned int K = Qs.n_cols;
-    arma::mat Q_mat(Jt*T, K);
-    for(unsigned int t= 0; t<T; t++){
-      Q_mat.rows(Jt*t, (Jt*(t+1)-1)) = Qs.slice(t);
-    }
-    output = Gibbs_DINA_FOHM(Y_miss, Q_mat, burn_in, chain_length);
+    output = Gibbs_DINA_FOHM(Response, Qs, test_order, Test_versions, chain_length, burn_in);
   }
   
   return(output);
