@@ -290,7 +290,7 @@ summary.hmcdm <- function(object, ...){
                 Alphas_est = point_estimates$Alphas_est,
                 taus_EAP = point_estimates$taus_EAP,
                 r_stars_EAP = point_estimates$r_stars_EAP,
-                pi_stars_EPA = point_estimates$pi_stars_EAP,
+                pi_stars_EAP = point_estimates$pi_stars_EAP,
                 thetas_EAP = point_estimates$thetas_EAP,
                 pis_EAP = point_estimates$pis_EAP,
                 lambdas_EAP = point_estimates$lambdas_EAP,

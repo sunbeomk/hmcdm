@@ -67,13 +67,13 @@ head(a$ss_EAP)
 ```{r}
 AAR_vec <- numeric(T)
 for(t in 1:T){
-  AAR_vec[t] <- mean(Alphas[,,t]==point_estimates$Alphas_est[,,t])
+  AAR_vec[t] <- mean(Alphas[,,t]==a$Alphas_est[,,t])
 }
 AAR_vec
 
 PAR_vec <- numeric(T)
 for(t in 1:T){
-  PAR_vec[t] <- mean(rowSums((Alphas[,,t]-point_estimates$Alphas_est[,,t])^2)==0)
+  PAR_vec[t] <- mean(rowSums((Alphas[,,t]-a$Alphas_est[,,t])^2)==0)
 }
 PAR_vec
 ```

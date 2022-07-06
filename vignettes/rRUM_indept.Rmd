@@ -76,7 +76,7 @@ Y_sim = simrRUM(Alphas,r_stars,pi_stars,Q_matrix,test_order,Test_versions_sim)
 ## (2) Run the MCMC to sample parameters from the posterior distribution
 
 ```{r}
-output_rRUM_indept = MCMC_learning(Y_sim,Q_matrix,"rRUM_indept",test_order,Test_versions_sim,1000,200,
+output_rRUM_indept = MCMC_learning(Y_sim,Q_matrix,"rRUM_indept",test_order,Test_versions_sim,100,30,
                                     R = R)
 output_rRUM_indept
 summary(output_rRUM_indept)
@@ -88,7 +88,7 @@ head(a$r_stars_EAP)
 ## (3) Check for parameter estimation accuracy
 
 ```{r}
-(cor_pistars <- cor(as.vector(pi_stars),point_estimates$pi_stars_EAP))
+(cor_pistars <- cor(as.vector(pi_stars),as.vector(a$pi_stars_EAP)))
 (cor_rstars <- cor(as.vector(r_stars*Q_matrix),as.vector(a$r_stars_EAP*Q_matrix)))
 
 AAR_vec <- numeric(T)
