@@ -144,7 +144,6 @@ summary.hmcdm <- function(object, ...){
                                         taus_EAP = point_estimates$taus_EAP,
                                         phis = point_estimates$phis,
                                         tauvar_EAP = point_estimates$tauvar_EAP)
-    item_parameters <- cbind(point_estimates$ss_EAP,point_estimates$gs_EAP); colnames(item_parameters) <- c("Slipping","Guessing")
     res <- list(Model = "DINA_HO_RT_sep",
                 Alphas_est = point_estimates$Alphas_est,
                 ss_EAP = point_estimates$ss_EAP,
@@ -291,9 +290,7 @@ summary.hmcdm <- function(object, ...){
                 taus_EAP = point_estimates$taus_EAP,
                 r_stars_EAP = point_estimates$r_stars_EAP,
                 pi_stars_EAP = point_estimates$pi_stars_EAP,
-                thetas_EAP = point_estimates$thetas_EAP,
                 pis_EAP = point_estimates$pis_EAP,
-                lambdas_EAP = point_estimates$lambdas_EAP,
                 
                 DIC = rRUM_indept_fit$DIC,
                 PPP_total_scores = PPP_total_scores,
@@ -423,12 +420,48 @@ summary.hmcdm <- function(object, ...){
 #' @export
 print.summary.hmcdm <- function(x, ...){
   digits <- max(3, getOption("digits") - 3)
+  
   cat("\nModel:",x$Model,"\n")
+  
+  cat("\nItem Parameters:\n")
+  K <- log(nrow(x$pis_EAP), base=2)
+  if(x$Model != "rRUM_indept"){
+    Item_parameters <- cbind(x$ss_EAP,x$gs_EAP)
+    colnames(Item_parameters) <- c("ss_EAP", "gs_EAP")}
+  if(x$Model == "rRUM_indept"){
+    Item_parameters <- cbind(x$r_stars_EAP, x$pi_stars_EAP)
+    colnames(Item_parameters) <- c(paste0("r_stars",1:K,"_EAP"), "pi_stars_EAP")}
+  rownames(Item_parameters) <- rep("",nrow(Item_parameters))
+  print(head(Item_parameters, 5), digits=digits)
+  if(nrow(Item_parameters)>5){cat("   ...", nrow(Item_parameters)-5, "more items\n")}
+  
+  cat("\nTransition Parameters:\n")
+  if(x$Model=="DINA_HO" || x$Model=="DINA_HO_RT_sep" || x$Model=="DINA_HO_RT_joint"){
+    Transition_parameters <- as.vector(x$lambdas_EAP)
+    Transition_parameters_name <- "lambdas_EAP"
+  }
+  if(x$Model=="NIDA_indept" || x$Model=="rRUM_indept"){
+    Transition_parameters <- as.vector(x$taus_EAP)
+    Transition_parameters_name <- "taus_EAP"
+  }
+  if(x$Model=="DINA_FOHM"){
+    Transition_parameters <- x$omegas_EAP[1,]
+    Transition_parameters_name <- "omegas_EAP"
+  }
+  cat(Transition_parameters_name,"\n",formatC(Transition_parameters, digits=digits),"\n")
+  if(x$Model=="DINA_FOHM"){cat("   ...", length(Transition_parameters)-1, "more rows\n")}
+  
   cat("\nClass Probabilities:\n")
-  print(x$pis_EAP, digits=digits)
-  cat("\nModel Fit Measures:\n")
-  cat("Deviance Information Criterion(DIC):\n")
-  print(x$DIC[3,], digits=digits+3)
+  class_mat <- matrix(NA, nrow=2^K, ncol=K)
+  for(i in 1:(2^K)){class_mat[i,] <- inv_bijectionvector(K, i-1)}
+  class_names <- apply(class_mat, 1, paste, collapse="")
+  rownames(x$pis_EAP) <- class_names
+  colnames(x$pis_EAP) <- "pis_EAP"
+  print(head(x$pis_EAP, 5), digits=digits)
+  if(length(x$pis_EAP)>5){cat("   ...", length(x$pis_EAP)-5, "more classes\n")}
+  
+  cat("\nDeviance Information Criterion (DIC):", x$DIC["DIC","Total"])
+  
   invisible(x)
 }
 

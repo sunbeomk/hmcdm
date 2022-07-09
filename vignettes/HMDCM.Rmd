@@ -64,6 +64,10 @@ summary(output_HMDCM)
 a <- summary(output_HMDCM)
 a$ss_EAP
 a$lambdas_EAP
+a$PPP_total_scores
+a$PPP_item_means
+a$PPP_item_ORs
+
 ```
 
 
