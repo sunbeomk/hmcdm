@@ -2,8 +2,8 @@
 % Please edit documentation in R/hmcdm-package.R
 \docType{package}
 \name{hmcdm-package}
-\alias{hmcdm}
 \alias{hmcdm-package}
+\alias{_PACKAGE}
 \title{hmcdm: Hidden Markov Cognitive Diagnosis Models for Learning}
 \description{
 Functions for fitting hidden Markov models of learning under the cognitive diagnosis framework. This package enables the estimation of the hidden Markov diagnostic classification model, the first order hidden Markov model, the reduced-reparameterized unified learning model, and the joint learning model for responses and response times.

@@ -206,7 +206,7 @@ Rcpp::List parm_update_HO(const unsigned int N, const unsigned int Jt, const uns
 
 // [[Rcpp::export]]
 Rcpp::List Gibbs_DINA_HO(const arma::cube& Response, 
-                         const arma::cube& Qs, const Rcpp::List Q_examinee,
+                         const arma::cube& Qs,
                          const arma::mat& test_order, const arma::vec& Test_versions, 
                          const double theta_propose,const arma::vec deltas_propose,
                          const unsigned int chain_length, const unsigned int burn_in){
@@ -217,7 +217,8 @@ Rcpp::List Gibbs_DINA_HO(const arma::cube& Response,
   unsigned int nClass = pow(2,K);
   unsigned int J = Jt*T;
   
-  
+  arma::mat Q_matrix = Array2Mat(Qs);
+  Rcpp::List Q_examinee = Q_list(Q_matrix, test_order, Test_versions);
   //std::srand(std::time(0));//use current time as seed for random generator
   
   // initialize parameters
@@ -703,7 +704,7 @@ Rcpp::List parm_update_HO_RT_sep(const unsigned int N, const unsigned int Jt, co
 
 // [[Rcpp::export]]
 Rcpp::List Gibbs_DINA_HO_RT_sep(const arma::cube& Response, const arma::cube& Latency,
-                                const arma::cube& Qs, const Rcpp::List Q_examinee,
+                                const arma::cube& Qs, 
                                 const arma::mat& test_order, const arma::vec& Test_versions, int G_version,
                                 const double theta_propose,const arma::vec deltas_propose,
                                 const unsigned int chain_length, const unsigned int burn_in){
@@ -714,7 +715,8 @@ Rcpp::List Gibbs_DINA_HO_RT_sep(const arma::cube& Response, const arma::cube& La
   unsigned int nClass = pow(2,K);
   unsigned int J = Jt*T;
   
-  
+  arma::mat Q_matrix = Array2Mat(Qs);
+  Rcpp::List Q_examinee = Q_list(Q_matrix, test_order, Test_versions);
   //std::srand(std::time(0));//use current time as seed for random generator
   
   // initialize parameters
@@ -1308,7 +1310,7 @@ Rcpp::List parm_update_HO_RT_joint(const unsigned int N, const unsigned int Jt, 
 
 // [[Rcpp::export]]
 Rcpp::List Gibbs_DINA_HO_RT_joint(const arma::cube& Response, const arma::cube& Latency,
-                                  const arma::cube& Qs, const Rcpp::List Q_examinee,
+                                  const arma::cube& Qs, 
                                   const arma::mat& test_order, const arma::vec& Test_versions, int G_version,
                                   const double sig_theta_propose, const arma::vec deltas_propose,
                                   const unsigned int chain_length, const unsigned int burn_in){
@@ -1318,6 +1320,9 @@ Rcpp::List Gibbs_DINA_HO_RT_joint(const arma::cube& Response, const arma::cube& 
   unsigned int Jt = Qs.n_rows;
   unsigned int nClass = pow(2,K);
   unsigned int J = Jt*T;
+  
+  arma::mat Q_matrix = Array2Mat(Qs);
+  Rcpp::List Q_examinee = Q_list(Q_matrix, test_order, Test_versions);
   
   // initialize parameters
   arma::vec lambdas_init(3);
@@ -2390,7 +2395,6 @@ Rcpp::List Gibbs_DINA_FOHM(const arma::cube& Response,const arma::cube& Qs,
 //' @param Test_versions A \code{vector} of the test version of each learner.
 //' @param chain_length An \code{int} of the MCMC chain length.
 //' @param burn_in An \code{int} of the MCMC burn-in chain length.
-//' @param Q_examinee Optional. A \code{list} of the Q matrix for each learner. i-th element is a J-by-K Q-matrix for all items learner i was administered.
 //' @param Latency_array Optional. A \code{array} of the response times. t-th slice is an N-by-J matrix of response times at time t.
 //' @param G_version Optional. An \code{int} of the type of covariate for increased fluency (1: G is dichotomous depending on whether all skills required for
 //' current item are mastered; 2: G cumulates practice effect on previous items using mastered skills; 3: G is a time block effect invariant across 
@@ -2402,14 +2406,13 @@ Rcpp::List Gibbs_DINA_FOHM(const arma::cube& Response,const arma::cube& Qs,
 //' @author Susu Zhang
 //' @examples
 //' \donttest{
-//' output_FOHM = MCMC_learning(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
+//' output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
 //' }
 //' @export
 // [[Rcpp::export]]
-Rcpp::List MCMC_learning(const arma::cube Y_real_array, const arma::mat Q_matrix, 
+Rcpp::List hmcdm(const arma::cube Y_real_array, const arma::mat Q_matrix, 
                          const std::string model, const arma::mat& test_order, const arma::vec& Test_versions,
                          const unsigned int chain_length, const unsigned int burn_in,
-                         const Rcpp::Nullable<Rcpp::List> Q_examinee=R_NilValue,
                          const int G_version = NA_INTEGER,
                          const double theta_propose = 0., 
                          const Rcpp::Nullable<arma::cube> Latency_array = R_NilValue,
@@ -2425,20 +2428,19 @@ Rcpp::List MCMC_learning(const arma::cube Y_real_array, const arma::mat Q_matrix
     arma::cube Latency_temp = Rcpp::as<arma::cube>(Latency_array);
     Latency = Sparse2Dense(Latency_temp, test_order, Test_versions);
   }
-
   arma::cube Response = Sparse2Dense(Y_real_array, test_order, Test_versions);
   arma::cube Qs = Mat2Array(Q_matrix, T);
   
   if(model == "DINA_HO"){
-    output = Gibbs_DINA_HO(Response, Qs, Rcpp::as<Rcpp::List>(Q_examinee), test_order, Test_versions, theta_propose, Rcpp::as<arma::vec>(deltas_propose),
+    output = Gibbs_DINA_HO(Response, Qs, test_order, Test_versions, theta_propose, Rcpp::as<arma::vec>(deltas_propose),
                            chain_length, burn_in);
   }
   if(model == "DINA_HO_RT_joint"){
-    output = Gibbs_DINA_HO_RT_joint(Response, Latency, Qs, Rcpp::as<Rcpp::List>(Q_examinee), test_order, Test_versions, G_version,
+    output = Gibbs_DINA_HO_RT_joint(Response, Latency, Qs, test_order, Test_versions, G_version,
                                     theta_propose, Rcpp::as<arma::vec>(deltas_propose), chain_length, burn_in);
   }
   if(model == "DINA_HO_RT_sep"){
-    output = Gibbs_DINA_HO_RT_sep(Response, Latency, Qs, Rcpp::as<Rcpp::List>(Q_examinee), test_order, Test_versions, G_version,
+    output = Gibbs_DINA_HO_RT_sep(Response, Latency, Qs, test_order, Test_versions, G_version,
                                   theta_propose, Rcpp::as<arma::vec>(deltas_propose), chain_length, burn_in);
   }
   if(model == "rRUM_indept"){

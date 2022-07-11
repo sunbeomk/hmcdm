@@ -38,6 +38,7 @@ ETAs <- ETAmat(K, J, Q_matrix)
 ## (1) Simulate responses and response times based on the HMDCM model with response times (no covariance between speed and learning ability)
 
 ```{r}
+Q_examinee <- Q_list(Q_matrix, test_order, Test_versions)
 class_0 <- sample(1:2^K, N, replace = T)
 Alphas_0 <- matrix(0,N,K)
 for(i in 1:N){
@@ -64,8 +65,8 @@ L_sim <- sim_RT(Alphas,RT_itempars_true,Q_matrix,taus_true,phi_true,ETAs,G_versi
 ## (2) Run the MCMC to sample parameters from the posterior distribution
 
 ```{r}
-output_HMDCM_RT_sep = MCMC_learning(Y_sim,Q_matrix,"DINA_HO_RT_sep",test_order,Test_versions,100,30,
-                                     Q_examinee = Q_examinee,Latency_array = L_sim, G_version = G_version,
+output_HMDCM_RT_sep = hmcdm(Y_sim,Q_matrix,"DINA_HO_RT_sep",test_order,Test_versions,100,30,
+                                     Latency_array = L_sim, G_version = G_version,
                                      theta_propose = 2,deltas_propose = c(.45,.35,.25,.06))
 output_HMDCM_RT_sep
 summary(output_HMDCM_RT_sep)

@@ -55,7 +55,7 @@ Y_sim <- simDINA(Alphas,itempars_true,ETAs,test_order,Test_versions)
 ## (2) Run the MCMC to sample parameters from the posterior distribution
 
 ```{r}
-output_FOHM = MCMC_learning(Y_sim,Q_matrix,"DINA_FOHM",test_order,Test_versions,1000,500)
+output_FOHM = hmcdm(Y_sim,Q_matrix,"DINA_FOHM",test_order,Test_versions,1000,500)
 output_FOHM
 summary(output_FOHM)
 a <- summary(output_FOHM)

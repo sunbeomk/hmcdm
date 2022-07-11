@@ -38,6 +38,7 @@ ETAs <- ETAmat(K, J, Q_matrix)
 ## (1) Simulate responses based on the HMDCM model
 
 ```{r}
+Q_examinee <- Q_list(Q_matrix, test_order, Test_versions)
 class_0 <- sample(1:2^K, N, replace = T)
 Alphas_0 <- matrix(0,N,K)
 thetas_true = rnorm(N)
@@ -55,8 +56,8 @@ Y_sim <- simDINA(Alphas,itempars_true,ETAs,test_order,Test_versions)
 ## (2) Run the MCMC to sample parameters from the posterior distribution
 
 ```{r}
-output_HMDCM = MCMC_learning(Y_sim,Q_matrix,"DINA_HO",test_order,Test_versions,100,30,
-                             Q_examinee = Q_examinee,theta_propose = 2,deltas_propose = c(.45,.35,.25,.06))
+output_HMDCM = hmcdm(Y_sim,Q_matrix,"DINA_HO",test_order,Test_versions,100,30,
+                             theta_propose = 2,deltas_propose = c(.45,.35,.25,.06))
 
 output_HMDCM
 

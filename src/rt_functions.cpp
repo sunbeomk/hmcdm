@@ -94,6 +94,7 @@ arma::vec G2vec_efficient(const arma::cube& ETA, const arma::cube& J_incidence, 
 //'   Alphas_0[i,] <- inv_bijectionvector(K,(class_0[i]-1))
 //' }
 //' lambdas_true <- c(-2, .4, .055)     
+//' Q_examinee <- Q_list(Q_matrix, test_order, Test_versions)
 //' Alphas <- simulate_alphas_HO_joint(lambdas_true,thetas_true,Alphas_0,Q_examinee,T,Jt)
 //' RT_itempars_true <- array(NA, dim = c(Jt,2,T))
 //' RT_itempars_true[,2,] <- rnorm(Jt*T,3.45,.5)

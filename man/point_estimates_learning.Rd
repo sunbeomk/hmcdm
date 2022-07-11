@@ -7,7 +7,7 @@
 point_estimates_learning(output, model, N, Jt, K, T, alpha_EAP = TRUE)
 }
 \arguments{
-\item{output}{A \code{list} of MCMC outputs, obtained from the MCMC_learning function}
+\item{output}{A \code{list} of MCMC outputs, obtained from the hmcdm function}
 
 \item{model}{A \code{charactor} of the type of model fitted with the MCMC sampler, possible selections are
 "DINA_HO": Higher-Order Hidden Markov Diagnostic Classification Model with DINA responses;
@@ -43,7 +43,7 @@ J = nrow(Q_matrix)
 K = ncol(Q_matrix)
 T = nrow(test_order)
 Jt = J/T
-output_FOHM = MCMC_learning(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
+output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
 point_estimates = point_estimates_learning(output_FOHM,"DINA_FOHM",N,Jt,K,T,alpha_EAP = T)
 }
 }

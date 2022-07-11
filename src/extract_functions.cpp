@@ -15,7 +15,7 @@
 //' @title Obtain learning model point estimates
 //' @description Obtain EAPs of continuous parameters and EAP or MAP of the attribute trajectory estimates under
 //' the CDM learning models based on the MCMC output
-//' @param output A \code{list} of MCMC outputs, obtained from the MCMC_learning function
+//' @param output A \code{list} of MCMC outputs, obtained from the hmcdm function
 //' @param model A \code{charactor} of the type of model fitted with the MCMC sampler, possible selections are 
 //' "DINA_HO": Higher-Order Hidden Markov Diagnostic Classification Model with DINA responses;
 //' "DINA_HO_RT_joint": Higher-Order Hidden Markov DCM with DINA responses, log-Normal response times, and joint modeling of latent
@@ -39,7 +39,7 @@
 //' K = ncol(Q_matrix)
 //' T = nrow(test_order)
 //' Jt = J/T
-//' output_FOHM = MCMC_learning(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
+//' output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
 //' point_estimates = point_estimates_learning(output_FOHM,"DINA_FOHM",N,Jt,K,T,alpha_EAP = T)
 //' }
 //' @export
@@ -253,7 +253,7 @@ Rcpp::List point_estimates_learning(const Rcpp::List output, const std::string m
 //' @title Model fit statistics of learning models
 //' @description Obtain joint model's deviance information criteria (DIC) and posterior predictive item means, item response time means, 
 //' item odds ratios, subject total scores at each time point, and subject total response times at each time point.
-//' @param output A \code{list} of MCMC outputs, obtained from the MCMC_learning function
+//' @param output A \code{list} of MCMC outputs, obtained from the hmcdm function
 //' @param model A \code{charactor} of the type of model fitted with the MCMC sampler, possible selections are 
 //' "DINA_HO": Higher-Order Hidden Markov Diagnostic Classification Model with DINA responses;
 //' "DINA_HO_RT_joint": Higher-Order Hidden Markov DCM with DINA responses, log-Normal response times, and joint modeling of latent
@@ -279,7 +279,7 @@ Rcpp::List point_estimates_learning(const Rcpp::List output, const std::string m
 //' empirical data.
 //' @examples
 //' \donttest{
-//' output_FOHM = MCMC_learning(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
+//' output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
 //' FOHM_fit <- Learning_fit(output_FOHM,"DINA_FOHM",Y_real_array,Q_matrix,test_order,Test_versions)
 //' }
 //' @export

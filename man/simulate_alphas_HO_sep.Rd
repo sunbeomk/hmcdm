@@ -42,5 +42,6 @@ for(i in 1:N){
   Alphas_0[i,] <- inv_bijectionvector(K,(class_0[i]-1))
 }
 lambdas_true = c(-1, 1.8, .277, .055)
+Q_examinee <- Q_list(Q_matrix, test_order, Test_versions)
 Alphas <- simulate_alphas_HO_sep(lambdas_true,thetas_true,Alphas_0,Q_examinee,T,Jt)
 }

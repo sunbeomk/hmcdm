@@ -138,10 +138,25 @@ Array2Mat <- function(r_stars) {
     .Call(`_hmcdm_Array2Mat`, r_stars)
 }
 
+#' @title Generate a list of Q-matrices for each examinee.
+#' @description Generate a list of length N. Each element of the list is a JxK Q_matrix of all items
+#' administered across all time points to the examinee, in the order of administration.
+#' @param Q_matrix A J-by-K matrix, indicating the item-skill relationship.
+#' @param test_order A TxT matrix, each row is the order of item blocks for that test version.
+#' @param Test_versions A vector of length N, containing each subject's test version.
+#' @return A list of length N. Each element of the list is a JxK matrix.
+#' @examples 
+#' \donttest{
+#' Q_examinee = Q_list(Q_matrix, test_order, Test_versions)}
+#' @export
+Q_list <- function(Q_matrix, test_order, Test_versions) {
+    .Call(`_hmcdm_Q_list`, Q_matrix, test_order, Test_versions)
+}
+
 #' @title Obtain learning model point estimates
 #' @description Obtain EAPs of continuous parameters and EAP or MAP of the attribute trajectory estimates under
 #' the CDM learning models based on the MCMC output
-#' @param output A \code{list} of MCMC outputs, obtained from the MCMC_learning function
+#' @param output A \code{list} of MCMC outputs, obtained from the hmcdm function
 #' @param model A \code{charactor} of the type of model fitted with the MCMC sampler, possible selections are 
 #' "DINA_HO": Higher-Order Hidden Markov Diagnostic Classification Model with DINA responses;
 #' "DINA_HO_RT_joint": Higher-Order Hidden Markov DCM with DINA responses, log-Normal response times, and joint modeling of latent
@@ -165,7 +180,7 @@ Array2Mat <- function(r_stars) {
 #' K = ncol(Q_matrix)
 #' T = nrow(test_order)
 #' Jt = J/T
-#' output_FOHM = MCMC_learning(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
+#' output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
 #' point_estimates = point_estimates_learning(output_FOHM,"DINA_FOHM",N,Jt,K,T,alpha_EAP = T)
 #' }
 #' @export
@@ -176,7 +191,7 @@ point_estimates_learning <- function(output, model, N, Jt, K, T, alpha_EAP = TRU
 #' @title Model fit statistics of learning models
 #' @description Obtain joint model's deviance information criteria (DIC) and posterior predictive item means, item response time means, 
 #' item odds ratios, subject total scores at each time point, and subject total response times at each time point.
-#' @param output A \code{list} of MCMC outputs, obtained from the MCMC_learning function
+#' @param output A \code{list} of MCMC outputs, obtained from the hmcdm function
 #' @param model A \code{charactor} of the type of model fitted with the MCMC sampler, possible selections are 
 #' "DINA_HO": Higher-Order Hidden Markov Diagnostic Classification Model with DINA responses;
 #' "DINA_HO_RT_joint": Higher-Order Hidden Markov DCM with DINA responses, log-Normal response times, and joint modeling of latent
@@ -202,7 +217,7 @@ point_estimates_learning <- function(output, model, N, Jt, K, T, alpha_EAP = TRU
 #' empirical data.
 #' @examples
 #' \donttest{
-#' output_FOHM = MCMC_learning(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
+#' output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
 #' FOHM_fit <- Learning_fit(output_FOHM,"DINA_FOHM",Y_real_array,Q_matrix,test_order,Test_versions)
 #' }
 #' @export
@@ -214,24 +229,24 @@ parm_update_HO <- function(N, Jt, K, T, alphas, pi, lambdas, thetas, response, i
     .Call(`_hmcdm_parm_update_HO`, N, Jt, K, T, alphas, pi, lambdas, thetas, response, itempars, Qs, Q_examinee, test_order, Test_versions, theta_propose, deltas_propose)
 }
 
-Gibbs_DINA_HO <- function(Response, Qs, Q_examinee, test_order, Test_versions, theta_propose, deltas_propose, chain_length, burn_in) {
-    .Call(`_hmcdm_Gibbs_DINA_HO`, Response, Qs, Q_examinee, test_order, Test_versions, theta_propose, deltas_propose, chain_length, burn_in)
+Gibbs_DINA_HO <- function(Response, Qs, test_order, Test_versions, theta_propose, deltas_propose, chain_length, burn_in) {
+    .Call(`_hmcdm_Gibbs_DINA_HO`, Response, Qs, test_order, Test_versions, theta_propose, deltas_propose, chain_length, burn_in)
 }
 
 parm_update_HO_RT_sep <- function(N, Jt, K, T, alphas, pi, lambdas, thetas, latency, RT_itempars, taus, phi_vec, tauvar, response, itempars, Qs, Q_examinee, test_order, Test_versions, G_version, theta_propose, a_sigma_tau0, rate_sigma_tau0, deltas_propose, a_alpha0, rate_alpha0) {
     .Call(`_hmcdm_parm_update_HO_RT_sep`, N, Jt, K, T, alphas, pi, lambdas, thetas, latency, RT_itempars, taus, phi_vec, tauvar, response, itempars, Qs, Q_examinee, test_order, Test_versions, G_version, theta_propose, a_sigma_tau0, rate_sigma_tau0, deltas_propose, a_alpha0, rate_alpha0)
 }
 
-Gibbs_DINA_HO_RT_sep <- function(Response, Latency, Qs, Q_examinee, test_order, Test_versions, G_version, theta_propose, deltas_propose, chain_length, burn_in) {
-    .Call(`_hmcdm_Gibbs_DINA_HO_RT_sep`, Response, Latency, Qs, Q_examinee, test_order, Test_versions, G_version, theta_propose, deltas_propose, chain_length, burn_in)
+Gibbs_DINA_HO_RT_sep <- function(Response, Latency, Qs, test_order, Test_versions, G_version, theta_propose, deltas_propose, chain_length, burn_in) {
+    .Call(`_hmcdm_Gibbs_DINA_HO_RT_sep`, Response, Latency, Qs, test_order, Test_versions, G_version, theta_propose, deltas_propose, chain_length, burn_in)
 }
 
 parm_update_HO_RT_joint <- function(N, Jt, K, T, alphas, pi, lambdas, thetas, latency, RT_itempars, taus, phi_vec, Sig, response, itempars, Qs, Q_examinee, test_order, Test_versions, G_version, sig_theta_propose, S, p, deltas_propose, a_alpha0, rate_alpha0) {
     .Call(`_hmcdm_parm_update_HO_RT_joint`, N, Jt, K, T, alphas, pi, lambdas, thetas, latency, RT_itempars, taus, phi_vec, Sig, response, itempars, Qs, Q_examinee, test_order, Test_versions, G_version, sig_theta_propose, S, p, deltas_propose, a_alpha0, rate_alpha0)
 }
 
-Gibbs_DINA_HO_RT_joint <- function(Response, Latency, Qs, Q_examinee, test_order, Test_versions, G_version, sig_theta_propose, deltas_propose, chain_length, burn_in) {
-    .Call(`_hmcdm_Gibbs_DINA_HO_RT_joint`, Response, Latency, Qs, Q_examinee, test_order, Test_versions, G_version, sig_theta_propose, deltas_propose, chain_length, burn_in)
+Gibbs_DINA_HO_RT_joint <- function(Response, Latency, Qs, test_order, Test_versions, G_version, sig_theta_propose, deltas_propose, chain_length, burn_in) {
+    .Call(`_hmcdm_Gibbs_DINA_HO_RT_joint`, Response, Latency, Qs, test_order, Test_versions, G_version, sig_theta_propose, deltas_propose, chain_length, burn_in)
 }
 
 parm_update_rRUM <- function(N, Jt, K, T, alphas, pi, taus, R, r_stars, pi_stars, Qs, responses, X_ijk, Smats, Gmats, test_order, Test_versions, dirich_prior) {
@@ -275,7 +290,6 @@ Gibbs_DINA_FOHM <- function(Response, Qs, test_order, Test_versions, chain_lengt
 #' @param Test_versions A \code{vector} of the test version of each learner.
 #' @param chain_length An \code{int} of the MCMC chain length.
 #' @param burn_in An \code{int} of the MCMC burn-in chain length.
-#' @param Q_examinee Optional. A \code{list} of the Q matrix for each learner. i-th element is a J-by-K Q-matrix for all items learner i was administered.
 #' @param Latency_array Optional. A \code{array} of the response times. t-th slice is an N-by-J matrix of response times at time t.
 #' @param G_version Optional. An \code{int} of the type of covariate for increased fluency (1: G is dichotomous depending on whether all skills required for
 #' current item are mastered; 2: G cumulates practice effect on previous items using mastered skills; 3: G is a time block effect invariant across 
@@ -287,11 +301,11 @@ Gibbs_DINA_FOHM <- function(Response, Qs, test_order, Test_versions, chain_lengt
 #' @author Susu Zhang
 #' @examples
 #' \donttest{
-#' output_FOHM = MCMC_learning(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
+#' output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
 #' }
 #' @export
-MCMC_learning <- function(Y_real_array, Q_matrix, model, test_order, Test_versions, chain_length, burn_in, Q_examinee = NULL, G_version = NA_integer_, theta_propose = 0., Latency_array = NULL, deltas_propose = NULL, R = NULL) {
-    .Call(`_hmcdm_MCMC_learning`, Y_real_array, Q_matrix, model, test_order, Test_versions, chain_length, burn_in, Q_examinee, G_version, theta_propose, Latency_array, deltas_propose, R)
+hmcdm <- function(Y_real_array, Q_matrix, model, test_order, Test_versions, chain_length, burn_in, G_version = NA_integer_, theta_propose = 0., Latency_array = NULL, deltas_propose = NULL, R = NULL) {
+    .Call(`_hmcdm_hmcdm`, Y_real_array, Q_matrix, model, test_order, Test_versions, chain_length, burn_in, G_version, theta_propose, Latency_array, deltas_propose, R)
 }
 
 #' @title Simulate DINA model responses (single vector)
@@ -347,7 +361,8 @@ sim_resp_DINA <- function(J, K, ETA, Svec, Gvec, alpha) {
 #' for(i in 1:N){
 #'   Alphas_0[i,] <- inv_bijectionvector(K,(class_0[i]-1))
 #' }
-#' lambdas_true <- c(-2, .4, .055)     
+#' lambdas_true <- c(-2, .4, .055)
+#' Q_examinee <- Q_list(Q_matrix, test_order, Test_versions)     
 #' Alphas <- simulate_alphas_HO_joint(lambdas_true,thetas_true,Alphas_0,Q_examinee,T,Jt)
 #' Y_sim <- simDINA(Alphas,itempars_true,ETAs,test_order,Test_versions)
 #' @export
@@ -550,6 +565,7 @@ G2vec_efficient <- function(ETA, J_incidence, alphas_i, test_version_i, test_ord
 #'   Alphas_0[i,] <- inv_bijectionvector(K,(class_0[i]-1))
 #' }
 #' lambdas_true <- c(-2, .4, .055)     
+#' Q_examinee <- Q_list(Q_matrix, test_order, Test_versions)
 #' Alphas <- simulate_alphas_HO_joint(lambdas_true,thetas_true,Alphas_0,Q_examinee,T,Jt)
 #' RT_itempars_true <- array(NA, dim = c(Jt,2,T))
 #' RT_itempars_true[,2,] <- rnorm(Jt*T,3.45,.5)
@@ -592,6 +608,7 @@ dLit <- function(G_it, L_it, RT_itempars_it, tau_i, phi) {
 #'   Alphas_0[i,] <- inv_bijectionvector(K,(class_0[i]-1))
 #' }
 #' lambdas_true = c(-1, 1.8, .277, .055)
+#' Q_examinee <- Q_list(Q_matrix, test_order, Test_versions)
 #' Alphas <- simulate_alphas_HO_sep(lambdas_true,thetas_true,Alphas_0,Q_examinee,T,Jt)
 #' @export
 simulate_alphas_HO_sep <- function(lambdas, thetas, alpha0s, Q_examinee, T, Jt) {
@@ -631,6 +648,7 @@ pTran_HO_sep <- function(alpha_prev, alpha_post, lambdas, theta_i, Q_i, Jt, t) {
 #'   Alphas_0[i,] <- inv_bijectionvector(K,(class_0[i]-1))
 #' }
 #' lambdas_true <- c(-2, .4, .055)     
+#' Q_examinee <- Q_list(Q_matrix, test_order, Test_versions)
 #' Alphas <- simulate_alphas_HO_joint(lambdas_true,thetas_true,Alphas_0,Q_examinee,T,Jt)
 #' @export
 simulate_alphas_HO_joint <- function(lambdas, thetas, alpha0s, Q_examinee, T, Jt) {

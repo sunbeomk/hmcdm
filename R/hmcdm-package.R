@@ -1,4 +1,5 @@
 #' @useDynLib hmcdm, .registration = TRUE
+#' @aliases hmcdm-package
 #' @importFrom Rcpp evalCpp
 #' @importFrom stats ecdf
 #' @importFrom utils head

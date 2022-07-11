@@ -18,17 +18,6 @@
 "Q_matrix"
 
 
-#' List of Q-matrices for each examinee.
-#' 
-#' This data set contains the Q matrices for each subject in the Spatial Rotation Learning Program.
-#' @format A list of length 350. Each element of the list is a 50x4 matrix, containing the Q matrix of all items 
-#' administered across all time points to the examinee, in the order of administration.
-#' @source Spatial Rotation Learning Experiment at UIUC between Fall 2015 and Spring 2016.
-#' @author Shiyu Wang, Yan Yang, Jeff Douglas, and Steve Culpepper
-"Q_examinee"
-
-
-
 #' Subjects' test version
 #' 
 #' This data set contains each subject's test version in the Spatial Rotation Learning Program.
@@ -58,13 +47,4 @@
 #' @source Spatial Rotation Learning Experiment at UIUC between Fall 2015 and Spring 2016.
 #' @author Shiyu Wang, Yan Yang, Jeff Douglas, and Steve Culpepper
 'test_order'
-
-
-#' Test design array
-#' 
-#' This data set contains the design matrix indicating the items exposed to the subjects at each time point.
-#' @format An N-by-J-by-T array.
-#' @source Spatial Rotation Learning Experiment at UIUC between Fall 2015 and Spring 2016.
-#' @author Shiyu Wang, Yan Yang, Jeff Douglas, and Steve Culpepper
-'Design_array'
 

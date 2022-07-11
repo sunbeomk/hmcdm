@@ -396,3 +396,35 @@ arma::mat Array2Mat(const arma::cube r_stars){
   return r_stars_mat;
 }
 
+
+//' @title Generate a list of Q-matrices for each examinee.
+//' @description Generate a list of length N. Each element of the list is a JxK Q_matrix of all items
+//' administered across all time points to the examinee, in the order of administration.
+//' @param Q_matrix A J-by-K matrix, indicating the item-skill relationship.
+//' @param test_order A TxT matrix, each row is the order of item blocks for that test version.
+//' @param Test_versions A vector of length N, containing each subject's test version.
+//' @return A list of length N. Each element of the list is a JxK matrix.
+//' @examples 
+//' \donttest{
+//' Q_examinee = Q_list(Q_matrix, test_order, Test_versions)}
+//' @export
+// [[Rcpp::export]]
+Rcpp::List Q_list(const arma::mat Q_matrix, const arma::mat test_order, const arma::vec Test_versions){
+  unsigned int N = Test_versions.n_elem;
+  unsigned int J = Q_matrix.n_rows;
+  unsigned int K = Q_matrix.n_cols;
+  unsigned int T = test_order.n_cols;
+  unsigned int Jt = J/T;
+  
+  Rcpp::List Q_examinee(N);
+  for(unsigned int i=0; i<N; i++){
+    arma::mat Q_mat(J, K);
+    arma::vec test_order_i = test_order.col(Test_versions(i)-1);
+    for(unsigned int t=0; t<T; t++){
+      Q_mat.submat(t*Jt,0,(t+1)*Jt-1,K-1) = Q_matrix.submat((test_order_i(t)-1)*Jt,0,test_order_i(t)*Jt-1,K-1);
+    }
+    Q_examinee[i] = Q_mat;
+  }
+  return Q_examinee;
+}
+

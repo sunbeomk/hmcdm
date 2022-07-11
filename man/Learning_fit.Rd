@@ -18,7 +18,7 @@ Learning_fit(
 )
 }
 \arguments{
-\item{output}{A \code{list} of MCMC outputs, obtained from the MCMC_learning function}
+\item{output}{A \code{list} of MCMC outputs, obtained from the hmcdm function}
 
 \item{model}{A \code{charactor} of the type of model fitted with the MCMC sampler, possible selections are
 "DINA_HO": Higher-Order Hidden Markov Diagnostic Classification Model with DINA responses;
@@ -60,7 +60,7 @@ item odds ratios, subject total scores at each time point, and subject total res
 }
 \examples{
 \donttest{
-output_FOHM = MCMC_learning(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
+output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
 FOHM_fit <- Learning_fit(output_FOHM,"DINA_FOHM",Y_real_array,Q_matrix,test_order,Test_versions)
 }
 }
