@@ -27,7 +27,7 @@ summary.hmcdm <- function(object, ...){
   J <- Jt*T
   # DINA_HO
   if(object$Model == "DINA_HO"){
-    Y_sim <- Dense2Sparse(object$input_data$Response, object$input_data$test_order, object$input_data$Test_versions)
+    Y_sim <- Dense2Sparse(object$input_data$Response, object$input_data$Test_order, object$input_data$Test_versions)
     Q_matrix <- object$input_data$Qs[,,1]
     if(T > 1){
       for(i in 2:T){
@@ -36,9 +36,9 @@ summary.hmcdm <- function(object, ...){
     }
     point_estimates <- point_estimates_learning(object,"DINA_HO",N,Jt,K,T,alpha_EAP = F)
     HMDCM_fit <- Learning_fit(object, "DINA_HO", Y_sim,Q_matrix, 
-                              object$input_data$test_order, object$input_data$Test_versions, object$input_data$Q_examinee)
+                              object$input_data$Test_order, object$input_data$Test_versions, object$input_data$Q_examinee)
     PPP_total_scores <- matrix(NA,N,T)
-    Y_sim_array <- Sparse2Dense(Y_sim, object$input_data$test_order, object$input_data$Test_versions)
+    Y_sim_array <- Sparse2Dense(Y_sim, object$input_data$Test_order, object$input_data$Test_versions)
     for(i in 1:N){
       for(t in 1:T){
         f <- stats::ecdf(HMDCM_fit$PPs$total_score_PP[i,t,])
@@ -52,7 +52,7 @@ summary.hmcdm <- function(object, ...){
     for(i in 1:N){
       test_i <- object$input_data$Test_versions[i]
       for(t in 1:T){
-        t_i = object$input_data$test_order[test_i,t]
+        t_i = object$input_data$Test_order[test_i,t]
         Y_sim_collapsed[i,(Jt*(t_i-1)+1):(Jt*t_i)] <- Y_sim_array[i,,t]
       }
     }
@@ -85,8 +85,8 @@ summary.hmcdm <- function(object, ...){
   
   # DINA_HO_RT_sep
   if(object$Model == "DINA_HO_RT_sep"){
-    Y_sim <- Dense2Sparse(object$input_data$Response, object$input_data$test_order, object$input_data$Test_versions)
-    L_sim <- Dense2Sparse(object$input_data$Latency, object$input_data$test_order, object$input_data$Test_versions)
+    Y_sim <- Dense2Sparse(object$input_data$Response, object$input_data$Test_order, object$input_data$Test_versions)
+    L_sim <- Dense2Sparse(object$input_data$Latency, object$input_data$Test_order, object$input_data$Test_versions)
     Q_matrix <- object$input_data$Qs[,,1]
     if(T > 1){
       for(i in 2:T){
@@ -95,12 +95,12 @@ summary.hmcdm <- function(object, ...){
     }
     point_estimates <- point_estimates_learning(object,"DINA_HO_RT_sep",N,Jt,K,T,alpha_EAP = F)
     HO_RT_sep_fit <- Learning_fit(object,"DINA_HO_RT_sep",Y_sim,Q_matrix,
-                              object$input_data$test_order,object$input_data$Test_versions,
+                              object$input_data$Test_order,object$input_data$Test_versions,
                               Q_examinee=object$input_data$Q_examinee,
                               Latency_array = object$input_data$Latency, G_version = object$input_data$G_version)
     PPP_total_scores <- PPP_total_RTs <- matrix(NA,N,T)
-    Y_sim_array <- Sparse2Dense(Y_sim, object$input_data$test_order, object$input_data$Test_versions)
-    L_sim_array <- Sparse2Dense(L_sim, object$input_data$test_order, object$input_data$Test_versions)
+    Y_sim_array <- Sparse2Dense(Y_sim, object$input_data$Test_order, object$input_data$Test_versions)
+    L_sim_array <- Sparse2Dense(L_sim, object$input_data$Test_order, object$input_data$Test_versions)
     for(i in 1:N){
       for(t in 1:T){
         f1 <- ecdf(HO_RT_sep_fit$PPs$total_score_PP[i,t,])
@@ -118,7 +118,7 @@ summary.hmcdm <- function(object, ...){
     for(i in 1:N){
       test_i <- object$input_data$Test_versions[i]
       for(t in 1:T){
-        t_i = object$input_data$test_order[test_i,t]
+        t_i = object$input_data$Test_order[test_i,t]
         Y_sim_collapsed[i,(Jt*(t_i-1)+1):(Jt*t_i)] <- Y_sim_array[i,,t]
         L_sim_collapsed[i,(Jt*(t_i-1)+1):(Jt*t_i)] <- L_sim_array[i,,t]
       }
@@ -164,8 +164,8 @@ summary.hmcdm <- function(object, ...){
   
   # DINA_HO_RT_joint
   if(object$Model=="DINA_HO_RT_joint"){
-    Y_sim <- Dense2Sparse(object$input_data$Response, object$input_data$test_order, object$input_data$Test_versions)
-    L_sim <- Dense2Sparse(object$input_data$Latency, object$input_data$test_order, object$input_data$Test_versions)
+    Y_sim <- Dense2Sparse(object$input_data$Response, object$input_data$Test_order, object$input_data$Test_versions)
+    L_sim <- Dense2Sparse(object$input_data$Latency, object$input_data$Test_order, object$input_data$Test_versions)
     Q_matrix <- object$input_data$Qs[,,1]
     if(T > 1){
       for(i in 2:T){
@@ -174,12 +174,12 @@ summary.hmcdm <- function(object, ...){
     }
     point_estimates <- point_estimates_learning(object,"DINA_HO_RT_joint",N,Jt,K,T,alpha_EAP = F)
     HO_RT_joint_fit <- Learning_fit(object,"DINA_HO_RT_joint",Y_sim,Q_matrix,
-                                  object$input_data$test_order,object$input_data$Test_versions,
+                                  object$input_data$Test_order,object$input_data$Test_versions,
                                   Q_examinee=object$input_data$Q_examinee,
                                   Latency_array = object$input_data$Latency, G_version = object$input_data$G_version)
     PPP_total_scores <- PPP_total_RTs <- matrix(NA,N,T)
-    Y_sim_array <- Sparse2Dense(Y_sim, object$input_data$test_order, object$input_data$Test_versions)
-    L_sim_array <- Sparse2Dense(L_sim, object$input_data$test_order, object$input_data$Test_versions)
+    Y_sim_array <- Sparse2Dense(Y_sim, object$input_data$Test_order, object$input_data$Test_versions)
+    L_sim_array <- Sparse2Dense(L_sim, object$input_data$Test_order, object$input_data$Test_versions)
     for(i in 1:N){
       for(t in 1:T){
         f1 <- ecdf(HO_RT_joint_fit$PPs$total_score_PP[i,t,])
@@ -197,7 +197,7 @@ summary.hmcdm <- function(object, ...){
     for(i in 1:N){
       test_i <- object$input_data$Test_versions[i]
       for(t in 1:T){
-        t_i = object$input_data$test_order[test_i,t]
+        t_i = object$input_data$Test_order[test_i,t]
         Y_sim_collapsed[i,(Jt*(t_i-1)+1):(Jt*t_i)] <- Y_sim_array[i,,t]
         L_sim_collapsed[i,(Jt*(t_i-1)+1):(Jt*t_i)] <- L_sim_array[i,,t]
       }
@@ -243,7 +243,7 @@ summary.hmcdm <- function(object, ...){
   
   # rRUM_indept
   if(object$Model=="rRUM_indept"){
-    Y_sim <- Dense2Sparse(object$input_data$Response, object$input_data$test_order, object$input_data$Test_versions)
+    Y_sim <- Dense2Sparse(object$input_data$Response, object$input_data$Test_order, object$input_data$Test_versions)
     Q_matrix <- object$input_data$Qs[,,1]
     if(T > 1){
       for(i in 2:T){
@@ -252,10 +252,10 @@ summary.hmcdm <- function(object, ...){
     }
     point_estimates = point_estimates_learning(object,"rRUM_indept",N,Jt,K,T,alpha_EAP = T)
     rRUM_indept_fit <- Learning_fit(object,"rRUM_indept",Y_sim,Q_matrix,
-                                    object$input_data$test_order,object$input_data$Test_versions,
+                                    object$input_data$Test_order,object$input_data$Test_versions,
                                     R=object$input_data$R)
     PPP_total_scores <- matrix(NA,N,T)
-    Y_sim_array <- Sparse2Dense(Y_sim, object$input_data$test_order, object$input_data$Test_versions)
+    Y_sim_array <- Sparse2Dense(Y_sim, object$input_data$Test_order, object$input_data$Test_versions)
     for(i in 1:N){
       for(t in 1:T){
         f <- stats::ecdf(rRUM_indept_fit$PPs$total_score_PP[i,t,])
@@ -269,7 +269,7 @@ summary.hmcdm <- function(object, ...){
     for(i in 1:N){
       test_i <- object$input_data$Test_versions[i]
       for(t in 1:T){
-        t_i = object$input_data$test_order[test_i,t]
+        t_i = object$input_data$Test_order[test_i,t]
         Y_sim_collapsed[i,(Jt*(t_i-1)+1):(Jt*t_i)] <- Y_sim_array[i,,t]
       }
     }
@@ -301,7 +301,7 @@ summary.hmcdm <- function(object, ...){
   
   # NIDA_indept
   if(object$Model=="NIDA_indept"){
-    Y_sim <- Dense2Sparse(object$input_data$Response, object$input_data$test_order, object$input_data$Test_versions)
+    Y_sim <- Dense2Sparse(object$input_data$Response, object$input_data$Test_order, object$input_data$Test_versions)
     Q_matrix <- object$input_data$Qs[,,1]
     if(T > 1){
       for(i in 2:T){
@@ -310,10 +310,10 @@ summary.hmcdm <- function(object, ...){
     }
     point_estimates = point_estimates_learning(object,"NIDA_indept",N,Jt,K,T,alpha_EAP = T)
     NIDA_indept_fit <- Learning_fit(object,"NIDA_indept",Y_sim,Q_matrix,
-                                    object$input_data$test_order,object$input_data$Test_versions,
+                                    object$input_data$Test_order,object$input_data$Test_versions,
                                     R=object$input_data$R)
     PPP_total_scores <- matrix(NA,N,T)
-    Y_sim_array <- Sparse2Dense(Y_sim, object$input_data$test_order, object$input_data$Test_versions)
+    Y_sim_array <- Sparse2Dense(Y_sim, object$input_data$Test_order, object$input_data$Test_versions)
     for(i in 1:N){
       for(t in 1:T){
         f <- stats::ecdf(NIDA_indept_fit$PPs$total_score_PP[i,t,])
@@ -327,7 +327,7 @@ summary.hmcdm <- function(object, ...){
     for(i in 1:N){
       test_i <- object$input_data$Test_versions[i]
       for(t in 1:T){
-        t_i = object$input_data$test_order[test_i,t]
+        t_i = object$input_data$Test_order[test_i,t]
         Y_sim_collapsed[i,(Jt*(t_i-1)+1):(Jt*t_i)] <- Y_sim_array[i,,t]
       }
     }
@@ -358,7 +358,7 @@ summary.hmcdm <- function(object, ...){
   
   # DINA_FOHM
   if(object$Model=="DINA_FOHM"){
-    Y_sim <- Dense2Sparse(object$input_data$Response, object$input_data$test_order, object$input_data$Test_versions)
+    Y_sim <- Dense2Sparse(object$input_data$Response, object$input_data$Test_order, object$input_data$Test_versions)
     Q_matrix <- object$input_data$Qs[,,1]
     if(T > 1){
       for(i in 2:T){
@@ -367,9 +367,9 @@ summary.hmcdm <- function(object, ...){
     }
     point_estimates = point_estimates_learning(object,"DINA_FOHM",N,Jt,K,T,alpha_EAP = T)
     DINA_FOHM_fit <- Learning_fit(object,"DINA_FOHM",Y_sim,Q_matrix,
-                             object$input_data$test_order,object$input_data$Test_versions)
+                             object$input_data$Test_order,object$input_data$Test_versions)
     PPP_total_scores <- matrix(NA,N,T)
-    Y_sim_array <- Sparse2Dense(Y_sim, object$input_data$test_order, object$input_data$Test_versions)
+    Y_sim_array <- Sparse2Dense(Y_sim, object$input_data$Test_order, object$input_data$Test_versions)
     for(i in 1:N){
       for(t in 1:T){
         f <- stats::ecdf(DINA_FOHM_fit$PPs$total_score_PP[i,t,])
@@ -383,7 +383,7 @@ summary.hmcdm <- function(object, ...){
     for(i in 1:N){
       test_i <- object$input_data$Test_versions[i]
       for(t in 1:T){
-        t_i = object$input_data$test_order[test_i,t]
+        t_i = object$input_data$Test_order[test_i,t]
         Y_sim_collapsed[i,(Jt*(t_i-1)+1):(Jt*t_i)] <- Y_sim_array[i,,t]
       }
     }
@@ -460,8 +460,13 @@ print.summary.hmcdm <- function(x, ...){
   print(head(x$pis_EAP, 5), digits=digits)
   if(length(x$pis_EAP)>5){cat("   ...", length(x$pis_EAP)-5, "more classes\n")}
   
-  cat("\nDeviance Information Criterion (DIC):", x$DIC["DIC","Total"])
+  cat("\nDeviance Information Criterion (DIC):", x$DIC["DIC","Total"],"\n")
   
+  cat("\nPosterior Predictive P-value (PPP):")
+  cat("\nM1:", formatC(mean(x$PPP_item_means), digits=digits))
+  cat("\nM2:", formatC(mean(upper.tri(x$PPP_item_ORs)), digits=digits))
+  cat("\ntotal scores: ", formatC(mean(x$PPP_total_scores), digits=digits))
+
   invisible(x)
 }
 

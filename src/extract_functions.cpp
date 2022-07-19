@@ -37,9 +37,9 @@
 //' N = length(Test_versions)
 //' J = nrow(Q_matrix)
 //' K = ncol(Q_matrix)
-//' T = nrow(test_order)
+//' T = nrow(Test_order)
 //' Jt = J/T
-//' output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
+//' output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",Test_order,Test_versions,10000,5000)
 //' point_estimates = point_estimates_learning(output_FOHM,"DINA_FOHM",N,Jt,K,T,alpha_EAP = T)
 //' }
 //' @export
@@ -265,7 +265,7 @@ Rcpp::List point_estimates_learning(const Rcpp::List output, const std::string m
 //' "DINA_FOHM": First Order Hidden Markov model with DINA responses
 //' @param Y_real_array A \code{array} of dichotomous item responses. t-th slice is an N-by-J matrix of responses at time t.
 //' @param Q_matrix A \code{list} of Q-matrices. b-th element is a Jt-by-K Q-matrix for items in block b. 
-//' @param test_order A \code{matrix} of the order of item blocks for each test version.
+//' @param Test_order A \code{matrix} of the order of item blocks for each test version.
 //' @param Test_versions A \code{vector} of the test version of each learner.
 //' @param Q_examinee Optional. A \code{list} of the Q matrix for each learner. i-th element is a J-by-K Q-matrix for all items learner i was administered.
 //' @param Latency_array Optional. A \code{array} of the response times. t-th slice is an N-by-J matrix of response times at time t.
@@ -279,20 +279,20 @@ Rcpp::List point_estimates_learning(const Rcpp::List output, const std::string m
 //' empirical data.
 //' @examples
 //' \donttest{
-//' output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
-//' FOHM_fit <- Learning_fit(output_FOHM,"DINA_FOHM",Y_real_array,Q_matrix,test_order,Test_versions)
+//' output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",Test_order,Test_versions,10000,5000)
+//' FOHM_fit <- Learning_fit(output_FOHM,"DINA_FOHM",Y_real_array,Q_matrix,Test_order,Test_versions)
 //' }
 //' @export
 // [[Rcpp::export]]
 Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
                         const arma::cube Y_real_array, const arma::mat Q_matrix,
-                        const arma::mat test_order, const arma::vec Test_versions,
+                        const arma::mat Test_order, const arma::vec Test_versions,
                         const Rcpp::Nullable<Rcpp::List> Q_examinee=R_NilValue,
                         const Rcpp::Nullable<arma::cube> Latency_array = R_NilValue, 
                         const int G_version = NA_INTEGER,
                         const Rcpp::Nullable<Rcpp::NumericMatrix> R = R_NilValue){
   
-  unsigned int T = test_order.n_rows;
+  unsigned int T = Test_order.n_rows;
   unsigned int J = Q_matrix.n_rows;
   unsigned int Jt = J/T;
   unsigned int K = Q_matrix.n_cols;
@@ -300,9 +300,9 @@ Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
   arma::cube Latency(N, Jt, T);
   if(Latency_array.isNotNull()){
     arma::cube Latency_temp = Rcpp::as<arma::cube>(Latency_array);
-    Latency = Sparse2Dense(Latency_temp, test_order, Test_versions);
+    Latency = Sparse2Dense(Latency_temp, Test_order, Test_versions);
   }
-  arma::cube Response = Sparse2Dense(Y_real_array, test_order, Test_versions);
+  arma::cube Response = Sparse2Dense(Y_real_array, Test_order, Test_versions);
   arma::cube Qs = Mat2Array(Q_matrix, T);
   arma::mat Traject = Rcpp::as<arma::mat>(output["trajectories"]);
   arma::mat pis = Rcpp::as<arma::mat>(output["pis"]);
@@ -367,15 +367,15 @@ Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
         itempars_cube.slice(t) = itempars.rows(Jt*t,(Jt*(t+1)-1));
       }
       
-      arma::cube Y_sim_sparse = simDINA(alphas,itempars_cube,ETA,test_order,Test_versions);
-      arma::cube Y_sim = Sparse2Dense(Y_sim_sparse, test_order, Test_versions);
+      arma::cube Y_sim_sparse = simDINA(alphas,itempars_cube,ETA,Test_order,Test_versions);
+      arma::cube Y_sim = Sparse2Dense(Y_sim_sparse, Test_order, Test_versions);
       arma::mat Y_sim_collapsed(N,Jt*T);
       
       // next compute deviance part
       for (unsigned int i = 0; i < N; i++) {
         int test_version_i = Test_versions(i) - 1;
         for (unsigned int t = 0; t < T; t++) {
-          int test_block_it = test_order(test_version_i,t)-1;
+          int test_block_it = Test_order(test_version_i,t)-1;
           double class_it = arma::dot(alphas.slice(t).row(i).t(),vv);
           Y_sim_collapsed.submat(i,(test_block_it*Jt), i, ((test_block_it+1)*Jt-1)) = Y_sim.slice(t).row(i);
           // The transition model part
@@ -427,7 +427,7 @@ Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
                                         lambdas_EAP, thetas_EAP(i),  Rcpp::as<Rcpp::List>(Q_examinee)[i], Jt, t));
         }
         // The log likelihood from response time model
-        int test_block_it = test_order(test_version_i, t) - 1;
+        int test_block_it = Test_order(test_version_i, t) - 1;
         double class_it = arma::dot(Alphas_est.slice(t).row(i), vv);
         // The loglikelihood from the DINA
         response += std::log(pYit_DINA(ETAs.slice(test_block_it).col(class_it), Response.slice(t).row(i).t(), 
@@ -468,7 +468,7 @@ Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
     double phi_EAP = arma::mean(phis.col(0));
     arma::mat tauvar = Rcpp::as<arma::mat>(output["tauvar"]);
     double tauvar_EAP = arma::mean(tauvar.col(0));
-    arma::cube J_incidence = J_incidence_cube(test_order, Qs);
+    arma::cube J_incidence = J_incidence_cube(Test_order, Qs);
     
     for(unsigned int tt = 0; tt < n_its; tt++){
       double tran=0, response=0, time=0, joint = 0;
@@ -493,19 +493,19 @@ Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
         itempars_cube.slice(t) = itempars.rows(Jt*t,(Jt*(t+1)-1));
         RT_itempars_cube.slice(t) = RT_itempars.rows(Jt*t,(Jt*(t+1)-1));
       }
-      arma::cube Y_sim_sparse = simDINA(alphas,itempars_cube,ETA,test_order,Test_versions);
-      arma::cube Y_sim = Sparse2Dense(Y_sim_sparse, test_order, Test_versions);
+      arma::cube Y_sim_sparse = simDINA(alphas,itempars_cube,ETA,Test_order,Test_versions);
+      arma::cube Y_sim = Sparse2Dense(Y_sim_sparse, Test_order, Test_versions);
       arma::mat Y_sim_collapsed(N,Jt*T);
       arma::cube L_sim_sparse = sim_RT(alphas, RT_itempars_cube,Q_matrix,taus.col(tt),phis(tt,0),
-                                ETA, G_version, test_order, Test_versions);
-      arma::cube L_sim = Sparse2Dense(L_sim_sparse, test_order, Test_versions);
+                                ETA, G_version, Test_order, Test_versions);
+      arma::cube L_sim = Sparse2Dense(L_sim_sparse, Test_order, Test_versions);
       arma::mat L_sim_collapsed(N,Jt*T);
       
       // next compute deviance part
       for (unsigned int i = 0; i < N; i++) {
         int test_version_i = Test_versions(i) - 1;
         for (unsigned int t = 0; t < T; t++) {
-          int test_block_it = test_order(test_version_i,t)-1;
+          int test_block_it = Test_order(test_version_i,t)-1;
           double class_it = arma::dot(alphas.slice(t).row(i).t(),vv);
           Y_sim_collapsed.submat(i,(test_block_it*Jt), i, ((test_block_it+1)*Jt-1)) = Y_sim.slice(t).row(i);
           L_sim_collapsed.submat(i,(test_block_it*Jt), i, ((test_block_it+1)*Jt-1)) = L_sim.slice(t).row(i);
@@ -520,7 +520,7 @@ Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
           }
           if (G_version == 2) {
             G_it = G2vec_efficient(ETAs, J_incidence, alphas.subcube(i, 0, 0, i, (K - 1), (T - 1)), test_version_i,
-                                   test_order, t);
+                                   Test_order, t);
           }
           if(G_version==3){
             G_it = arma::ones<arma::vec>(Jt);
@@ -578,7 +578,7 @@ Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
                                         lambdas_EAP, thetas_EAP(i),  Rcpp::as<Rcpp::List>(Q_examinee)[i], Jt, t));
         }
         // The log likelihood from response time model
-        int test_block_it = test_order(test_version_i, t) - 1;
+        int test_block_it = Test_order(test_version_i, t) - 1;
         double class_it = arma::dot(Alphas_est.slice(t).row(i), vv);
         // The loglikelihood from log-Normal RT model
         time += std::log(dLit(G_it, Latency.slice(t).row(i).t(), 
@@ -626,7 +626,7 @@ Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
     double phi_EAP = arma::mean(phis.col(0));
     arma::cube Sigs = Rcpp::as<arma::cube>(output["Sigs"]);
     arma::mat Sigs_EAP = arma::mean(Sigs, 2);
-    arma::cube J_incidence = J_incidence_cube(test_order, Qs);
+    arma::cube J_incidence = J_incidence_cube(Test_order, Qs);
     
     for(unsigned int tt = 0; tt < n_its; tt++){
       double tran=0, response=0, time=0, joint = 0;
@@ -650,19 +650,19 @@ Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
         itempars_cube.slice(t) = itempars.rows(Jt*t,(Jt*(t+1)-1));
         RT_itempars_cube.slice(t) = RT_itempars.rows(Jt*t,(Jt*(t+1)-1));
       }
-      arma::cube Y_sim_sparse = simDINA(alphas,itempars_cube,ETA,test_order,Test_versions);
-      arma::cube Y_sim = Sparse2Dense(Y_sim_sparse, test_order, Test_versions);
+      arma::cube Y_sim_sparse = simDINA(alphas,itempars_cube,ETA,Test_order,Test_versions);
+      arma::cube Y_sim = Sparse2Dense(Y_sim_sparse, Test_order, Test_versions);
       arma::mat Y_sim_collapsed(N,Jt*T);
       arma::cube L_sim_sparse = sim_RT(alphas, RT_itempars_cube,Q_matrix,taus.col(tt),phis(tt,0),
-                                ETA, G_version, test_order, Test_versions);
-      arma::cube L_sim = Sparse2Dense(L_sim_sparse, test_order, Test_versions);
+                                ETA, G_version, Test_order, Test_versions);
+      arma::cube L_sim = Sparse2Dense(L_sim_sparse, Test_order, Test_versions);
       arma::mat L_sim_collapsed(N,Jt*T);
       
       // next compute deviance part
       for (unsigned int i = 0; i < N; i++) {
         int test_version_i = Test_versions(i) - 1;
         for (unsigned int t = 0; t < T; t++) {
-          int test_block_it = test_order(test_version_i,t)-1;
+          int test_block_it = Test_order(test_version_i,t)-1;
           double class_it = arma::dot(alphas.slice(t).row(i).t(),vv);
           Y_sim_collapsed.submat(i,(test_block_it*Jt), i, ((test_block_it+1)*Jt-1)) = Y_sim.slice(t).row(i);
           L_sim_collapsed.submat(i,(test_block_it*Jt), i, ((test_block_it+1)*Jt-1)) = L_sim.slice(t).row(i);
@@ -678,7 +678,7 @@ Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
           }
           if (G_version == 2) {
             G_it = G2vec_efficient(ETAs, J_incidence, alphas.subcube(i, 0, 0, i, (K - 1), (T - 1)), test_version_i,
-                                   test_order, t);
+                                   Test_order, t);
           }
           if(G_version==3){
             G_it = arma::ones<arma::vec>(Jt);
@@ -740,7 +740,7 @@ Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
                                           lambdas_EAP, thetas_EAP(i),  Rcpp::as<Rcpp::List>(Q_examinee)[i], Jt, t));
         }
         // The log likelihood from response time model
-        int test_block_it = test_order(test_version_i, t) - 1;
+        int test_block_it = Test_order(test_version_i, t) - 1;
         double class_it = arma::dot(Alphas_est.slice(t).row(i), vv);
         // The loglikelihood from log-Normal RT model
         time += std::log(dLit(G_it, Latency.slice(t).row(i).t(), 
@@ -786,8 +786,8 @@ Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
         pi_stars_mat.col(t) = pi_stars.col(tt).subvec(Jt*t,(Jt*(t+1)-1));
       }
       arma::mat r_stars_mat = Array2Mat(r_stars_cube);
-      arma::cube Y_sim_sparse = simrRUM(alphas, r_stars_mat, pi_stars_mat,Q_matrix,test_order,Test_versions);
-      arma::cube Y_sim = Sparse2Dense(Y_sim_sparse, test_order, Test_versions);
+      arma::cube Y_sim_sparse = simrRUM(alphas, r_stars_mat, pi_stars_mat,Q_matrix,Test_order,Test_versions);
+      arma::cube Y_sim = Sparse2Dense(Y_sim_sparse, Test_order, Test_versions);
       arma::mat Y_sim_collapsed(N,Jt*T);
       
       double tran=0, response=0, time=0, joint = 0;
@@ -802,7 +802,7 @@ Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
       for (unsigned int i = 0; i < N; i++) {
         int test_version_i = Test_versions(i) - 1;
         for (unsigned int t = 0; t < T; t++) {
-          int test_block_it = test_order(test_version_i,t)-1;
+          int test_block_it = Test_order(test_version_i,t)-1;
           Y_sim_collapsed.submat(i,(test_block_it*Jt), i, ((test_block_it+1)*Jt-1)) = Y_sim.slice(t).row(i);
           // The transition model part
           if (t < (T - 1)) {
@@ -853,7 +853,7 @@ Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
                                         taus_EAP,Rcpp::as<arma::mat>(R)));
         }
         // The log likelihood from response time model
-        int test_block_it = test_order(test_version_i, t) - 1;
+        int test_block_it = Test_order(test_version_i, t) - 1;
         // The loglikelihood from the DINA
         response += std::log(pYit_rRUM(Alphas_est.slice(t).row(i).t(),Response.slice(t).row(i).t(),
                                        pi_stars_EAP.subvec((test_block_it*Jt),((test_block_it+1)*Jt-1)),
@@ -903,15 +903,15 @@ Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
         }
       }
       
-      arma::cube Y_sim_sparse = simNIDA(alphas,ss.col(tt),gs.col(tt),Q_matrix,test_order,Test_versions);
-      arma::cube Y_sim = Sparse2Dense(Y_sim_sparse, test_order, Test_versions);
+      arma::cube Y_sim_sparse = simNIDA(alphas,ss.col(tt),gs.col(tt),Q_matrix,Test_order,Test_versions);
+      arma::cube Y_sim = Sparse2Dense(Y_sim_sparse, Test_order, Test_versions);
       arma::mat Y_sim_collapsed(N,Jt*T);
       
       // next compute deviance part
       for (unsigned int i = 0; i < N; i++) {
         int test_version_i = Test_versions(i) - 1;
         for (unsigned int t = 0; t < T; t++) {
-          int test_block_it = test_order(test_version_i,t)-1;
+          int test_block_it = Test_order(test_version_i,t)-1;
           Y_sim_collapsed.submat(i,(test_block_it*Jt), i, ((test_block_it+1)*Jt-1)) = Y_sim.slice(t).row(i);
           
           // The transition model part
@@ -965,7 +965,7 @@ Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
                                         taus_EAP,Rcpp::as<arma::mat>(R)));
         }
         // The log likelihood from response time model
-        int test_block_it = test_order(test_version_i, t) - 1;
+        int test_block_it = Test_order(test_version_i, t) - 1;
         // The loglikelihood from the DINA
         response += std::log(pYit_NIDA(Alphas_est.slice(t).row(i).t(),Response.slice(t).row(i).t(),
                                        ss_EAP,
@@ -1017,15 +1017,15 @@ Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
       for(unsigned int t= 0; t<T; t++){
         itempars_cube.slice(t) = itempars.rows(Jt*t,(Jt*(t+1)-1));
       }
-      arma::cube Y_sim_sparse = simDINA(alphas,itempars_cube,ETA,test_order,Test_versions);
-      arma::cube Y_sim = Sparse2Dense(Y_sim_sparse, test_order, Test_versions);
+      arma::cube Y_sim_sparse = simDINA(alphas,itempars_cube,ETA,Test_order,Test_versions);
+      arma::cube Y_sim = Sparse2Dense(Y_sim_sparse, Test_order, Test_versions);
       arma::mat Y_sim_collapsed(N,Jt*T);
       
       // next compute deviance part
       for (unsigned int i = 0; i < N; i++) {
         int test_version_i = Test_versions(i) - 1;
         for (unsigned int t = 0; t < T; t++) {
-          int test_block_it = test_order(test_version_i,t)-1;
+          int test_block_it = Test_order(test_version_i,t)-1;
           double class_it = arma::dot(alphas.slice(t).row(i).t(),vv);
           Y_sim_collapsed.submat(i,(test_block_it*Jt), i, ((test_block_it+1)*Jt-1)) = Y_sim.slice(t).row(i);
           
@@ -1081,7 +1081,7 @@ Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
           tran += std::log(omegas_EAP(class_pre,class_post));
         }
         // The log likelihood from response time model
-        int test_block_it = test_order(test_version_i, t) - 1;
+        int test_block_it = Test_order(test_version_i, t) - 1;
         double class_it = arma::dot(Alphas_est.slice(t).row(i), vv);
         // The loglikelihood from the DINA
         response += std::log(pYit_DINA(ETAs.slice(test_block_it).col(class_it), Response.slice(t).row(i).t(), 

@@ -241,7 +241,7 @@ arma::mat crosstab(const arma::vec& V1,const arma::vec& V2,const arma::mat& TP,
 }
 
 // [[Rcpp::export]]
-arma::cube resp_miss(const arma::cube& Responses, const arma::mat& test_order, 
+arma::cube resp_miss(const arma::cube& Responses, const arma::mat& Test_order, 
                      const arma::vec& Test_versions){
   unsigned int Jt = Responses.n_cols;
   unsigned int T = Responses.n_slices;
@@ -254,7 +254,7 @@ arma::cube resp_miss(const arma::cube& Responses, const arma::mat& test_order,
   for(unsigned int i = 0; i<N; i++){
     unsigned int Test_version_i = Test_versions(i)-1;
     for(unsigned int t = 0; t<T; t++){
-      unsigned int test_block_it = test_order(Test_version_i,t)-1;
+      unsigned int test_block_it = Test_order(Test_version_i,t)-1;
       Y_miss.subcube(i,(test_block_it*Jt),t,i,((test_block_it+1)*Jt-1),t) = Responses.subcube(i,0,t,i,(Jt-1),t);
     }
   }
@@ -274,7 +274,7 @@ arma::cube resp_miss(const arma::cube& Responses, const arma::mat& test_order,
 //' N = length(Test_versions)
 //' J = nrow(Q_matrix)
 //' K = ncol(Q_matrix)
-//' T = nrow(test_order)
+//' T = nrow(Test_order)
 //' Jt = J/T
 //' OddsRatio(N,J,Y_real_array[,,1])}
 //' @export
@@ -316,7 +316,7 @@ int getMode(arma::vec sorted_vec, int size){
 
 // [[Rcpp::export]]
 arma::cube Sparse2Dense(const arma::cube Y_real_array,
-                        const arma::mat& test_order,
+                        const arma::mat& Test_order,
                         const arma::vec& Test_versions){
   unsigned int N = Test_versions.n_elem;
   unsigned int J = Y_real_array.n_cols;
@@ -327,7 +327,7 @@ arma::cube Sparse2Dense(const arma::cube Y_real_array,
   for(unsigned int i=0; i<N; i++){
     unsigned int test_version = Test_versions(i);
     for(unsigned int t=0; t<T; t++){
-      unsigned int test_index = test_order(test_version-1,t);
+      unsigned int test_index = Test_order(test_version-1,t);
       for(unsigned int j=0; j<Jt; j++){
         unsigned int item_index = (test_index-1)*Jt+j;
         Response(i,j,t) = Y_real_array(i,item_index,t);
@@ -339,7 +339,7 @@ arma::cube Sparse2Dense(const arma::cube Y_real_array,
 
 // [[Rcpp::export]]
 arma::cube Dense2Sparse(const arma::cube Y_sim,
-                        const arma::mat& test_order,
+                        const arma::mat& Test_order,
                         const arma::vec& Test_versions){
   unsigned int N = Test_versions.n_elem;
   unsigned int Jt = Y_sim.n_cols;
@@ -350,7 +350,7 @@ arma::cube Dense2Sparse(const arma::cube Y_sim,
   for(unsigned int i=0; i<N; i++){
     unsigned int test_version = Test_versions(i);
     for(unsigned int t=0; t<T; t++){
-      unsigned int test_index = test_order(test_version-1,t);
+      unsigned int test_index = Test_order(test_version-1,t);
       for(unsigned int j=0; j<Jt; j++){
         unsigned int item_index = (test_index-1)*Jt+j;
         Y_sim_sparse(i,item_index,t) = Y_sim(i,j,t);
@@ -401,27 +401,27 @@ arma::mat Array2Mat(const arma::cube r_stars){
 //' @description Generate a list of length N. Each element of the list is a JxK Q_matrix of all items
 //' administered across all time points to the examinee, in the order of administration.
 //' @param Q_matrix A J-by-K matrix, indicating the item-skill relationship.
-//' @param test_order A TxT matrix, each row is the order of item blocks for that test version.
+//' @param Test_order A TxT matrix, each row is the order of item blocks for that test version.
 //' @param Test_versions A vector of length N, containing each subject's test version.
 //' @return A list of length N. Each element of the list is a JxK matrix.
 //' @examples 
 //' \donttest{
-//' Q_examinee = Q_list(Q_matrix, test_order, Test_versions)}
+//' Q_examinee = Q_list(Q_matrix, Test_order, Test_versions)}
 //' @export
 // [[Rcpp::export]]
-Rcpp::List Q_list(const arma::mat Q_matrix, const arma::mat test_order, const arma::vec Test_versions){
+Rcpp::List Q_list(const arma::mat Q_matrix, const arma::mat Test_order, const arma::vec Test_versions){
   unsigned int N = Test_versions.n_elem;
   unsigned int J = Q_matrix.n_rows;
   unsigned int K = Q_matrix.n_cols;
-  unsigned int T = test_order.n_cols;
+  unsigned int T = Test_order.n_cols;
   unsigned int Jt = J/T;
   
   Rcpp::List Q_examinee(N);
   for(unsigned int i=0; i<N; i++){
     arma::mat Q_mat(J, K);
-    arma::vec test_order_i = test_order.col(Test_versions(i)-1);
+    arma::vec Test_order_i = Test_order.col(Test_versions(i)-1);
     for(unsigned int t=0; t<T; t++){
-      Q_mat.submat(t*Jt,0,(t+1)*Jt-1,K-1) = Q_matrix.submat((test_order_i(t)-1)*Jt,0,test_order_i(t)*Jt-1,K-1);
+      Q_mat.submat(t*Jt,0,(t+1)*Jt-1,K-1) = Q_matrix.submat((Test_order_i(t)-1)*Jt,0,Test_order_i(t)*Jt-1,K-1);
     }
     Q_examinee[i] = Q_mat;
   }

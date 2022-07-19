@@ -4,12 +4,12 @@
 \alias{Q_list}
 \title{Generate a list of Q-matrices for each examinee.}
 \usage{
-Q_list(Q_matrix, test_order, Test_versions)
+Q_list(Q_matrix, Test_order, Test_versions)
 }
 \arguments{
 \item{Q_matrix}{A J-by-K matrix, indicating the item-skill relationship.}
 
-\item{test_order}{A TxT matrix, each row is the order of item blocks for that test version.}
+\item{Test_order}{A TxT matrix, each row is the order of item blocks for that test version.}
 
 \item{Test_versions}{A vector of length N, containing each subject's test version.}
 }
@@ -22,5 +22,5 @@ administered across all time points to the examinee, in the order of administrat
 }
 \examples{
 \donttest{
-Q_examinee = Q_list(Q_matrix, test_order, Test_versions)}
+Q_examinee = Q_list(Q_matrix, Test_order, Test_versions)}
 }

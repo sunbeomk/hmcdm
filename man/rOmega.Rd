@@ -17,7 +17,7 @@ Generate a random transition matrix under nondecreasing learning trajectory assu
 N = length(Test_versions)
 J = nrow(Q_matrix)
 K = ncol(Q_matrix)
-T = nrow(test_order)
+T = nrow(Test_order)
 Jt = J/T
 TP = TPmat(K)
 Omega_sim = rOmega(TP)

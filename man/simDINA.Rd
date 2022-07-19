@@ -4,7 +4,7 @@
 \alias{simDINA}
 \title{Simulate DINA model responses (entire cube)}
 \usage{
-simDINA(alphas, itempars, ETA, test_order, Test_versions)
+simDINA(alphas, itempars, ETA, Test_order, Test_versions)
 }
 \arguments{
 \item{alphas}{An N-by-K-by-T \code{array} of attribute patterns of all persons across T time points}
@@ -13,7 +13,7 @@ simDINA(alphas, itempars, ETA, test_order, Test_versions)
 
 \item{ETA}{A J-by-2^K-by-T \code{array} of ideal responses across all item blocks, with each slice generated with ETAmat function}
 
-\item{test_order}{A N_versions-by-T \code{matrix} indicating which block of items were administered to examinees with specific test version.}
+\item{Test_order}{A N_versions-by-T \code{matrix} indicating which block of items were administered to examinees with specific test version.}
 
 \item{Test_versions}{A length N \code{vector} of the test version of each examinee}
 }
@@ -27,7 +27,7 @@ Simulate a cube of DINA responses for all persons on items across all time point
 N = length(Test_versions)
 J = nrow(Q_matrix)
 K = ncol(Q_matrix)
-T = nrow(test_order)
+T = nrow(Test_order)
 Jt = J/T
 itempars_true <- array(runif(Jt*2*T,.1,.2), dim = c(Jt,2,T))
 
@@ -46,7 +46,7 @@ for(i in 1:N){
   Alphas_0[i,] <- inv_bijectionvector(K,(class_0[i]-1))
 }
 lambdas_true <- c(-2, .4, .055)
-Q_examinee <- Q_list(Q_matrix, test_order, Test_versions)     
+Q_examinee <- Q_list(Q_matrix, Test_order, Test_versions)     
 Alphas <- simulate_alphas_HO_joint(lambdas_true,thetas_true,Alphas_0,Q_examinee,T,Jt)
-Y_sim <- simDINA(Alphas,itempars_true,ETAs,test_order,Test_versions)
+Y_sim <- simDINA(Alphas,itempars_true,ETAs,Test_order,Test_versions)
 }

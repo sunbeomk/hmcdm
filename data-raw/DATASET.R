@@ -60,7 +60,8 @@ for(i in 1:N){
 }
 usethis::use_data(Design_array, overwrite=TRUE)
 
-
+Test_order <- test_order
+usethis::use_data(Test_order, overwrite=TRUE)
 
 
 test_order

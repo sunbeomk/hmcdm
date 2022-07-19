@@ -4,7 +4,7 @@
 \alias{simNIDA}
 \title{Simulate NIDA model responses (entire cube)}
 \usage{
-simNIDA(alphas, Svec, Gvec, Q_matrix, test_order, Test_versions)
+simNIDA(alphas, Svec, Gvec, Q_matrix, Test_order, Test_versions)
 }
 \arguments{
 \item{alphas}{An N-by-K-by-T \code{array} of attribute patterns of all persons across T time points}
@@ -15,7 +15,7 @@ simNIDA(alphas, Svec, Gvec, Q_matrix, test_order, Test_versions)
 
 \item{Q_matrix}{A J-by-K Q-matrix}
 
-\item{test_order}{A N_versions-by-T \code{matrix} indicating which block of items were administered to examinees with specific test version.}
+\item{Test_order}{A N_versions-by-T \code{matrix} indicating which block of items were administered to examinees with specific test version.}
 
 \item{Test_versions}{A length N \code{vector} of the test version of each examinee}
 }
@@ -29,7 +29,7 @@ Simulate a cube of NIDA responses for all persons on items across all time point
 N = length(Test_versions)
 J = nrow(Q_matrix)
 K = ncol(Q_matrix)
-T = nrow(test_order)
+T = nrow(Test_order)
 Jt = J/T
 Svec <- runif(K,.1,.3)
 Gvec <- runif(K,.1,.3)
@@ -54,5 +54,5 @@ tau <- numeric(K)
       }
     }
    Alphas <- simulate_alphas_indept(tau,Alphas_0,T,R) 
-Y_sim = simNIDA(Alphas,Svec,Gvec,Q_matrix,test_order,Test_versions_sim)
+Y_sim = simNIDA(Alphas,Svec,Gvec,Q_matrix,Test_order,Test_versions_sim)
 }

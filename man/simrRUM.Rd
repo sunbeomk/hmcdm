@@ -4,7 +4,7 @@
 \alias{simrRUM}
 \title{Simulate rRUM model responses (entire cube)}
 \usage{
-simrRUM(alphas, r_stars_mat, pi_stars, Q_matrix, test_order, Test_versions)
+simrRUM(alphas, r_stars_mat, pi_stars, Q_matrix, Test_order, Test_versions)
 }
 \arguments{
 \item{alphas}{An N-by-K-by-T \code{array} of attribute patterns of all persons across T time points}
@@ -15,7 +15,7 @@ simrRUM(alphas, r_stars_mat, pi_stars, Q_matrix, test_order, Test_versions)
 
 \item{Q_matrix}{A J-by-K of Q-matrix}
 
-\item{test_order}{A N_versions-by-T \code{matrix} indicating which block of items were administered to examinees with specific test version.}
+\item{Test_order}{A N_versions-by-T \code{matrix} indicating which block of items were administered to examinees with specific test version.}
 
 \item{Test_versions}{A length N \code{vector} of the test version of each examinee}
 }
@@ -29,7 +29,7 @@ Simulate a cube of rRUM responses for all persons on items across all time point
 N = length(Test_versions)
 J = nrow(Q_matrix)
 K = ncol(Q_matrix)
-T = nrow(test_order)
+T = nrow(Test_order)
 Jt = J/T
 Smats <- matrix(runif(J*K,.1,.3),c(J,K))
 Gmats <- matrix(runif(J*K,.1,.3),c(J,K))
@@ -56,5 +56,5 @@ for(i in 1:N){
   }
 }
 Alphas <- simulate_alphas_indept(tau,Alphas_0,T,R) 
-Y_sim = simrRUM(Alphas,r_stars,pi_stars,Q_matrix,test_order,Test_versions_sim)
+Y_sim = simrRUM(Alphas,r_stars,pi_stars,Q_matrix,Test_order,Test_versions_sim)
 }

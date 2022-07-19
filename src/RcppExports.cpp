@@ -158,15 +158,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // resp_miss
-arma::cube resp_miss(const arma::cube& Responses, const arma::mat& test_order, const arma::vec& Test_versions);
-RcppExport SEXP _hmcdm_resp_miss(SEXP ResponsesSEXP, SEXP test_orderSEXP, SEXP Test_versionsSEXP) {
+arma::cube resp_miss(const arma::cube& Responses, const arma::mat& Test_order, const arma::vec& Test_versions);
+RcppExport SEXP _hmcdm_resp_miss(SEXP ResponsesSEXP, SEXP Test_orderSEXP, SEXP Test_versionsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::cube& >::type Responses(ResponsesSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type test_order(test_orderSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Test_order(Test_orderSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type Test_versions(Test_versionsSEXP);
-    rcpp_result_gen = Rcpp::wrap(resp_miss(Responses, test_order, Test_versions));
+    rcpp_result_gen = Rcpp::wrap(resp_miss(Responses, Test_order, Test_versions));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -196,28 +196,28 @@ BEGIN_RCPP
 END_RCPP
 }
 // Sparse2Dense
-arma::cube Sparse2Dense(const arma::cube Y_real_array, const arma::mat& test_order, const arma::vec& Test_versions);
-RcppExport SEXP _hmcdm_Sparse2Dense(SEXP Y_real_arraySEXP, SEXP test_orderSEXP, SEXP Test_versionsSEXP) {
+arma::cube Sparse2Dense(const arma::cube Y_real_array, const arma::mat& Test_order, const arma::vec& Test_versions);
+RcppExport SEXP _hmcdm_Sparse2Dense(SEXP Y_real_arraySEXP, SEXP Test_orderSEXP, SEXP Test_versionsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::cube >::type Y_real_array(Y_real_arraySEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type test_order(test_orderSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Test_order(Test_orderSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type Test_versions(Test_versionsSEXP);
-    rcpp_result_gen = Rcpp::wrap(Sparse2Dense(Y_real_array, test_order, Test_versions));
+    rcpp_result_gen = Rcpp::wrap(Sparse2Dense(Y_real_array, Test_order, Test_versions));
     return rcpp_result_gen;
 END_RCPP
 }
 // Dense2Sparse
-arma::cube Dense2Sparse(const arma::cube Y_sim, const arma::mat& test_order, const arma::vec& Test_versions);
-RcppExport SEXP _hmcdm_Dense2Sparse(SEXP Y_simSEXP, SEXP test_orderSEXP, SEXP Test_versionsSEXP) {
+arma::cube Dense2Sparse(const arma::cube Y_sim, const arma::mat& Test_order, const arma::vec& Test_versions);
+RcppExport SEXP _hmcdm_Dense2Sparse(SEXP Y_simSEXP, SEXP Test_orderSEXP, SEXP Test_versionsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::cube >::type Y_sim(Y_simSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type test_order(test_orderSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Test_order(Test_orderSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type Test_versions(Test_versionsSEXP);
-    rcpp_result_gen = Rcpp::wrap(Dense2Sparse(Y_sim, test_order, Test_versions));
+    rcpp_result_gen = Rcpp::wrap(Dense2Sparse(Y_sim, Test_order, Test_versions));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -245,15 +245,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // Q_list
-Rcpp::List Q_list(const arma::mat Q_matrix, const arma::mat test_order, const arma::vec Test_versions);
-RcppExport SEXP _hmcdm_Q_list(SEXP Q_matrixSEXP, SEXP test_orderSEXP, SEXP Test_versionsSEXP) {
+Rcpp::List Q_list(const arma::mat Q_matrix, const arma::mat Test_order, const arma::vec Test_versions);
+RcppExport SEXP _hmcdm_Q_list(SEXP Q_matrixSEXP, SEXP Test_orderSEXP, SEXP Test_versionsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::mat >::type Q_matrix(Q_matrixSEXP);
-    Rcpp::traits::input_parameter< const arma::mat >::type test_order(test_orderSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type Test_order(Test_orderSEXP);
     Rcpp::traits::input_parameter< const arma::vec >::type Test_versions(Test_versionsSEXP);
-    rcpp_result_gen = Rcpp::wrap(Q_list(Q_matrix, test_order, Test_versions));
+    rcpp_result_gen = Rcpp::wrap(Q_list(Q_matrix, Test_order, Test_versions));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -275,8 +275,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // Learning_fit
-Rcpp::List Learning_fit(const Rcpp::List output, const std::string model, const arma::cube Y_real_array, const arma::mat Q_matrix, const arma::mat test_order, const arma::vec Test_versions, const Rcpp::Nullable<Rcpp::List> Q_examinee, const Rcpp::Nullable<arma::cube> Latency_array, const int G_version, const Rcpp::Nullable<Rcpp::NumericMatrix> R);
-RcppExport SEXP _hmcdm_Learning_fit(SEXP outputSEXP, SEXP modelSEXP, SEXP Y_real_arraySEXP, SEXP Q_matrixSEXP, SEXP test_orderSEXP, SEXP Test_versionsSEXP, SEXP Q_examineeSEXP, SEXP Latency_arraySEXP, SEXP G_versionSEXP, SEXP RSEXP) {
+Rcpp::List Learning_fit(const Rcpp::List output, const std::string model, const arma::cube Y_real_array, const arma::mat Q_matrix, const arma::mat Test_order, const arma::vec Test_versions, const Rcpp::Nullable<Rcpp::List> Q_examinee, const Rcpp::Nullable<arma::cube> Latency_array, const int G_version, const Rcpp::Nullable<Rcpp::NumericMatrix> R);
+RcppExport SEXP _hmcdm_Learning_fit(SEXP outputSEXP, SEXP modelSEXP, SEXP Y_real_arraySEXP, SEXP Q_matrixSEXP, SEXP Test_orderSEXP, SEXP Test_versionsSEXP, SEXP Q_examineeSEXP, SEXP Latency_arraySEXP, SEXP G_versionSEXP, SEXP RSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -284,19 +284,19 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const std::string >::type model(modelSEXP);
     Rcpp::traits::input_parameter< const arma::cube >::type Y_real_array(Y_real_arraySEXP);
     Rcpp::traits::input_parameter< const arma::mat >::type Q_matrix(Q_matrixSEXP);
-    Rcpp::traits::input_parameter< const arma::mat >::type test_order(test_orderSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type Test_order(Test_orderSEXP);
     Rcpp::traits::input_parameter< const arma::vec >::type Test_versions(Test_versionsSEXP);
     Rcpp::traits::input_parameter< const Rcpp::Nullable<Rcpp::List> >::type Q_examinee(Q_examineeSEXP);
     Rcpp::traits::input_parameter< const Rcpp::Nullable<arma::cube> >::type Latency_array(Latency_arraySEXP);
     Rcpp::traits::input_parameter< const int >::type G_version(G_versionSEXP);
     Rcpp::traits::input_parameter< const Rcpp::Nullable<Rcpp::NumericMatrix> >::type R(RSEXP);
-    rcpp_result_gen = Rcpp::wrap(Learning_fit(output, model, Y_real_array, Q_matrix, test_order, Test_versions, Q_examinee, Latency_array, G_version, R));
+    rcpp_result_gen = Rcpp::wrap(Learning_fit(output, model, Y_real_array, Q_matrix, Test_order, Test_versions, Q_examinee, Latency_array, G_version, R));
     return rcpp_result_gen;
 END_RCPP
 }
 // parm_update_HO
-Rcpp::List parm_update_HO(const unsigned int N, const unsigned int Jt, const unsigned int K, const unsigned int T, arma::cube& alphas, arma::vec& pi, arma::vec& lambdas, arma::vec& thetas, const arma::cube response, arma::cube& itempars, const arma::cube Qs, const Rcpp::List Q_examinee, const arma::mat test_order, const arma::vec Test_versions, const double theta_propose, const arma::vec deltas_propose);
-RcppExport SEXP _hmcdm_parm_update_HO(SEXP NSEXP, SEXP JtSEXP, SEXP KSEXP, SEXP TSEXP, SEXP alphasSEXP, SEXP piSEXP, SEXP lambdasSEXP, SEXP thetasSEXP, SEXP responseSEXP, SEXP itemparsSEXP, SEXP QsSEXP, SEXP Q_examineeSEXP, SEXP test_orderSEXP, SEXP Test_versionsSEXP, SEXP theta_proposeSEXP, SEXP deltas_proposeSEXP) {
+Rcpp::List parm_update_HO(const unsigned int N, const unsigned int Jt, const unsigned int K, const unsigned int T, arma::cube& alphas, arma::vec& pi, arma::vec& lambdas, arma::vec& thetas, const arma::cube response, arma::cube& itempars, const arma::cube Qs, const Rcpp::List Q_examinee, const arma::mat Test_order, const arma::vec Test_versions, const double theta_propose, const arma::vec deltas_propose);
+RcppExport SEXP _hmcdm_parm_update_HO(SEXP NSEXP, SEXP JtSEXP, SEXP KSEXP, SEXP TSEXP, SEXP alphasSEXP, SEXP piSEXP, SEXP lambdasSEXP, SEXP thetasSEXP, SEXP responseSEXP, SEXP itemparsSEXP, SEXP QsSEXP, SEXP Q_examineeSEXP, SEXP Test_orderSEXP, SEXP Test_versionsSEXP, SEXP theta_proposeSEXP, SEXP deltas_proposeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -312,35 +312,35 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::cube& >::type itempars(itemparsSEXP);
     Rcpp::traits::input_parameter< const arma::cube >::type Qs(QsSEXP);
     Rcpp::traits::input_parameter< const Rcpp::List >::type Q_examinee(Q_examineeSEXP);
-    Rcpp::traits::input_parameter< const arma::mat >::type test_order(test_orderSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type Test_order(Test_orderSEXP);
     Rcpp::traits::input_parameter< const arma::vec >::type Test_versions(Test_versionsSEXP);
     Rcpp::traits::input_parameter< const double >::type theta_propose(theta_proposeSEXP);
     Rcpp::traits::input_parameter< const arma::vec >::type deltas_propose(deltas_proposeSEXP);
-    rcpp_result_gen = Rcpp::wrap(parm_update_HO(N, Jt, K, T, alphas, pi, lambdas, thetas, response, itempars, Qs, Q_examinee, test_order, Test_versions, theta_propose, deltas_propose));
+    rcpp_result_gen = Rcpp::wrap(parm_update_HO(N, Jt, K, T, alphas, pi, lambdas, thetas, response, itempars, Qs, Q_examinee, Test_order, Test_versions, theta_propose, deltas_propose));
     return rcpp_result_gen;
 END_RCPP
 }
 // Gibbs_DINA_HO
-Rcpp::List Gibbs_DINA_HO(const arma::cube& Response, const arma::cube& Qs, const arma::mat& test_order, const arma::vec& Test_versions, const double theta_propose, const arma::vec deltas_propose, const unsigned int chain_length, const unsigned int burn_in);
-RcppExport SEXP _hmcdm_Gibbs_DINA_HO(SEXP ResponseSEXP, SEXP QsSEXP, SEXP test_orderSEXP, SEXP Test_versionsSEXP, SEXP theta_proposeSEXP, SEXP deltas_proposeSEXP, SEXP chain_lengthSEXP, SEXP burn_inSEXP) {
+Rcpp::List Gibbs_DINA_HO(const arma::cube& Response, const arma::cube& Qs, const arma::mat& Test_order, const arma::vec& Test_versions, const double theta_propose, const arma::vec deltas_propose, const unsigned int chain_length, const unsigned int burn_in);
+RcppExport SEXP _hmcdm_Gibbs_DINA_HO(SEXP ResponseSEXP, SEXP QsSEXP, SEXP Test_orderSEXP, SEXP Test_versionsSEXP, SEXP theta_proposeSEXP, SEXP deltas_proposeSEXP, SEXP chain_lengthSEXP, SEXP burn_inSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::cube& >::type Response(ResponseSEXP);
     Rcpp::traits::input_parameter< const arma::cube& >::type Qs(QsSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type test_order(test_orderSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Test_order(Test_orderSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type Test_versions(Test_versionsSEXP);
     Rcpp::traits::input_parameter< const double >::type theta_propose(theta_proposeSEXP);
     Rcpp::traits::input_parameter< const arma::vec >::type deltas_propose(deltas_proposeSEXP);
     Rcpp::traits::input_parameter< const unsigned int >::type chain_length(chain_lengthSEXP);
     Rcpp::traits::input_parameter< const unsigned int >::type burn_in(burn_inSEXP);
-    rcpp_result_gen = Rcpp::wrap(Gibbs_DINA_HO(Response, Qs, test_order, Test_versions, theta_propose, deltas_propose, chain_length, burn_in));
+    rcpp_result_gen = Rcpp::wrap(Gibbs_DINA_HO(Response, Qs, Test_order, Test_versions, theta_propose, deltas_propose, chain_length, burn_in));
     return rcpp_result_gen;
 END_RCPP
 }
 // parm_update_HO_RT_sep
-Rcpp::List parm_update_HO_RT_sep(const unsigned int N, const unsigned int Jt, const unsigned int K, const unsigned int T, arma::cube& alphas, arma::vec& pi, arma::vec& lambdas, arma::vec& thetas, const arma::cube latency, arma::cube& RT_itempars, arma::vec& taus, arma::vec& phi_vec, arma::vec& tauvar, const arma::cube response, arma::cube& itempars, const arma::cube Qs, const Rcpp::List Q_examinee, const arma::mat test_order, const arma::vec Test_versions, const int G_version, const double theta_propose, const double a_sigma_tau0, const double rate_sigma_tau0, const arma::vec deltas_propose, const double a_alpha0, const double rate_alpha0);
-RcppExport SEXP _hmcdm_parm_update_HO_RT_sep(SEXP NSEXP, SEXP JtSEXP, SEXP KSEXP, SEXP TSEXP, SEXP alphasSEXP, SEXP piSEXP, SEXP lambdasSEXP, SEXP thetasSEXP, SEXP latencySEXP, SEXP RT_itemparsSEXP, SEXP tausSEXP, SEXP phi_vecSEXP, SEXP tauvarSEXP, SEXP responseSEXP, SEXP itemparsSEXP, SEXP QsSEXP, SEXP Q_examineeSEXP, SEXP test_orderSEXP, SEXP Test_versionsSEXP, SEXP G_versionSEXP, SEXP theta_proposeSEXP, SEXP a_sigma_tau0SEXP, SEXP rate_sigma_tau0SEXP, SEXP deltas_proposeSEXP, SEXP a_alpha0SEXP, SEXP rate_alpha0SEXP) {
+Rcpp::List parm_update_HO_RT_sep(const unsigned int N, const unsigned int Jt, const unsigned int K, const unsigned int T, arma::cube& alphas, arma::vec& pi, arma::vec& lambdas, arma::vec& thetas, const arma::cube latency, arma::cube& RT_itempars, arma::vec& taus, arma::vec& phi_vec, arma::vec& tauvar, const arma::cube response, arma::cube& itempars, const arma::cube Qs, const Rcpp::List Q_examinee, const arma::mat Test_order, const arma::vec Test_versions, const int G_version, const double theta_propose, const double a_sigma_tau0, const double rate_sigma_tau0, const arma::vec deltas_propose, const double a_alpha0, const double rate_alpha0);
+RcppExport SEXP _hmcdm_parm_update_HO_RT_sep(SEXP NSEXP, SEXP JtSEXP, SEXP KSEXP, SEXP TSEXP, SEXP alphasSEXP, SEXP piSEXP, SEXP lambdasSEXP, SEXP thetasSEXP, SEXP latencySEXP, SEXP RT_itemparsSEXP, SEXP tausSEXP, SEXP phi_vecSEXP, SEXP tauvarSEXP, SEXP responseSEXP, SEXP itemparsSEXP, SEXP QsSEXP, SEXP Q_examineeSEXP, SEXP Test_orderSEXP, SEXP Test_versionsSEXP, SEXP G_versionSEXP, SEXP theta_proposeSEXP, SEXP a_sigma_tau0SEXP, SEXP rate_sigma_tau0SEXP, SEXP deltas_proposeSEXP, SEXP a_alpha0SEXP, SEXP rate_alpha0SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -361,7 +361,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::cube& >::type itempars(itemparsSEXP);
     Rcpp::traits::input_parameter< const arma::cube >::type Qs(QsSEXP);
     Rcpp::traits::input_parameter< const Rcpp::List >::type Q_examinee(Q_examineeSEXP);
-    Rcpp::traits::input_parameter< const arma::mat >::type test_order(test_orderSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type Test_order(Test_orderSEXP);
     Rcpp::traits::input_parameter< const arma::vec >::type Test_versions(Test_versionsSEXP);
     Rcpp::traits::input_parameter< const int >::type G_version(G_versionSEXP);
     Rcpp::traits::input_parameter< const double >::type theta_propose(theta_proposeSEXP);
@@ -370,33 +370,33 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::vec >::type deltas_propose(deltas_proposeSEXP);
     Rcpp::traits::input_parameter< const double >::type a_alpha0(a_alpha0SEXP);
     Rcpp::traits::input_parameter< const double >::type rate_alpha0(rate_alpha0SEXP);
-    rcpp_result_gen = Rcpp::wrap(parm_update_HO_RT_sep(N, Jt, K, T, alphas, pi, lambdas, thetas, latency, RT_itempars, taus, phi_vec, tauvar, response, itempars, Qs, Q_examinee, test_order, Test_versions, G_version, theta_propose, a_sigma_tau0, rate_sigma_tau0, deltas_propose, a_alpha0, rate_alpha0));
+    rcpp_result_gen = Rcpp::wrap(parm_update_HO_RT_sep(N, Jt, K, T, alphas, pi, lambdas, thetas, latency, RT_itempars, taus, phi_vec, tauvar, response, itempars, Qs, Q_examinee, Test_order, Test_versions, G_version, theta_propose, a_sigma_tau0, rate_sigma_tau0, deltas_propose, a_alpha0, rate_alpha0));
     return rcpp_result_gen;
 END_RCPP
 }
 // Gibbs_DINA_HO_RT_sep
-Rcpp::List Gibbs_DINA_HO_RT_sep(const arma::cube& Response, const arma::cube& Latency, const arma::cube& Qs, const arma::mat& test_order, const arma::vec& Test_versions, int G_version, const double theta_propose, const arma::vec deltas_propose, const unsigned int chain_length, const unsigned int burn_in);
-RcppExport SEXP _hmcdm_Gibbs_DINA_HO_RT_sep(SEXP ResponseSEXP, SEXP LatencySEXP, SEXP QsSEXP, SEXP test_orderSEXP, SEXP Test_versionsSEXP, SEXP G_versionSEXP, SEXP theta_proposeSEXP, SEXP deltas_proposeSEXP, SEXP chain_lengthSEXP, SEXP burn_inSEXP) {
+Rcpp::List Gibbs_DINA_HO_RT_sep(const arma::cube& Response, const arma::cube& Latency, const arma::cube& Qs, const arma::mat& Test_order, const arma::vec& Test_versions, int G_version, const double theta_propose, const arma::vec deltas_propose, const unsigned int chain_length, const unsigned int burn_in);
+RcppExport SEXP _hmcdm_Gibbs_DINA_HO_RT_sep(SEXP ResponseSEXP, SEXP LatencySEXP, SEXP QsSEXP, SEXP Test_orderSEXP, SEXP Test_versionsSEXP, SEXP G_versionSEXP, SEXP theta_proposeSEXP, SEXP deltas_proposeSEXP, SEXP chain_lengthSEXP, SEXP burn_inSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::cube& >::type Response(ResponseSEXP);
     Rcpp::traits::input_parameter< const arma::cube& >::type Latency(LatencySEXP);
     Rcpp::traits::input_parameter< const arma::cube& >::type Qs(QsSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type test_order(test_orderSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Test_order(Test_orderSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type Test_versions(Test_versionsSEXP);
     Rcpp::traits::input_parameter< int >::type G_version(G_versionSEXP);
     Rcpp::traits::input_parameter< const double >::type theta_propose(theta_proposeSEXP);
     Rcpp::traits::input_parameter< const arma::vec >::type deltas_propose(deltas_proposeSEXP);
     Rcpp::traits::input_parameter< const unsigned int >::type chain_length(chain_lengthSEXP);
     Rcpp::traits::input_parameter< const unsigned int >::type burn_in(burn_inSEXP);
-    rcpp_result_gen = Rcpp::wrap(Gibbs_DINA_HO_RT_sep(Response, Latency, Qs, test_order, Test_versions, G_version, theta_propose, deltas_propose, chain_length, burn_in));
+    rcpp_result_gen = Rcpp::wrap(Gibbs_DINA_HO_RT_sep(Response, Latency, Qs, Test_order, Test_versions, G_version, theta_propose, deltas_propose, chain_length, burn_in));
     return rcpp_result_gen;
 END_RCPP
 }
 // parm_update_HO_RT_joint
-Rcpp::List parm_update_HO_RT_joint(const unsigned int N, const unsigned int Jt, const unsigned int K, const unsigned int T, arma::cube& alphas, arma::vec& pi, arma::vec& lambdas, arma::vec& thetas, const arma::cube latency, arma::cube& RT_itempars, arma::vec& taus, arma::vec& phi_vec, arma::mat& Sig, const arma::cube response, arma::cube& itempars, const arma::cube Qs, const Rcpp::List Q_examinee, const arma::mat test_order, const arma::vec Test_versions, const int G_version, const double sig_theta_propose, const arma::mat S, double p, const arma::vec deltas_propose, const double a_alpha0, const double rate_alpha0);
-RcppExport SEXP _hmcdm_parm_update_HO_RT_joint(SEXP NSEXP, SEXP JtSEXP, SEXP KSEXP, SEXP TSEXP, SEXP alphasSEXP, SEXP piSEXP, SEXP lambdasSEXP, SEXP thetasSEXP, SEXP latencySEXP, SEXP RT_itemparsSEXP, SEXP tausSEXP, SEXP phi_vecSEXP, SEXP SigSEXP, SEXP responseSEXP, SEXP itemparsSEXP, SEXP QsSEXP, SEXP Q_examineeSEXP, SEXP test_orderSEXP, SEXP Test_versionsSEXP, SEXP G_versionSEXP, SEXP sig_theta_proposeSEXP, SEXP SSEXP, SEXP pSEXP, SEXP deltas_proposeSEXP, SEXP a_alpha0SEXP, SEXP rate_alpha0SEXP) {
+Rcpp::List parm_update_HO_RT_joint(const unsigned int N, const unsigned int Jt, const unsigned int K, const unsigned int T, arma::cube& alphas, arma::vec& pi, arma::vec& lambdas, arma::vec& thetas, const arma::cube latency, arma::cube& RT_itempars, arma::vec& taus, arma::vec& phi_vec, arma::mat& Sig, const arma::cube response, arma::cube& itempars, const arma::cube Qs, const Rcpp::List Q_examinee, const arma::mat Test_order, const arma::vec Test_versions, const int G_version, const double sig_theta_propose, const arma::mat S, double p, const arma::vec deltas_propose, const double a_alpha0, const double rate_alpha0);
+RcppExport SEXP _hmcdm_parm_update_HO_RT_joint(SEXP NSEXP, SEXP JtSEXP, SEXP KSEXP, SEXP TSEXP, SEXP alphasSEXP, SEXP piSEXP, SEXP lambdasSEXP, SEXP thetasSEXP, SEXP latencySEXP, SEXP RT_itemparsSEXP, SEXP tausSEXP, SEXP phi_vecSEXP, SEXP SigSEXP, SEXP responseSEXP, SEXP itemparsSEXP, SEXP QsSEXP, SEXP Q_examineeSEXP, SEXP Test_orderSEXP, SEXP Test_versionsSEXP, SEXP G_versionSEXP, SEXP sig_theta_proposeSEXP, SEXP SSEXP, SEXP pSEXP, SEXP deltas_proposeSEXP, SEXP a_alpha0SEXP, SEXP rate_alpha0SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -417,7 +417,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::cube& >::type itempars(itemparsSEXP);
     Rcpp::traits::input_parameter< const arma::cube >::type Qs(QsSEXP);
     Rcpp::traits::input_parameter< const Rcpp::List >::type Q_examinee(Q_examineeSEXP);
-    Rcpp::traits::input_parameter< const arma::mat >::type test_order(test_orderSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type Test_order(Test_orderSEXP);
     Rcpp::traits::input_parameter< const arma::vec >::type Test_versions(Test_versionsSEXP);
     Rcpp::traits::input_parameter< const int >::type G_version(G_versionSEXP);
     Rcpp::traits::input_parameter< const double >::type sig_theta_propose(sig_theta_proposeSEXP);
@@ -426,33 +426,33 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::vec >::type deltas_propose(deltas_proposeSEXP);
     Rcpp::traits::input_parameter< const double >::type a_alpha0(a_alpha0SEXP);
     Rcpp::traits::input_parameter< const double >::type rate_alpha0(rate_alpha0SEXP);
-    rcpp_result_gen = Rcpp::wrap(parm_update_HO_RT_joint(N, Jt, K, T, alphas, pi, lambdas, thetas, latency, RT_itempars, taus, phi_vec, Sig, response, itempars, Qs, Q_examinee, test_order, Test_versions, G_version, sig_theta_propose, S, p, deltas_propose, a_alpha0, rate_alpha0));
+    rcpp_result_gen = Rcpp::wrap(parm_update_HO_RT_joint(N, Jt, K, T, alphas, pi, lambdas, thetas, latency, RT_itempars, taus, phi_vec, Sig, response, itempars, Qs, Q_examinee, Test_order, Test_versions, G_version, sig_theta_propose, S, p, deltas_propose, a_alpha0, rate_alpha0));
     return rcpp_result_gen;
 END_RCPP
 }
 // Gibbs_DINA_HO_RT_joint
-Rcpp::List Gibbs_DINA_HO_RT_joint(const arma::cube& Response, const arma::cube& Latency, const arma::cube& Qs, const arma::mat& test_order, const arma::vec& Test_versions, int G_version, const double sig_theta_propose, const arma::vec deltas_propose, const unsigned int chain_length, const unsigned int burn_in);
-RcppExport SEXP _hmcdm_Gibbs_DINA_HO_RT_joint(SEXP ResponseSEXP, SEXP LatencySEXP, SEXP QsSEXP, SEXP test_orderSEXP, SEXP Test_versionsSEXP, SEXP G_versionSEXP, SEXP sig_theta_proposeSEXP, SEXP deltas_proposeSEXP, SEXP chain_lengthSEXP, SEXP burn_inSEXP) {
+Rcpp::List Gibbs_DINA_HO_RT_joint(const arma::cube& Response, const arma::cube& Latency, const arma::cube& Qs, const arma::mat& Test_order, const arma::vec& Test_versions, int G_version, const double sig_theta_propose, const arma::vec deltas_propose, const unsigned int chain_length, const unsigned int burn_in);
+RcppExport SEXP _hmcdm_Gibbs_DINA_HO_RT_joint(SEXP ResponseSEXP, SEXP LatencySEXP, SEXP QsSEXP, SEXP Test_orderSEXP, SEXP Test_versionsSEXP, SEXP G_versionSEXP, SEXP sig_theta_proposeSEXP, SEXP deltas_proposeSEXP, SEXP chain_lengthSEXP, SEXP burn_inSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::cube& >::type Response(ResponseSEXP);
     Rcpp::traits::input_parameter< const arma::cube& >::type Latency(LatencySEXP);
     Rcpp::traits::input_parameter< const arma::cube& >::type Qs(QsSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type test_order(test_orderSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Test_order(Test_orderSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type Test_versions(Test_versionsSEXP);
     Rcpp::traits::input_parameter< int >::type G_version(G_versionSEXP);
     Rcpp::traits::input_parameter< const double >::type sig_theta_propose(sig_theta_proposeSEXP);
     Rcpp::traits::input_parameter< const arma::vec >::type deltas_propose(deltas_proposeSEXP);
     Rcpp::traits::input_parameter< const unsigned int >::type chain_length(chain_lengthSEXP);
     Rcpp::traits::input_parameter< const unsigned int >::type burn_in(burn_inSEXP);
-    rcpp_result_gen = Rcpp::wrap(Gibbs_DINA_HO_RT_joint(Response, Latency, Qs, test_order, Test_versions, G_version, sig_theta_propose, deltas_propose, chain_length, burn_in));
+    rcpp_result_gen = Rcpp::wrap(Gibbs_DINA_HO_RT_joint(Response, Latency, Qs, Test_order, Test_versions, G_version, sig_theta_propose, deltas_propose, chain_length, burn_in));
     return rcpp_result_gen;
 END_RCPP
 }
 // parm_update_rRUM
-void parm_update_rRUM(const unsigned int N, const unsigned int Jt, const unsigned int K, const unsigned int T, arma::cube& alphas, arma::vec& pi, arma::vec& taus, const arma::mat& R, arma::cube& r_stars, arma::mat& pi_stars, const arma::cube Qs, const arma::cube& responses, arma::cube& X_ijk, arma::cube& Smats, arma::cube& Gmats, const arma::mat& test_order, const arma::vec& Test_versions, const arma::vec& dirich_prior);
-RcppExport SEXP _hmcdm_parm_update_rRUM(SEXP NSEXP, SEXP JtSEXP, SEXP KSEXP, SEXP TSEXP, SEXP alphasSEXP, SEXP piSEXP, SEXP tausSEXP, SEXP RSEXP, SEXP r_starsSEXP, SEXP pi_starsSEXP, SEXP QsSEXP, SEXP responsesSEXP, SEXP X_ijkSEXP, SEXP SmatsSEXP, SEXP GmatsSEXP, SEXP test_orderSEXP, SEXP Test_versionsSEXP, SEXP dirich_priorSEXP) {
+void parm_update_rRUM(const unsigned int N, const unsigned int Jt, const unsigned int K, const unsigned int T, arma::cube& alphas, arma::vec& pi, arma::vec& taus, const arma::mat& R, arma::cube& r_stars, arma::mat& pi_stars, const arma::cube Qs, const arma::cube& responses, arma::cube& X_ijk, arma::cube& Smats, arma::cube& Gmats, const arma::mat& Test_order, const arma::vec& Test_versions, const arma::vec& dirich_prior);
+RcppExport SEXP _hmcdm_parm_update_rRUM(SEXP NSEXP, SEXP JtSEXP, SEXP KSEXP, SEXP TSEXP, SEXP alphasSEXP, SEXP piSEXP, SEXP tausSEXP, SEXP RSEXP, SEXP r_starsSEXP, SEXP pi_starsSEXP, SEXP QsSEXP, SEXP responsesSEXP, SEXP X_ijkSEXP, SEXP SmatsSEXP, SEXP GmatsSEXP, SEXP Test_orderSEXP, SEXP Test_versionsSEXP, SEXP dirich_priorSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const unsigned int >::type N(NSEXP);
@@ -470,33 +470,33 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::cube& >::type X_ijk(X_ijkSEXP);
     Rcpp::traits::input_parameter< arma::cube& >::type Smats(SmatsSEXP);
     Rcpp::traits::input_parameter< arma::cube& >::type Gmats(GmatsSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type test_order(test_orderSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Test_order(Test_orderSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type Test_versions(Test_versionsSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type dirich_prior(dirich_priorSEXP);
-    parm_update_rRUM(N, Jt, K, T, alphas, pi, taus, R, r_stars, pi_stars, Qs, responses, X_ijk, Smats, Gmats, test_order, Test_versions, dirich_prior);
+    parm_update_rRUM(N, Jt, K, T, alphas, pi, taus, R, r_stars, pi_stars, Qs, responses, X_ijk, Smats, Gmats, Test_order, Test_versions, dirich_prior);
     return R_NilValue;
 END_RCPP
 }
 // Gibbs_rRUM_indept
-Rcpp::List Gibbs_rRUM_indept(const arma::cube& Response, const arma::cube& Qs, const arma::mat& R, const arma::mat& test_order, const arma::vec& Test_versions, const unsigned int chain_length, const unsigned int burn_in);
-RcppExport SEXP _hmcdm_Gibbs_rRUM_indept(SEXP ResponseSEXP, SEXP QsSEXP, SEXP RSEXP, SEXP test_orderSEXP, SEXP Test_versionsSEXP, SEXP chain_lengthSEXP, SEXP burn_inSEXP) {
+Rcpp::List Gibbs_rRUM_indept(const arma::cube& Response, const arma::cube& Qs, const arma::mat& R, const arma::mat& Test_order, const arma::vec& Test_versions, const unsigned int chain_length, const unsigned int burn_in);
+RcppExport SEXP _hmcdm_Gibbs_rRUM_indept(SEXP ResponseSEXP, SEXP QsSEXP, SEXP RSEXP, SEXP Test_orderSEXP, SEXP Test_versionsSEXP, SEXP chain_lengthSEXP, SEXP burn_inSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::cube& >::type Response(ResponseSEXP);
     Rcpp::traits::input_parameter< const arma::cube& >::type Qs(QsSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type R(RSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type test_order(test_orderSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Test_order(Test_orderSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type Test_versions(Test_versionsSEXP);
     Rcpp::traits::input_parameter< const unsigned int >::type chain_length(chain_lengthSEXP);
     Rcpp::traits::input_parameter< const unsigned int >::type burn_in(burn_inSEXP);
-    rcpp_result_gen = Rcpp::wrap(Gibbs_rRUM_indept(Response, Qs, R, test_order, Test_versions, chain_length, burn_in));
+    rcpp_result_gen = Rcpp::wrap(Gibbs_rRUM_indept(Response, Qs, R, Test_order, Test_versions, chain_length, burn_in));
     return rcpp_result_gen;
 END_RCPP
 }
 // parm_update_NIDA_indept
-void parm_update_NIDA_indept(const unsigned int N, const unsigned int Jt, const unsigned int K, const unsigned int T, arma::cube& alphas, arma::vec& pi, arma::vec& taus, const arma::mat& R, const arma::cube Qs, const arma::cube& responses, arma::cube& X_ijk, arma::cube& Smats, arma::cube& Gmats, const arma::mat& test_order, const arma::vec& Test_versions, const arma::vec& dirich_prior);
-RcppExport SEXP _hmcdm_parm_update_NIDA_indept(SEXP NSEXP, SEXP JtSEXP, SEXP KSEXP, SEXP TSEXP, SEXP alphasSEXP, SEXP piSEXP, SEXP tausSEXP, SEXP RSEXP, SEXP QsSEXP, SEXP responsesSEXP, SEXP X_ijkSEXP, SEXP SmatsSEXP, SEXP GmatsSEXP, SEXP test_orderSEXP, SEXP Test_versionsSEXP, SEXP dirich_priorSEXP) {
+void parm_update_NIDA_indept(const unsigned int N, const unsigned int Jt, const unsigned int K, const unsigned int T, arma::cube& alphas, arma::vec& pi, arma::vec& taus, const arma::mat& R, const arma::cube Qs, const arma::cube& responses, arma::cube& X_ijk, arma::cube& Smats, arma::cube& Gmats, const arma::mat& Test_order, const arma::vec& Test_versions, const arma::vec& dirich_prior);
+RcppExport SEXP _hmcdm_parm_update_NIDA_indept(SEXP NSEXP, SEXP JtSEXP, SEXP KSEXP, SEXP TSEXP, SEXP alphasSEXP, SEXP piSEXP, SEXP tausSEXP, SEXP RSEXP, SEXP QsSEXP, SEXP responsesSEXP, SEXP X_ijkSEXP, SEXP SmatsSEXP, SEXP GmatsSEXP, SEXP Test_orderSEXP, SEXP Test_versionsSEXP, SEXP dirich_priorSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const unsigned int >::type N(NSEXP);
@@ -512,27 +512,27 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::cube& >::type X_ijk(X_ijkSEXP);
     Rcpp::traits::input_parameter< arma::cube& >::type Smats(SmatsSEXP);
     Rcpp::traits::input_parameter< arma::cube& >::type Gmats(GmatsSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type test_order(test_orderSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Test_order(Test_orderSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type Test_versions(Test_versionsSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type dirich_prior(dirich_priorSEXP);
-    parm_update_NIDA_indept(N, Jt, K, T, alphas, pi, taus, R, Qs, responses, X_ijk, Smats, Gmats, test_order, Test_versions, dirich_prior);
+    parm_update_NIDA_indept(N, Jt, K, T, alphas, pi, taus, R, Qs, responses, X_ijk, Smats, Gmats, Test_order, Test_versions, dirich_prior);
     return R_NilValue;
 END_RCPP
 }
 // Gibbs_NIDA_indept
-Rcpp::List Gibbs_NIDA_indept(const arma::cube& Response, const arma::cube& Qs, const arma::mat& R, const arma::mat& test_order, const arma::vec& Test_versions, const unsigned int chain_length, const unsigned int burn_in);
-RcppExport SEXP _hmcdm_Gibbs_NIDA_indept(SEXP ResponseSEXP, SEXP QsSEXP, SEXP RSEXP, SEXP test_orderSEXP, SEXP Test_versionsSEXP, SEXP chain_lengthSEXP, SEXP burn_inSEXP) {
+Rcpp::List Gibbs_NIDA_indept(const arma::cube& Response, const arma::cube& Qs, const arma::mat& R, const arma::mat& Test_order, const arma::vec& Test_versions, const unsigned int chain_length, const unsigned int burn_in);
+RcppExport SEXP _hmcdm_Gibbs_NIDA_indept(SEXP ResponseSEXP, SEXP QsSEXP, SEXP RSEXP, SEXP Test_orderSEXP, SEXP Test_versionsSEXP, SEXP chain_lengthSEXP, SEXP burn_inSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::cube& >::type Response(ResponseSEXP);
     Rcpp::traits::input_parameter< const arma::cube& >::type Qs(QsSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type R(RSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type test_order(test_orderSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Test_order(Test_orderSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type Test_versions(Test_versionsSEXP);
     Rcpp::traits::input_parameter< const unsigned int >::type chain_length(chain_lengthSEXP);
     Rcpp::traits::input_parameter< const unsigned int >::type burn_in(burn_inSEXP);
-    rcpp_result_gen = Rcpp::wrap(Gibbs_NIDA_indept(Response, Qs, R, test_order, Test_versions, chain_length, burn_in));
+    rcpp_result_gen = Rcpp::wrap(Gibbs_NIDA_indept(Response, Qs, R, Test_order, Test_versions, chain_length, burn_in));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -559,31 +559,31 @@ BEGIN_RCPP
 END_RCPP
 }
 // Gibbs_DINA_FOHM
-Rcpp::List Gibbs_DINA_FOHM(const arma::cube& Response, const arma::cube& Qs, const arma::mat& test_order, const arma::vec& Test_versions, const unsigned int chain_length, const unsigned int burn_in);
-RcppExport SEXP _hmcdm_Gibbs_DINA_FOHM(SEXP ResponseSEXP, SEXP QsSEXP, SEXP test_orderSEXP, SEXP Test_versionsSEXP, SEXP chain_lengthSEXP, SEXP burn_inSEXP) {
+Rcpp::List Gibbs_DINA_FOHM(const arma::cube& Response, const arma::cube& Qs, const arma::mat& Test_order, const arma::vec& Test_versions, const unsigned int chain_length, const unsigned int burn_in);
+RcppExport SEXP _hmcdm_Gibbs_DINA_FOHM(SEXP ResponseSEXP, SEXP QsSEXP, SEXP Test_orderSEXP, SEXP Test_versionsSEXP, SEXP chain_lengthSEXP, SEXP burn_inSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::cube& >::type Response(ResponseSEXP);
     Rcpp::traits::input_parameter< const arma::cube& >::type Qs(QsSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type test_order(test_orderSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Test_order(Test_orderSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type Test_versions(Test_versionsSEXP);
     Rcpp::traits::input_parameter< const unsigned int >::type chain_length(chain_lengthSEXP);
     Rcpp::traits::input_parameter< const unsigned int >::type burn_in(burn_inSEXP);
-    rcpp_result_gen = Rcpp::wrap(Gibbs_DINA_FOHM(Response, Qs, test_order, Test_versions, chain_length, burn_in));
+    rcpp_result_gen = Rcpp::wrap(Gibbs_DINA_FOHM(Response, Qs, Test_order, Test_versions, chain_length, burn_in));
     return rcpp_result_gen;
 END_RCPP
 }
 // hmcdm
-Rcpp::List hmcdm(const arma::cube Y_real_array, const arma::mat Q_matrix, const std::string model, const arma::mat& test_order, const arma::vec& Test_versions, const unsigned int chain_length, const unsigned int burn_in, const int G_version, const double theta_propose, const Rcpp::Nullable<arma::cube> Latency_array, const Rcpp::Nullable<Rcpp::NumericVector> deltas_propose, const Rcpp::Nullable<Rcpp::NumericMatrix> R);
-RcppExport SEXP _hmcdm_hmcdm(SEXP Y_real_arraySEXP, SEXP Q_matrixSEXP, SEXP modelSEXP, SEXP test_orderSEXP, SEXP Test_versionsSEXP, SEXP chain_lengthSEXP, SEXP burn_inSEXP, SEXP G_versionSEXP, SEXP theta_proposeSEXP, SEXP Latency_arraySEXP, SEXP deltas_proposeSEXP, SEXP RSEXP) {
+Rcpp::List hmcdm(const arma::cube Y_real_array, const arma::mat Q_matrix, const std::string model, const arma::mat& Test_order, const arma::vec& Test_versions, const unsigned int chain_length, const unsigned int burn_in, const int G_version, const double theta_propose, const Rcpp::Nullable<arma::cube> Latency_array, const Rcpp::Nullable<Rcpp::NumericVector> deltas_propose, const Rcpp::Nullable<Rcpp::NumericMatrix> R);
+RcppExport SEXP _hmcdm_hmcdm(SEXP Y_real_arraySEXP, SEXP Q_matrixSEXP, SEXP modelSEXP, SEXP Test_orderSEXP, SEXP Test_versionsSEXP, SEXP chain_lengthSEXP, SEXP burn_inSEXP, SEXP G_versionSEXP, SEXP theta_proposeSEXP, SEXP Latency_arraySEXP, SEXP deltas_proposeSEXP, SEXP RSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::cube >::type Y_real_array(Y_real_arraySEXP);
     Rcpp::traits::input_parameter< const arma::mat >::type Q_matrix(Q_matrixSEXP);
     Rcpp::traits::input_parameter< const std::string >::type model(modelSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type test_order(test_orderSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Test_order(Test_orderSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type Test_versions(Test_versionsSEXP);
     Rcpp::traits::input_parameter< const unsigned int >::type chain_length(chain_lengthSEXP);
     Rcpp::traits::input_parameter< const unsigned int >::type burn_in(burn_inSEXP);
@@ -592,7 +592,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const Rcpp::Nullable<arma::cube> >::type Latency_array(Latency_arraySEXP);
     Rcpp::traits::input_parameter< const Rcpp::Nullable<Rcpp::NumericVector> >::type deltas_propose(deltas_proposeSEXP);
     Rcpp::traits::input_parameter< const Rcpp::Nullable<Rcpp::NumericMatrix> >::type R(RSEXP);
-    rcpp_result_gen = Rcpp::wrap(hmcdm(Y_real_array, Q_matrix, model, test_order, Test_versions, chain_length, burn_in, G_version, theta_propose, Latency_array, deltas_propose, R));
+    rcpp_result_gen = Rcpp::wrap(hmcdm(Y_real_array, Q_matrix, model, Test_order, Test_versions, chain_length, burn_in, G_version, theta_propose, Latency_array, deltas_propose, R));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -613,17 +613,17 @@ BEGIN_RCPP
 END_RCPP
 }
 // simDINA
-arma::cube simDINA(const arma::cube& alphas, const arma::cube& itempars, const arma::mat& ETA, const arma::mat& test_order, const arma::vec& Test_versions);
-RcppExport SEXP _hmcdm_simDINA(SEXP alphasSEXP, SEXP itemparsSEXP, SEXP ETASEXP, SEXP test_orderSEXP, SEXP Test_versionsSEXP) {
+arma::cube simDINA(const arma::cube& alphas, const arma::cube& itempars, const arma::mat& ETA, const arma::mat& Test_order, const arma::vec& Test_versions);
+RcppExport SEXP _hmcdm_simDINA(SEXP alphasSEXP, SEXP itemparsSEXP, SEXP ETASEXP, SEXP Test_orderSEXP, SEXP Test_versionsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::cube& >::type alphas(alphasSEXP);
     Rcpp::traits::input_parameter< const arma::cube& >::type itempars(itemparsSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type ETA(ETASEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type test_order(test_orderSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Test_order(Test_orderSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type Test_versions(Test_versionsSEXP);
-    rcpp_result_gen = Rcpp::wrap(simDINA(alphas, itempars, ETA, test_order, Test_versions));
+    rcpp_result_gen = Rcpp::wrap(simDINA(alphas, itempars, ETA, Test_order, Test_versions));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -657,8 +657,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // simrRUM
-arma::cube simrRUM(const arma::cube& alphas, const arma::mat& r_stars_mat, const arma::mat& pi_stars, const arma::mat Q_matrix, const arma::mat& test_order, const arma::vec& Test_versions);
-RcppExport SEXP _hmcdm_simrRUM(SEXP alphasSEXP, SEXP r_stars_matSEXP, SEXP pi_starsSEXP, SEXP Q_matrixSEXP, SEXP test_orderSEXP, SEXP Test_versionsSEXP) {
+arma::cube simrRUM(const arma::cube& alphas, const arma::mat& r_stars_mat, const arma::mat& pi_stars, const arma::mat Q_matrix, const arma::mat& Test_order, const arma::vec& Test_versions);
+RcppExport SEXP _hmcdm_simrRUM(SEXP alphasSEXP, SEXP r_stars_matSEXP, SEXP pi_starsSEXP, SEXP Q_matrixSEXP, SEXP Test_orderSEXP, SEXP Test_versionsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -666,9 +666,9 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::mat& >::type r_stars_mat(r_stars_matSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type pi_stars(pi_starsSEXP);
     Rcpp::traits::input_parameter< const arma::mat >::type Q_matrix(Q_matrixSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type test_order(test_orderSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Test_order(Test_orderSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type Test_versions(Test_versionsSEXP);
-    rcpp_result_gen = Rcpp::wrap(simrRUM(alphas, r_stars_mat, pi_stars, Q_matrix, test_order, Test_versions));
+    rcpp_result_gen = Rcpp::wrap(simrRUM(alphas, r_stars_mat, pi_stars, Q_matrix, Test_order, Test_versions));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -704,8 +704,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // simNIDA
-arma::cube simNIDA(const arma::cube& alphas, const arma::vec& Svec, const arma::vec& Gvec, const arma::mat Q_matrix, const arma::mat& test_order, const arma::vec& Test_versions);
-RcppExport SEXP _hmcdm_simNIDA(SEXP alphasSEXP, SEXP SvecSEXP, SEXP GvecSEXP, SEXP Q_matrixSEXP, SEXP test_orderSEXP, SEXP Test_versionsSEXP) {
+arma::cube simNIDA(const arma::cube& alphas, const arma::vec& Svec, const arma::vec& Gvec, const arma::mat Q_matrix, const arma::mat& Test_order, const arma::vec& Test_versions);
+RcppExport SEXP _hmcdm_simNIDA(SEXP alphasSEXP, SEXP SvecSEXP, SEXP GvecSEXP, SEXP Q_matrixSEXP, SEXP Test_orderSEXP, SEXP Test_versionsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -713,9 +713,9 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::vec& >::type Svec(SvecSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type Gvec(GvecSEXP);
     Rcpp::traits::input_parameter< const arma::mat >::type Q_matrix(Q_matrixSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type test_order(test_orderSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Test_order(Test_orderSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type Test_versions(Test_versionsSEXP);
-    rcpp_result_gen = Rcpp::wrap(simNIDA(alphas, Svec, Gvec, Q_matrix, test_order, Test_versions));
+    rcpp_result_gen = Rcpp::wrap(simNIDA(alphas, Svec, Gvec, Q_matrix, Test_order, Test_versions));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -735,20 +735,20 @@ BEGIN_RCPP
 END_RCPP
 }
 // J_incidence_cube
-arma::cube J_incidence_cube(const arma::mat& test_order, const arma::cube& Qs);
-RcppExport SEXP _hmcdm_J_incidence_cube(SEXP test_orderSEXP, SEXP QsSEXP) {
+arma::cube J_incidence_cube(const arma::mat& Test_order, const arma::cube& Qs);
+RcppExport SEXP _hmcdm_J_incidence_cube(SEXP Test_orderSEXP, SEXP QsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type test_order(test_orderSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Test_order(Test_orderSEXP);
     Rcpp::traits::input_parameter< const arma::cube& >::type Qs(QsSEXP);
-    rcpp_result_gen = Rcpp::wrap(J_incidence_cube(test_order, Qs));
+    rcpp_result_gen = Rcpp::wrap(J_incidence_cube(Test_order, Qs));
     return rcpp_result_gen;
 END_RCPP
 }
 // G2vec_efficient
-arma::vec G2vec_efficient(const arma::cube& ETA, const arma::cube& J_incidence, const arma::cube& alphas_i, int test_version_i, const arma::mat test_order, unsigned int t);
-RcppExport SEXP _hmcdm_G2vec_efficient(SEXP ETASEXP, SEXP J_incidenceSEXP, SEXP alphas_iSEXP, SEXP test_version_iSEXP, SEXP test_orderSEXP, SEXP tSEXP) {
+arma::vec G2vec_efficient(const arma::cube& ETA, const arma::cube& J_incidence, const arma::cube& alphas_i, int test_version_i, const arma::mat Test_order, unsigned int t);
+RcppExport SEXP _hmcdm_G2vec_efficient(SEXP ETASEXP, SEXP J_incidenceSEXP, SEXP alphas_iSEXP, SEXP test_version_iSEXP, SEXP Test_orderSEXP, SEXP tSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -756,15 +756,15 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::cube& >::type J_incidence(J_incidenceSEXP);
     Rcpp::traits::input_parameter< const arma::cube& >::type alphas_i(alphas_iSEXP);
     Rcpp::traits::input_parameter< int >::type test_version_i(test_version_iSEXP);
-    Rcpp::traits::input_parameter< const arma::mat >::type test_order(test_orderSEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type Test_order(Test_orderSEXP);
     Rcpp::traits::input_parameter< unsigned int >::type t(tSEXP);
-    rcpp_result_gen = Rcpp::wrap(G2vec_efficient(ETA, J_incidence, alphas_i, test_version_i, test_order, t));
+    rcpp_result_gen = Rcpp::wrap(G2vec_efficient(ETA, J_incidence, alphas_i, test_version_i, Test_order, t));
     return rcpp_result_gen;
 END_RCPP
 }
 // sim_RT
-arma::cube sim_RT(const arma::cube& alphas, const arma::cube& RT_itempars, const arma::mat& Q_matrix, const arma::vec& taus, double phi, const arma::mat ETAs, int G_version, const arma::mat& test_order, arma::vec Test_versions);
-RcppExport SEXP _hmcdm_sim_RT(SEXP alphasSEXP, SEXP RT_itemparsSEXP, SEXP Q_matrixSEXP, SEXP tausSEXP, SEXP phiSEXP, SEXP ETAsSEXP, SEXP G_versionSEXP, SEXP test_orderSEXP, SEXP Test_versionsSEXP) {
+arma::cube sim_RT(const arma::cube& alphas, const arma::cube& RT_itempars, const arma::mat& Q_matrix, const arma::vec& taus, double phi, const arma::mat ETAs, int G_version, const arma::mat& Test_order, arma::vec Test_versions);
+RcppExport SEXP _hmcdm_sim_RT(SEXP alphasSEXP, SEXP RT_itemparsSEXP, SEXP Q_matrixSEXP, SEXP tausSEXP, SEXP phiSEXP, SEXP ETAsSEXP, SEXP G_versionSEXP, SEXP Test_orderSEXP, SEXP Test_versionsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -775,9 +775,9 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type phi(phiSEXP);
     Rcpp::traits::input_parameter< const arma::mat >::type ETAs(ETAsSEXP);
     Rcpp::traits::input_parameter< int >::type G_version(G_versionSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type test_order(test_orderSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Test_order(Test_orderSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type Test_versions(Test_versionsSEXP);
-    rcpp_result_gen = Rcpp::wrap(sim_RT(alphas, RT_itempars, Q_matrix, taus, phi, ETAs, G_version, test_order, Test_versions));
+    rcpp_result_gen = Rcpp::wrap(sim_RT(alphas, RT_itempars, Q_matrix, taus, phi, ETAs, G_version, Test_order, Test_versions));
     return rcpp_result_gen;
 END_RCPP
 }

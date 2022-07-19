@@ -24,7 +24,7 @@ create cube of attribute patterns of all subjects across time.
 N = length(Test_versions)
 J = nrow(Q_matrix)
 K = ncol(Q_matrix)
-T = nrow(test_order)
+T = nrow(Test_order)
 Jt = J/T
 TP <- TPmat(K)
 Omega_true <- rOmega(TP)

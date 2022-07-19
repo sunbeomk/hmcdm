@@ -15,7 +15,7 @@
 Rcpp::List parm_update_HO(const unsigned int N, const unsigned int Jt, const unsigned int K, const unsigned int T,
                           arma::cube& alphas, arma::vec& pi, arma::vec& lambdas, arma::vec& thetas,
                           const arma::cube response, arma::cube& itempars, const arma::cube Qs, const Rcpp::List Q_examinee,
-                          const arma::mat test_order, const arma::vec Test_versions, 
+                          const arma::mat Test_order, const arma::vec Test_versions, 
                           const double theta_propose, const arma::vec deltas_propose){
   arma::cube ETA(Jt, (pow(2,K)), T);
   arma::vec CLASS_0(N);
@@ -37,7 +37,7 @@ Rcpp::List parm_update_HO(const unsigned int N, const unsigned int Jt, const uns
     arma::mat Q_i = Q_examinee[i];
     // update alphas
     for(unsigned int t = 0; t< T; t++){
-      int test_block_it = test_order(test_version_i,t)-1;
+      int test_block_it = Test_order(test_version_i,t)-1;
       // get likelihood of response
       arma::vec likelihood_Y(pow(2,K));
       for(unsigned int cc = 0; cc<(pow(2,K)); cc++){
@@ -165,7 +165,7 @@ Rcpp::List parm_update_HO(const unsigned int N, const unsigned int Jt, const uns
     arma::mat ETA_block(N,Jt);
     for(unsigned int i = 0; i < N; i++){
       // find the time point at which i received this block
-      int t_star = arma::conv_to<unsigned int>::from(arma::find(test_order.row(Test_versions(i)-1)==(block+1)));
+      int t_star = arma::conv_to<unsigned int>::from(arma::find(Test_order.row(Test_versions(i)-1)==(block+1)));
       // get response, RT, alphas, and Gs for items in this block
       Res_block.row(i) = response.slice(t_star).row(i);
       arma::vec alpha = alphas.slice(t_star).row(i).t();
@@ -207,7 +207,7 @@ Rcpp::List parm_update_HO(const unsigned int N, const unsigned int Jt, const uns
 // [[Rcpp::export]]
 Rcpp::List Gibbs_DINA_HO(const arma::cube& Response, 
                          const arma::cube& Qs,
-                         const arma::mat& test_order, const arma::vec& Test_versions, 
+                         const arma::mat& Test_order, const arma::vec& Test_versions, 
                          const double theta_propose,const arma::vec deltas_propose,
                          const unsigned int chain_length, const unsigned int burn_in){
   unsigned int T = Qs.n_slices;
@@ -218,7 +218,7 @@ Rcpp::List Gibbs_DINA_HO(const arma::cube& Response,
   unsigned int J = Jt*T;
   
   arma::mat Q_matrix = Array2Mat(Qs);
-  Rcpp::List Q_examinee = Q_list(Q_matrix, test_order, Test_versions);
+  Rcpp::List Q_examinee = Q_list(Q_matrix, Test_order, Test_versions);
   //std::srand(std::time(0));//use current time as seed for random generator
   
   // initialize parameters
@@ -265,7 +265,7 @@ Rcpp::List Gibbs_DINA_HO(const arma::cube& Response,
   
   for (unsigned int tt = 0; tt < chain_length; tt++) {
     Rcpp::List tmp = parm_update_HO(N,Jt,K,T,Alphas_init,pi_init,lambdas_init,thetas_init,Response,
-                                    itempars_init,Qs,Q_examinee,test_order,Test_versions,
+                                    itempars_init,Qs,Q_examinee,Test_order,Test_versions,
                                     theta_propose,deltas_propose);
     if (tt >= burn_in) {
       tmburn = tt - burn_in;
@@ -294,7 +294,7 @@ Rcpp::List Gibbs_DINA_HO(const arma::cube& Response,
   }
   Rcpp::List input_data = Rcpp::List::create(Rcpp::Named("Response",Response),
                                              Rcpp::Named("Qs",Qs),
-                                             Rcpp::Named("test_order",test_order),
+                                             Rcpp::Named("Test_order",Test_order),
                                              Rcpp::Named("Test_versions",Test_versions),
                                              Rcpp::Named("Q_examinee",Q_examinee)
   );
@@ -324,7 +324,7 @@ Rcpp::List parm_update_HO_RT_sep(const unsigned int N, const unsigned int Jt, co
                                  arma::cube& alphas, arma::vec& pi, arma::vec& lambdas, arma::vec& thetas,
                                  const arma::cube latency, arma::cube& RT_itempars, arma::vec& taus, arma::vec& phi_vec, arma::vec& tauvar,
                                  const arma::cube response, arma::cube& itempars, const arma::cube Qs, const Rcpp::List Q_examinee,
-                                 const arma::mat test_order, const arma::vec Test_versions, const int G_version,
+                                 const arma::mat Test_order, const arma::vec Test_versions, const int G_version,
                                  const double theta_propose, const double a_sigma_tau0, const double rate_sigma_tau0, 
                                  const arma::vec deltas_propose, const double a_alpha0, const double rate_alpha0
 ){
@@ -335,7 +335,7 @@ Rcpp::List parm_update_HO_RT_sep(const unsigned int N, const unsigned int Jt, co
   for(unsigned int t = 0; t<T; t++){
     ETA.slice(t) = ETAmat(K,Jt, Qs.slice(t));
   }
-  arma::cube J_incidence = J_incidence_cube(test_order,Qs);
+  arma::cube J_incidence = J_incidence_cube(Test_order,Qs);
   
   double post_new, post_old;
   arma::vec thetatau_i_old(2);
@@ -355,7 +355,7 @@ Rcpp::List parm_update_HO_RT_sep(const unsigned int N, const unsigned int Jt, co
     arma::mat Q_i = Q_examinee[i];
     // update alphas
     for(unsigned int t = 0; t< T; t++){
-      int test_block_it = test_order(test_version_i,t)-1;
+      int test_block_it = Test_order(test_version_i,t)-1;
       // get likelihood of response
       arma::vec likelihood_Y(pow(2,K));
       for(unsigned int cc = 0; cc<(pow(2,K)); cc++){
@@ -385,9 +385,9 @@ Rcpp::List parm_update_HO_RT_sep(const unsigned int N, const unsigned int Jt, co
             }
             if(G_version==2){
               for(unsigned int tt =0; tt<T; tt++){
-                test_block_itt = test_order(test_version_i,tt)-1;
+                test_block_itt = Test_order(test_version_i,tt)-1;
                 G_it = G2vec_efficient(ETA,J_incidence,alphas.subcube(i,0,0,i,(K-1),(T-1)),test_version_i,
-                                       test_order,tt);
+                                       Test_order,tt);
                 // Multiply likelihood by density of RT at time tt in t to T
                 likelihood_L(cc) = likelihood_L(cc)*dLit(G_it,latency.slice(tt).row(i).t(),
                              RT_itempars.slice(test_block_itt),tau_i,phi);
@@ -425,9 +425,9 @@ Rcpp::List parm_update_HO_RT_sep(const unsigned int N, const unsigned int Jt, co
             }
             if(G_version==2){
               for(unsigned int tt =t; tt<T; tt++){
-                test_block_itt = test_order(test_version_i,tt)-1;
+                test_block_itt = Test_order(test_version_i,tt)-1;
                 G_it = G2vec_efficient(ETA,J_incidence,alphas.subcube(i,0,0,i,(K-1),(T-1)),test_version_i,
-                                       test_order,tt);
+                                       Test_order,tt);
                 // Multiply likelihood by density of RT at time tt in t to T
                 likelihood_L(cc) = likelihood_L(cc)*dLit(G_it,latency.slice(tt).row(i).t(),
                              RT_itempars.slice(test_block_itt),tau_i,phi);
@@ -459,7 +459,7 @@ Rcpp::List parm_update_HO_RT_sep(const unsigned int N, const unsigned int Jt, co
             }
             if(G_version==2){
               G_it = G2vec_efficient(ETA,J_incidence,alphas.subcube(i,0,0,i,(K-1),(T-1)),test_version_i,
-                                     test_order,t);
+                                     Test_order,t);
             }
             
             
@@ -505,7 +505,7 @@ Rcpp::List parm_update_HO_RT_sep(const unsigned int N, const unsigned int Jt, co
     double denom = 0;
     test_version_i = Test_versions(i) - 1;
     for (unsigned int t = 0; t<T; t++) {
-      int	test_block_it = test_order(test_version_i, t) - 1;
+      int	test_block_it = Test_order(test_version_i, t) - 1;
       
       if (G_version == 1) {
         double class_it = arma::dot(alphas.slice(t).row(i).t(), vv);
@@ -513,7 +513,7 @@ Rcpp::List parm_update_HO_RT_sep(const unsigned int N, const unsigned int Jt, co
       }
       if (G_version == 2) {
         G_it = G2vec_efficient(ETA, J_incidence, alphas.subcube(i, 0, 0, i, (K - 1), (T - 1)), test_version_i,
-                               test_order, t);
+                               Test_order, t);
       }
       if(G_version==3){
         
@@ -603,7 +603,7 @@ Rcpp::List parm_update_HO_RT_sep(const unsigned int N, const unsigned int Jt, co
     arma::mat ETA_block(N,Jt);
     for(unsigned int i = 0; i < N; i++){
       // find the time point at which i received this block
-      int t_star = arma::conv_to<unsigned int>::from(arma::find(test_order.row(Test_versions(i)-1)==(block+1)));
+      int t_star = arma::conv_to<unsigned int>::from(arma::find(Test_order.row(Test_versions(i)-1)==(block+1)));
       // get response, RT, alphas, and Gs for items in this block
       Res_block.row(i) = response.slice(t_star).row(i);
       RT_block.row(i) = latency.slice(t_star).row(i);
@@ -621,7 +621,7 @@ Rcpp::List parm_update_HO_RT_sep(const unsigned int N, const unsigned int Jt, co
       }
       if(G_version == 2){
         Gs.slice(block).row(i) = G2vec_efficient(ETA,J_incidence,alphas.subcube(i,0,0,i,(K-1),(T-1)),
-                 (Test_versions(i)-1),test_order,t_star).t();
+                 (Test_versions(i)-1),Test_order,t_star).t();
       }
       
       
@@ -677,7 +677,7 @@ Rcpp::List parm_update_HO_RT_sep(const unsigned int N, const unsigned int Jt, co
     tau_i = taus(i);
     test_version_i = Test_versions(i)-1;
     for(unsigned int t = 0; t<T; t++){
-      block_it = test_order(test_version_i,t)-1;
+      block_it = Test_order(test_version_i,t)-1;
       for(unsigned int j = 0; j<Jt; j++){
         //add practice*a of (i,j,block) to num and denom of phi
         num += pow(RT_itempars(j,0,block_it),2) * Gs(i,j,block_it)*(log(latency(i,j,t))-RT_itempars(j,1,block_it)+tau_i);
@@ -705,7 +705,7 @@ Rcpp::List parm_update_HO_RT_sep(const unsigned int N, const unsigned int Jt, co
 // [[Rcpp::export]]
 Rcpp::List Gibbs_DINA_HO_RT_sep(const arma::cube& Response, const arma::cube& Latency,
                                 const arma::cube& Qs, 
-                                const arma::mat& test_order, const arma::vec& Test_versions, int G_version,
+                                const arma::mat& Test_order, const arma::vec& Test_versions, int G_version,
                                 const double theta_propose,const arma::vec deltas_propose,
                                 const unsigned int chain_length, const unsigned int burn_in){
   unsigned int T = Qs.n_slices;
@@ -716,7 +716,7 @@ Rcpp::List Gibbs_DINA_HO_RT_sep(const arma::cube& Response, const arma::cube& La
   unsigned int J = Jt*T;
   
   arma::mat Q_matrix = Array2Mat(Qs);
-  Rcpp::List Q_examinee = Q_list(Q_matrix, test_order, Test_versions);
+  Rcpp::List Q_examinee = Q_list(Q_matrix, Test_order, Test_versions);
   //std::srand(std::time(0));//use current time as seed for random generator
   
   // initialize parameters
@@ -790,7 +790,7 @@ Rcpp::List Gibbs_DINA_HO_RT_sep(const arma::cube& Response, const arma::cube& La
     Rcpp::List tmp = parm_update_HO_RT_sep(N, Jt, K, T, Alphas_init, pi_init, lambdas_init,
                                            thetas_init, Latency, RT_itempars_init, taus_init,
                                            phi_init, tauvar_init, Response, itempars_init, Qs,
-                                           Q_examinee, test_order, Test_versions, G_version,
+                                           Q_examinee, Test_order, Test_versions, G_version,
                                            theta_propose, 2.5, 1., deltas_propose, 1., 1.);
     if (tt >= burn_in) {
       tmburn = tt - burn_in;
@@ -834,14 +834,14 @@ Rcpp::List Gibbs_DINA_HO_RT_sep(const arma::cube& Response, const arma::cube& La
       //                              lambdas_init, thetas_init(i), Q_examinee[i], Jt, t));
       //     }
       //     // The log likelihood from response time model
-      //     int test_block_it = test_order(test_version_i, t) - 1;
+      //     int test_block_it = Test_order(test_version_i, t) - 1;
       //     double class_it = arma::dot(Alphas_init.slice(t).row(i).t(), vv);
       //     if (G_version == 1) {
       //       G_it = ETA.slice(test_block_it).col(class_it);
       //     }
       //     if (G_version == 2) {
       //       G_it = G2vec_efficient(ETA, J_incidence, Alphas_init.subcube(i, 0, 0, i, (K - 1), (T - 1)), test_version_i,
-      //                              test_order, t);
+      //                              Test_order, t);
       //     }
       //     if(G_version==3){
       //       
@@ -876,11 +876,11 @@ Rcpp::List Gibbs_DINA_HO_RT_sep(const arma::cube& Response, const arma::cube& La
       // // ppp
       // // Generate response time
       // arma::cube L_model = sim_RT(Alphas_init, RT_itempars_init, Qs, taus_init, phi_init(0), ETA, G_version,
-      //                             test_order, Test_versions);
+      //                             Test_order, Test_versions);
       // 
       // //Generate the response from DINA model
       // // store the total response time for each block, the total score of each person on each block;
-      // arma::cube Res_model = simDINA(Alphas_init, itempars_init, ETA, test_order, Test_versions);
+      // arma::cube Res_model = simDINA(Alphas_init, itempars_init, ETA, Test_order, Test_versions);
       // 
       // arma::mat L_it_model(N, T), DINA_it_model(N, T);
       // for (unsigned int t = 0; t < T; t++) {
@@ -905,7 +905,7 @@ Rcpp::List Gibbs_DINA_HO_RT_sep(const arma::cube& Response, const arma::cube& La
                                              Rcpp::Named("Latency",Latency),
                                              Rcpp::Named("G_version",G_version),
                                              Rcpp::Named("Qs",Qs),
-                                             Rcpp::Named("test_order",test_order),
+                                             Rcpp::Named("Test_order",Test_order),
                                              Rcpp::Named("Test_versions",Test_versions),
                                              Rcpp::Named("Q_examinee",Q_examinee)
   );
@@ -943,7 +943,7 @@ Rcpp::List parm_update_HO_RT_joint(const unsigned int N, const unsigned int Jt, 
                                    arma::cube& alphas, arma::vec& pi, arma::vec& lambdas, arma::vec& thetas,
                                    const arma::cube latency, arma::cube& RT_itempars, arma::vec& taus, arma::vec& phi_vec, arma::mat& Sig,
                                    const arma::cube response, arma::cube& itempars, const arma::cube Qs, const Rcpp::List Q_examinee,
-                                   const arma::mat test_order, const arma::vec Test_versions, const int G_version,
+                                   const arma::mat Test_order, const arma::vec Test_versions, const int G_version,
                                    const double sig_theta_propose, const arma::mat S, double p,
                                    const arma::vec deltas_propose, const double a_alpha0, const double rate_alpha0
 ){
@@ -953,7 +953,7 @@ Rcpp::List parm_update_HO_RT_joint(const unsigned int N, const unsigned int Jt, 
   for(unsigned int t = 0; t<T; t++){
     ETA.slice(t) = ETAmat(K,Jt, Qs.slice(t));
   }
-  arma::cube J_incidence = J_incidence_cube(test_order,Qs);
+  arma::cube J_incidence = J_incidence_cube(Test_order,Qs);
   
   double post_new, post_old;
   double theta_new;
@@ -973,7 +973,7 @@ Rcpp::List parm_update_HO_RT_joint(const unsigned int N, const unsigned int Jt, 
     arma::mat Q_i = Q_examinee[i];
     // update alphas
     for(unsigned int t = 0; t< T; t++){
-      int test_block_it = test_order(test_version_i,t)-1;
+      int test_block_it = Test_order(test_version_i,t)-1;
       // get likelihood of response
       arma::vec likelihood_Y(pow(2,K));
       for(unsigned int cc = 0; cc<(pow(2,K)); cc++){
@@ -1003,9 +1003,9 @@ Rcpp::List parm_update_HO_RT_joint(const unsigned int N, const unsigned int Jt, 
             }
             if(G_version==2){
               for(unsigned int tt =0; tt<T; tt++){
-                test_block_itt = test_order(test_version_i,tt)-1;
+                test_block_itt = Test_order(test_version_i,tt)-1;
                 G_it = G2vec_efficient(ETA,J_incidence,alphas.subcube(i,0,0,i,(K-1),(T-1)),test_version_i,
-                                       test_order,tt);
+                                       Test_order,tt);
                 // Multiply likelihood by density of RT at time tt in t to T
                 likelihood_L(cc) = likelihood_L(cc)*dLit(G_it,latency.slice(tt).row(i).t(),
                              RT_itempars.slice(test_block_itt),tau_i,phi);
@@ -1043,9 +1043,9 @@ Rcpp::List parm_update_HO_RT_joint(const unsigned int N, const unsigned int Jt, 
             }
             if(G_version==2){
               for(unsigned int tt =t; tt<T; tt++){
-                test_block_itt = test_order(test_version_i,tt)-1;
+                test_block_itt = Test_order(test_version_i,tt)-1;
                 G_it = G2vec_efficient(ETA,J_incidence,alphas.subcube(i,0,0,i,(K-1),(T-1)),test_version_i,
-                                       test_order,tt);
+                                       Test_order,tt);
                 // Multiply likelihood by density of RT at time tt in t to T
                 likelihood_L(cc) = likelihood_L(cc)*dLit(G_it,latency.slice(tt).row(i).t(),
                              RT_itempars.slice(test_block_itt),tau_i,phi);
@@ -1077,7 +1077,7 @@ Rcpp::List parm_update_HO_RT_joint(const unsigned int N, const unsigned int Jt, 
             }
             if(G_version==2){
               G_it = G2vec_efficient(ETA,J_incidence,alphas.subcube(i,0,0,i,(K-1),(T-1)),test_version_i,
-                                     test_order,t);
+                                     Test_order,t);
             }
             
             
@@ -1122,7 +1122,7 @@ Rcpp::List parm_update_HO_RT_joint(const unsigned int N, const unsigned int Jt, 
     double denom = 0;
     test_version_i = Test_versions(i) - 1;
     for (unsigned int t = 0; t<T; t++) {
-      int	test_block_it = test_order(test_version_i, t) - 1;
+      int	test_block_it = Test_order(test_version_i, t) - 1;
       
       if (G_version == 1) {
         double class_it = arma::dot(alphas.slice(t).row(i).t(), vv);
@@ -1130,7 +1130,7 @@ Rcpp::List parm_update_HO_RT_joint(const unsigned int N, const unsigned int Jt, 
       }
       if (G_version == 2) {
         G_it = G2vec_efficient(ETA, J_incidence, alphas.subcube(i, 0, 0, i, (K - 1), (T - 1)), test_version_i,
-                               test_order, t);
+                               Test_order, t);
       }
       if(G_version==3){
         
@@ -1215,7 +1215,7 @@ Rcpp::List parm_update_HO_RT_joint(const unsigned int N, const unsigned int Jt, 
     arma::mat ETA_block(N,Jt);
     for(unsigned int i = 0; i < N; i++){
       // find the time point at which i received this block
-      int t_star = arma::conv_to<unsigned int>::from(arma::find(test_order.row(Test_versions(i)-1)==(block+1)));
+      int t_star = arma::conv_to<unsigned int>::from(arma::find(Test_order.row(Test_versions(i)-1)==(block+1)));
       // get response, RT, alphas, and Gs for items in this block
       Res_block.row(i) = response.slice(t_star).row(i);
       RT_block.row(i) = latency.slice(t_star).row(i);
@@ -1235,7 +1235,7 @@ Rcpp::List parm_update_HO_RT_joint(const unsigned int N, const unsigned int Jt, 
       }
       if(G_version == 2){
         Gs.slice(block).row(i) = G2vec_efficient(ETA,J_incidence,alphas.subcube(i,0,0,i,(K-1),(T-1)),
-                 (Test_versions(i)-1),test_order,t_star).t();
+                 (Test_versions(i)-1),Test_order,t_star).t();
       }
     }
     
@@ -1289,7 +1289,7 @@ Rcpp::List parm_update_HO_RT_joint(const unsigned int N, const unsigned int Jt, 
     tau_i = taus(i);
     test_version_i = Test_versions(i)-1;
     for(unsigned int t = 0; t<T; t++){
-      block_it = test_order(test_version_i,t)-1;
+      block_it = Test_order(test_version_i,t)-1;
       for(unsigned int j = 0; j<Jt; j++){
         // add practice*a of (i,j,block) to num and denom of phi
         num += pow(RT_itempars(j,0,block_it),2) * Gs(i,j,block_it)*(log(latency(i,j,t))-RT_itempars(j,1,block_it)+tau_i);
@@ -1311,7 +1311,7 @@ Rcpp::List parm_update_HO_RT_joint(const unsigned int N, const unsigned int Jt, 
 // [[Rcpp::export]]
 Rcpp::List Gibbs_DINA_HO_RT_joint(const arma::cube& Response, const arma::cube& Latency,
                                   const arma::cube& Qs, 
-                                  const arma::mat& test_order, const arma::vec& Test_versions, int G_version,
+                                  const arma::mat& Test_order, const arma::vec& Test_versions, int G_version,
                                   const double sig_theta_propose, const arma::vec deltas_propose,
                                   const unsigned int chain_length, const unsigned int burn_in){
   unsigned int T = Qs.n_slices;
@@ -1322,7 +1322,7 @@ Rcpp::List Gibbs_DINA_HO_RT_joint(const arma::cube& Response, const arma::cube& 
   unsigned int J = Jt*T;
   
   arma::mat Q_matrix = Array2Mat(Qs);
-  Rcpp::List Q_examinee = Q_list(Q_matrix, test_order, Test_versions);
+  Rcpp::List Q_examinee = Q_list(Q_matrix, Test_order, Test_versions);
   
   // initialize parameters
   arma::vec lambdas_init(3);
@@ -1393,7 +1393,7 @@ Rcpp::List Gibbs_DINA_HO_RT_joint(const arma::cube& Response, const arma::cube& 
     Rcpp::List tmp = parm_update_HO_RT_joint(N, Jt, K, T, Alphas_init, pi_init, lambdas_init,
                                              thetas_init, Latency, RT_itempars_init, taus_init,
                                              phi_init, Sig_init, Response, itempars_init, Qs,
-                                             Q_examinee, test_order, Test_versions, G_version,
+                                             Q_examinee, Test_order, Test_versions, G_version,
                                              sig_theta_propose, S, p, deltas_propose, 1., 1.);
     if(tt>=burn_in){
       tmburn = tt-burn_in;
@@ -1448,14 +1448,14 @@ Rcpp::List Gibbs_DINA_HO_RT_joint(const arma::cube& Response, const arma::cube& 
       //     }
       //     
       //     // The log likelihood from response time model
-      //     int test_block_it = test_order(test_version_i, t) - 1;
+      //     int test_block_it = Test_order(test_version_i, t) - 1;
       //     double class_it = arma::dot(Alphas_init.slice(t).row(i).t(), vv);
       //     if (G_version == 1) {
       //       G_it = ETA.slice(test_block_it).col(class_it);
       //     }
       //     if (G_version == 2) {
       //       G_it = G2vec_efficient(ETA, J_incidence, Alphas_init.subcube(i, 0, 0, i, (K - 1), (T - 1)), test_version_i,
-      //                              test_order, t);
+      //                              Test_order, t);
       //     }
       //     
       //     if(G_version==3){
@@ -1492,11 +1492,11 @@ Rcpp::List Gibbs_DINA_HO_RT_joint(const arma::cube& Response, const arma::cube& 
       //         // ppp
       // 		  // Generate response time
       // 		  arma::cube L_model = sim_RT(Alphas_init, RT_itempars_init, Qs, taus_init, phi_init(0), ETA, G_version,
-      // 			  test_order, Test_versions);
+      // 			  Test_order, Test_versions);
       // 
       // 		  //Generate the response from DINA model
       // 		  // store the total response time for each block, the total score of each person on each block;
-      // 		  arma::cube Res_model = simDINA(Alphas_init, itempars_init, ETA, test_order, Test_versions);
+      // 		  arma::cube Res_model = simDINA(Alphas_init, itempars_init, ETA, Test_order, Test_versions);
       // 
       // 		  arma::mat L_it_model(N, T), DINA_it_model(N, T);
       // 		  for (unsigned int t = 0; t < T; t++) {
@@ -1518,7 +1518,7 @@ Rcpp::List Gibbs_DINA_HO_RT_joint(const arma::cube& Response, const arma::cube& 
                                              Rcpp::Named("Latency",Latency),
                                              Rcpp::Named("G_version",G_version),
                                              Rcpp::Named("Qs",Qs),
-                                             Rcpp::Named("test_order",test_order),
+                                             Rcpp::Named("Test_order",Test_order),
                                              Rcpp::Named("Test_versions",Test_versions),
                                              Rcpp::Named("Q_examinee",Q_examinee)
   );
@@ -1556,7 +1556,7 @@ void parm_update_rRUM(const unsigned int N, const unsigned int Jt, const unsigne
                       arma::cube& alphas, arma::vec& pi, arma::vec& taus, const arma::mat& R, 
                       arma::cube& r_stars, arma::mat& pi_stars, const arma::cube Qs, 
                       const arma::cube& responses, arma::cube& X_ijk, arma::cube& Smats, arma::cube& Gmats,
-                      const arma::mat& test_order,const arma::vec& Test_versions, const arma::vec& dirich_prior){
+                      const arma::mat& Test_order,const arma::vec& Test_versions, const arma::vec& dirich_prior){
   arma::vec k_index = arma::linspace(0,K-1,K);
   double kj,prodXijk,pi_ijk,aik,u,compare;
   double pi_ik,aik_nmrtr_k,aik_dnmntr_k,c_aik_1,c_aik_0,ptranspost_1,ptranspost_0,ptransprev_1,ptransprev_0;
@@ -1569,7 +1569,7 @@ void parm_update_rRUM(const unsigned int N, const unsigned int Jt, const unsigne
   for(unsigned int i=1;i<N;i++){
     unsigned int test_version_it = Test_versions(i)-1;
     for(unsigned int t=0; t<(T); t++){
-      unsigned int block = test_order(test_version_it,t)-1;
+      unsigned int block = Test_order(test_version_it,t)-1;
       arma::vec pi_star_it = pi_stars.col(block);
       arma::mat r_star_it = r_stars.slice(block);
       arma::mat Q_it = Qs.slice(block);
@@ -1690,7 +1690,7 @@ void parm_update_rRUM(const unsigned int N, const unsigned int Jt, const unsigne
     
     arma::mat alpha(N,K);
     for(unsigned int i = 0; i<N; i++){
-      unsigned int t_star = arma::conv_to<unsigned int>::from(arma::find(test_order.row(Test_versions(i)-1)==(test_version_j+1)));
+      unsigned int t_star = arma::conv_to<unsigned int>::from(arma::find(Test_order.row(Test_versions(i)-1)==(test_version_j+1)));
       alpha.row(i) = alphas.slice(t_star).row(i);
     }
     
@@ -1756,7 +1756,7 @@ void parm_update_rRUM(const unsigned int N, const unsigned int Jt, const unsigne
 
 // [[Rcpp::export]]
 Rcpp::List Gibbs_rRUM_indept(const arma::cube& Response, const arma::cube& Qs, const arma::mat& R,
-                             const arma::mat& test_order, const arma::vec& Test_versions,
+                             const arma::mat& Test_order, const arma::vec& Test_versions,
                              const unsigned int chain_length, const unsigned int burn_in){
   unsigned int T = Qs.n_slices;
   unsigned int N = Response.n_rows;
@@ -1815,7 +1815,7 @@ Rcpp::List Gibbs_rRUM_indept(const arma::cube& Response, const arma::cube& Qs, c
   
   for(unsigned int tt = 0; tt < chain_length; tt++){
     parm_update_rRUM(N,Jt,K,T,Alphas_init,pi_init,taus_init,R,r_stars_init,pi_stars_init,
-                     Qs, Response, X, Smats_init, Gmats_init, test_order, Test_versions,
+                     Qs, Response, X, Smats_init, Gmats_init, Test_order, Test_versions,
                      dirich_prior);
     
     if(tt>=burn_in){
@@ -1835,7 +1835,7 @@ Rcpp::List Gibbs_rRUM_indept(const arma::cube& Response, const arma::cube& Qs, c
   }
   Rcpp::List input_data = Rcpp::List::create(Rcpp::Named("Response",Response),
                                              Rcpp::Named("Qs",Qs),
-                                             Rcpp::Named("test_order",test_order),
+                                             Rcpp::Named("Test_order",Test_order),
                                              Rcpp::Named("Test_versions",Test_versions),
                                              Rcpp::Named("R",R)
   );
@@ -1863,7 +1863,7 @@ Rcpp::List Gibbs_rRUM_indept(const arma::cube& Response, const arma::cube& Qs, c
 void parm_update_NIDA_indept(const unsigned int N, const unsigned int Jt, const unsigned int K, const unsigned int T,
                              arma::cube& alphas, arma::vec& pi, arma::vec& taus, const arma::mat& R, const arma::cube Qs, 
                              const arma::cube& responses, arma::cube& X_ijk, arma::cube& Smats, arma::cube& Gmats,
-                             const arma::mat& test_order,const arma::vec& Test_versions, const arma::vec& dirich_prior){
+                             const arma::mat& Test_order,const arma::vec& Test_versions, const arma::vec& dirich_prior){
   arma::vec k_index = arma::linspace(0,K-1,K);
   double kj,prodXijk,pi_ijk,aik,u,compare;
   double pi_ik,aik_nmrtr_k,aik_dnmntr_k,c_aik_1,c_aik_0,ptranspost_1,ptranspost_0,ptransprev_1,ptransprev_0;
@@ -1876,7 +1876,7 @@ void parm_update_NIDA_indept(const unsigned int N, const unsigned int Jt, const 
   for(unsigned int i=1;i<N;i++){
     unsigned int test_version_it = Test_versions(i)-1;
     for(unsigned int t=0; t<(T); t++){
-      unsigned int block = test_order(test_version_it,t)-1;
+      unsigned int block = Test_order(test_version_it,t)-1;
       arma::mat Q_it = Qs.slice(block);
       arma::vec alpha_i =(alphas.slice(t).row(i)).t();
       arma::vec Yi =(responses.slice(t).row(i)).t();
@@ -1988,7 +1988,7 @@ void parm_update_NIDA_indept(const unsigned int N, const unsigned int Jt, const 
       for(unsigned int i = 0; i<N; i++){
         aikt = alphas(i,k,t);
         unsigned int test_version_it = Test_versions(i)-1;
-        unsigned int block = test_order(test_version_it,t)-1;
+        unsigned int block = Test_order(test_version_it,t)-1;
         for(unsigned int j = 0; j<Jt; j++){
           unsigned int j_star = block*Jt+j;
           Xijk = X_ijk(i,j_star,k); 
@@ -2044,7 +2044,7 @@ void parm_update_NIDA_indept(const unsigned int N, const unsigned int Jt, const 
 
 //[[Rcpp::export]]
 Rcpp::List Gibbs_NIDA_indept(const arma::cube& Response, const arma::cube& Qs, const arma::mat& R,
-                             const arma::mat& test_order, const arma::vec& Test_versions,
+                             const arma::mat& Test_order, const arma::vec& Test_versions,
                              const unsigned int chain_length, const unsigned int burn_in){
   unsigned int T = Qs.n_slices;
   unsigned int N = Response.n_rows;
@@ -2100,7 +2100,7 @@ Rcpp::List Gibbs_NIDA_indept(const arma::cube& Response, const arma::cube& Qs, c
   
   for(unsigned int tt = 0; tt < chain_length; tt++){
     parm_update_NIDA_indept(N,Jt,K,T,Alphas_init,pi_init,taus_init,R,
-                            Qs, Response, X, Smats_init, Gmats_init, test_order, Test_versions,
+                            Qs, Response, X, Smats_init, Gmats_init, Test_order, Test_versions,
                             dirich_prior);
     
     if(tt>=burn_in){
@@ -2120,7 +2120,7 @@ Rcpp::List Gibbs_NIDA_indept(const arma::cube& Response, const arma::cube& Qs, c
   }
   Rcpp::List input_data = Rcpp::List::create(Rcpp::Named("Response",Response),
                                              Rcpp::Named("Qs",Qs),
-                                             Rcpp::Named("test_order",test_order),
+                                             Rcpp::Named("Test_order",Test_order),
                                              Rcpp::Named("Test_versions",Test_versions),
                                              Rcpp::Named("R",R)
   );
@@ -2295,9 +2295,9 @@ void parm_update_DINA_FOHM(unsigned int N,unsigned int J,unsigned int K,unsigned
 
 // [[Rcpp::export]]
 Rcpp::List Gibbs_DINA_FOHM(const arma::cube& Response,const arma::cube& Qs,
-                           const arma::mat& test_order, const arma::vec& Test_versions,
+                           const arma::mat& Test_order, const arma::vec& Test_versions,
                            const unsigned int chain_length, const unsigned int burn_in){
-  arma::cube Y = resp_miss(Response, test_order, Test_versions);
+  arma::cube Y = resp_miss(Response, Test_order, Test_versions);
   arma::mat Q = Array2Mat(Qs);
   unsigned int N = Y.n_rows;
   unsigned int J = Y.n_cols;
@@ -2357,7 +2357,7 @@ Rcpp::List Gibbs_DINA_FOHM(const arma::cube& Response,const arma::cube& Qs,
   }
   Rcpp::List input_data = Rcpp::List::create(Rcpp::Named("Response",Response),
                                              Rcpp::Named("Qs",Qs),
-                                             Rcpp::Named("test_order",test_order),
+                                             Rcpp::Named("Test_order",Test_order),
                                              Rcpp::Named("Test_versions",Test_versions)
   );
   Rcpp::List res = Rcpp::List::create(Rcpp::Named("ss",SS),
@@ -2391,7 +2391,7 @@ Rcpp::List Gibbs_DINA_FOHM(const arma::cube& Response,const arma::cube& Qs,
 //' "rRUM_indept": Simple independent transition probability model with rRUM responses
 //' "NIDA_indept": Simple independent transition probability model with NIDA responses
 //' "DINA_FOHM": First Order Hidden Markov model with DINA responses
-//' @param test_order A \code{matrix} of the order of item blocks for each test version.
+//' @param Test_order A \code{matrix} of the order of item blocks for each test version.
 //' @param Test_versions A \code{vector} of the test version of each learner.
 //' @param chain_length An \code{int} of the MCMC chain length.
 //' @param burn_in An \code{int} of the MCMC burn-in chain length.
@@ -2406,12 +2406,12 @@ Rcpp::List Gibbs_DINA_FOHM(const arma::cube& Response,const arma::cube& Qs,
 //' @author Susu Zhang
 //' @examples
 //' \donttest{
-//' output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
+//' output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",Test_order,Test_versions,10000,5000)
 //' }
 //' @export
 // [[Rcpp::export]]
 Rcpp::List hmcdm(const arma::cube Y_real_array, const arma::mat Q_matrix, 
-                         const std::string model, const arma::mat& test_order, const arma::vec& Test_versions,
+                         const std::string model, const arma::mat& Test_order, const arma::vec& Test_versions,
                          const unsigned int chain_length, const unsigned int burn_in,
                          const int G_version = NA_INTEGER,
                          const double theta_propose = 0., 
@@ -2419,38 +2419,38 @@ Rcpp::List hmcdm(const arma::cube Y_real_array, const arma::mat Q_matrix,
                          const Rcpp::Nullable<Rcpp::NumericVector> deltas_propose = R_NilValue,
                          const Rcpp::Nullable<Rcpp::NumericMatrix> R = R_NilValue){
   Rcpp::List output;
-  unsigned int T = test_order.n_rows;
+  unsigned int T = Test_order.n_rows;
   unsigned int J = Q_matrix.n_rows;
   unsigned int Jt = J/T;
   unsigned int N = Test_versions.n_elem;
   arma::cube Latency(N, Jt, T);
   if(Latency_array.isNotNull()){
     arma::cube Latency_temp = Rcpp::as<arma::cube>(Latency_array);
-    Latency = Sparse2Dense(Latency_temp, test_order, Test_versions);
+    Latency = Sparse2Dense(Latency_temp, Test_order, Test_versions);
   }
-  arma::cube Response = Sparse2Dense(Y_real_array, test_order, Test_versions);
+  arma::cube Response = Sparse2Dense(Y_real_array, Test_order, Test_versions);
   arma::cube Qs = Mat2Array(Q_matrix, T);
   
   if(model == "DINA_HO"){
-    output = Gibbs_DINA_HO(Response, Qs, test_order, Test_versions, theta_propose, Rcpp::as<arma::vec>(deltas_propose),
+    output = Gibbs_DINA_HO(Response, Qs, Test_order, Test_versions, theta_propose, Rcpp::as<arma::vec>(deltas_propose),
                            chain_length, burn_in);
   }
   if(model == "DINA_HO_RT_joint"){
-    output = Gibbs_DINA_HO_RT_joint(Response, Latency, Qs, test_order, Test_versions, G_version,
+    output = Gibbs_DINA_HO_RT_joint(Response, Latency, Qs, Test_order, Test_versions, G_version,
                                     theta_propose, Rcpp::as<arma::vec>(deltas_propose), chain_length, burn_in);
   }
   if(model == "DINA_HO_RT_sep"){
-    output = Gibbs_DINA_HO_RT_sep(Response, Latency, Qs, test_order, Test_versions, G_version,
+    output = Gibbs_DINA_HO_RT_sep(Response, Latency, Qs, Test_order, Test_versions, G_version,
                                   theta_propose, Rcpp::as<arma::vec>(deltas_propose), chain_length, burn_in);
   }
   if(model == "rRUM_indept"){
-    output = Gibbs_rRUM_indept(Response, Qs, Rcpp::as<arma::mat>(R),test_order, Test_versions, chain_length, burn_in);
+    output = Gibbs_rRUM_indept(Response, Qs, Rcpp::as<arma::mat>(R),Test_order, Test_versions, chain_length, burn_in);
   }
   if(model == "NIDA_indept"){
-    output = Gibbs_NIDA_indept(Response, Qs, Rcpp::as<arma::mat>(R), test_order, Test_versions, chain_length, burn_in);
+    output = Gibbs_NIDA_indept(Response, Qs, Rcpp::as<arma::mat>(R), Test_order, Test_versions, chain_length, burn_in);
   }
   if(model == "DINA_FOHM"){
-    output = Gibbs_DINA_FOHM(Response, Qs, test_order, Test_versions, chain_length, burn_in);
+    output = Gibbs_DINA_FOHM(Response, Qs, Test_order, Test_versions, chain_length, burn_in);
   }
   
   return(output);

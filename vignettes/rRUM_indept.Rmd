@@ -24,7 +24,7 @@ library(hmcdm)
 N = length(Test_versions)
 J = nrow(Q_matrix)
 K = ncol(Q_matrix)
-T = nrow(test_order)
+T = nrow(Test_order)
 Jt = J/T
 ```
 
@@ -69,14 +69,14 @@ r_stars <- Gmats / (1-Smats)
 pi_stars <- matrix(apply((1-Smats)^Q_matrix, 1, prod), nrow=Jt, ncol=T, byrow=T)
 Test_versions_sim <- sample(1:5,N,replace = T)
 
-Y_sim = simrRUM(Alphas,r_stars,pi_stars,Q_matrix,test_order,Test_versions_sim)
+Y_sim = simrRUM(Alphas,r_stars,pi_stars,Q_matrix,Test_order,Test_versions_sim)
 ```
 
 
 ## (2) Run the MCMC to sample parameters from the posterior distribution
 
 ```{r}
-output_rRUM_indept = hmcdm(Y_sim,Q_matrix,"rRUM_indept",test_order,Test_versions_sim,100,30,
+output_rRUM_indept = hmcdm(Y_sim,Q_matrix,"rRUM_indept",Test_order,Test_versions_sim,100,30,
                                     R = R)
 output_rRUM_indept
 summary(output_rRUM_indept)

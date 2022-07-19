@@ -24,7 +24,7 @@ library(hmcdm)
 N = length(Test_versions)
 J = nrow(Q_matrix)
 K = ncol(Q_matrix)
-T = nrow(test_order)
+T = nrow(Test_order)
 Jt = J/T
 ```
 
@@ -68,14 +68,14 @@ for(k in 1:K){
   Gmats[,k,] <- runif(1,.1,.3)
 }
 
-Y_sim = simNIDA(Alphas,Smats[1,,1],Gmats[1,,1],Q_matrix,test_order,Test_versions_sim)
+Y_sim = simNIDA(Alphas,Smats[1,,1],Gmats[1,,1],Q_matrix,Test_order,Test_versions_sim)
 ```
 
 
 ## (2) Run the MCMC to sample parameters from the posterior distribution
 
 ```{r}
-output_NIDA_indept = hmcdm(Y_sim,Q_matrix,"NIDA_indept",test_order,Test_versions_sim,100,30,
+output_NIDA_indept = hmcdm(Y_sim,Q_matrix,"NIDA_indept",Test_order,Test_versions_sim,100,30,
                                     R = R)
 output_NIDA_indept
 summary(output_NIDA_indept)

@@ -41,9 +41,9 @@ the CDM learning models based on the MCMC output
 N = length(Test_versions)
 J = nrow(Q_matrix)
 K = ncol(Q_matrix)
-T = nrow(test_order)
+T = nrow(Test_order)
 Jt = J/T
-output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
+output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",Test_order,Test_versions,10000,5000)
 point_estimates = point_estimates_learning(output_FOHM,"DINA_FOHM",N,Jt,K,T,alpha_EAP = T)
 }
 }

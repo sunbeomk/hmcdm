@@ -12,7 +12,7 @@ sim_RT(
   phi,
   ETAs,
   G_version,
-  test_order,
+  Test_order,
   Test_versions
 )
 }
@@ -33,7 +33,7 @@ sim_RT(
 current item are mastered; 2: G cumulates practice effect on previous items using mastered skills; 3: G is a time block effect invariant across
 subjects with different attribute trajectories)}
 
-\item{test_order}{A N_versions-by-T \code{matrix} indicating which block of items were administered to examinees with specific test version.}
+\item{Test_order}{A N_versions-by-T \code{matrix} indicating which block of items were administered to examinees with specific test version.}
 
 \item{Test_versions}{A length N \code{vector} of the test version of each examinee}
 }
@@ -47,7 +47,7 @@ Simulate a cube of subjects' response times across time points according to a va
 N = length(Test_versions)
 J = nrow(Q_matrix)
 K = ncol(Q_matrix)
-T = nrow(test_order)
+T = nrow(Test_order)
 Jt = J/T
 class_0 <- sample(1:2^K, N, replace = T)
 Alphas_0 <- matrix(0,N,K)
@@ -63,12 +63,12 @@ for(i in 1:N){
   Alphas_0[i,] <- inv_bijectionvector(K,(class_0[i]-1))
 }
 lambdas_true <- c(-2, .4, .055)     
-Q_examinee <- Q_list(Q_matrix, test_order, Test_versions)
+Q_examinee <- Q_list(Q_matrix, Test_order, Test_versions)
 Alphas <- simulate_alphas_HO_joint(lambdas_true,thetas_true,Alphas_0,Q_examinee,T,Jt)
 RT_itempars_true <- array(NA, dim = c(Jt,2,T))
 RT_itempars_true[,2,] <- rnorm(Jt*T,3.45,.5)
 RT_itempars_true[,1,] <- runif(Jt*T,1.5,2)
 ETAs <- ETAmat(K,J,Q_matrix)
 L_sim <- sim_RT(Alphas,RT_itempars_true,Q_matrix,taus_true,phi_true,ETAs,
-G_version,test_order,Test_versions)
+G_version,Test_order,Test_versions)
 }

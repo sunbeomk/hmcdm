@@ -46,5 +46,5 @@
 #' version 1. 
 #' @source Spatial Rotation Learning Experiment at UIUC between Fall 2015 and Spring 2016.
 #' @author Shiyu Wang, Yan Yang, Jeff Douglas, and Steve Culpepper
-'test_order'
+'Test_order'
 

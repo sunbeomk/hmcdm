@@ -9,7 +9,7 @@ Learning_fit(
   model,
   Y_real_array,
   Q_matrix,
-  test_order,
+  Test_order,
   Test_versions,
   Q_examinee = NULL,
   Latency_array = NULL,
@@ -34,7 +34,7 @@ speed and learning ability;
 
 \item{Q_matrix}{A \code{list} of Q-matrices. b-th element is a Jt-by-K Q-matrix for items in block b.}
 
-\item{test_order}{A \code{matrix} of the order of item blocks for each test version.}
+\item{Test_order}{A \code{matrix} of the order of item blocks for each test version.}
 
 \item{Test_versions}{A \code{vector} of the test version of each learner.}
 
@@ -60,7 +60,7 @@ item odds ratios, subject total scores at each time point, and subject total res
 }
 \examples{
 \donttest{
-output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
-FOHM_fit <- Learning_fit(output_FOHM,"DINA_FOHM",Y_real_array,Q_matrix,test_order,Test_versions)
+output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",Test_order,Test_versions,10000,5000)
+FOHM_fit <- Learning_fit(output_FOHM,"DINA_FOHM",Y_real_array,Q_matrix,Test_order,Test_versions)
 }
 }

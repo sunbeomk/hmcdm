@@ -49,14 +49,14 @@ arma::vec sim_resp_DINA(unsigned int J, unsigned int K, const arma::mat& ETA,
 //' @param alphas An N-by-K-by-T \code{array} of attribute patterns of all persons across T time points 
 //' @param itempars A J-by-2-by-T \code{cube} of item parameters (slipping: 1st col, guessin: 2nd col) across item blocks
 //' @param ETA A J-by-2^K-by-T \code{array} of ideal responses across all item blocks, with each slice generated with ETAmat function
-//' @param test_order A N_versions-by-T \code{matrix} indicating which block of items were administered to examinees with specific test version.
+//' @param Test_order A N_versions-by-T \code{matrix} indicating which block of items were administered to examinees with specific test version.
 //' @param Test_versions A length N \code{vector} of the test version of each examinee
 //' @return An \code{array} of DINA item responses of examinees across all time points
 //' @examples
 //' N = length(Test_versions)
 //' J = nrow(Q_matrix)
 //' K = ncol(Q_matrix)
-//' T = nrow(test_order)
+//' T = nrow(Test_order)
 //' Jt = J/T
 //' itempars_true <- array(runif(Jt*2*T,.1,.2), dim = c(Jt,2,T))
 //' 
@@ -75,13 +75,13 @@ arma::vec sim_resp_DINA(unsigned int J, unsigned int K, const arma::mat& ETA,
 //'   Alphas_0[i,] <- inv_bijectionvector(K,(class_0[i]-1))
 //' }
 //' lambdas_true <- c(-2, .4, .055)
-//' Q_examinee <- Q_list(Q_matrix, test_order, Test_versions)     
+//' Q_examinee <- Q_list(Q_matrix, Test_order, Test_versions)     
 //' Alphas <- simulate_alphas_HO_joint(lambdas_true,thetas_true,Alphas_0,Q_examinee,T,Jt)
-//' Y_sim <- simDINA(Alphas,itempars_true,ETAs,test_order,Test_versions)
+//' Y_sim <- simDINA(Alphas,itempars_true,ETAs,Test_order,Test_versions)
 //' @export
 // [[Rcpp::export]]
 arma::cube simDINA(const arma::cube& alphas, const arma::cube& itempars, const arma::mat& ETA,
-                   const arma::mat& test_order, const arma::vec& Test_versions){
+                   const arma::mat& Test_order, const arma::vec& Test_versions){
   unsigned int N = alphas.n_rows;
   unsigned int Jt = itempars.n_rows;
   unsigned int K = alphas.n_cols;
@@ -93,7 +93,7 @@ arma::cube simDINA(const arma::cube& alphas, const arma::cube& itempars, const a
   for(unsigned int i=0;i<N;i++){
     int test_version_i = Test_versions(i)-1;
     for(unsigned int t=0;t<T;t++){
-      int test_block_it = test_order(test_version_i,t)-1;
+      int test_block_it = Test_order(test_version_i,t)-1;
       svec = itempars.slice(test_block_it).col(0);
       gvec = itempars.slice(test_block_it).col(1);
       arma::vec one_m_s = arma::ones<arma::vec>(Jt) - svec;
@@ -107,7 +107,7 @@ arma::cube simDINA(const arma::cube& alphas, const arma::cube& itempars, const a
       Y.subcube(i,0,t,i,Jt-1,t) = compare;
     }
   }
-  arma::cube Y_sim = Dense2Sparse(Y, test_order, Test_versions);
+  arma::cube Y_sim = Dense2Sparse(Y, Test_order, Test_versions);
   return(Y_sim);
 }
 
@@ -187,14 +187,14 @@ arma::vec sim_resp_rRUM(unsigned int J, unsigned int K, const arma::mat& Q,
 //' @param r_stars_mat A J-by-K \code{cube} of item penalty parameters for missing skills across all item blocks
 //' @param pi_stars A Jt-by-T \code{matrix} of item correct response probability with all requisite skills across blocks
 //' @param Q_matrix A J-by-K of Q-matrix
-//' @param test_order A N_versions-by-T \code{matrix} indicating which block of items were administered to examinees with specific test version.
+//' @param Test_order A N_versions-by-T \code{matrix} indicating which block of items were administered to examinees with specific test version.
 //' @param Test_versions A length N \code{vector} of the test version of each examinee
 //' @return An \code{array} of rRUM item responses of examinees across all time points
 //' @examples
 //' N = length(Test_versions)
 //' J = nrow(Q_matrix)
 //' K = ncol(Q_matrix)
-//' T = nrow(test_order)
+//' T = nrow(Test_order)
 //' Jt = J/T
 //' Smats <- matrix(runif(J*K,.1,.3),c(J,K))
 //' Gmats <- matrix(runif(J*K,.1,.3),c(J,K))
@@ -221,11 +221,11 @@ arma::vec sim_resp_rRUM(unsigned int J, unsigned int K, const arma::mat& Q,
 //'   }
 //' }
 //' Alphas <- simulate_alphas_indept(tau,Alphas_0,T,R) 
-//' Y_sim = simrRUM(Alphas,r_stars,pi_stars,Q_matrix,test_order,Test_versions_sim)
+//' Y_sim = simrRUM(Alphas,r_stars,pi_stars,Q_matrix,Test_order,Test_versions_sim)
 //' @export
 // [[Rcpp::export]]
 arma::cube simrRUM(const arma::cube& alphas, const arma::mat& r_stars_mat, const arma::mat& pi_stars, 
-                   const arma::mat Q_matrix, const arma::mat& test_order, const arma::vec& Test_versions){
+                   const arma::mat Q_matrix, const arma::mat& Test_order, const arma::vec& Test_versions){
   unsigned int N = alphas.n_rows;
   unsigned int Jt = pi_stars.n_rows;
   unsigned int K = alphas.n_cols;
@@ -237,7 +237,7 @@ arma::cube simrRUM(const arma::cube& alphas, const arma::mat& r_stars_mat, const
   for(unsigned int i=0;i<N;i++){
     int test_version_i = Test_versions(i)-1;
     for(unsigned int t=0;t<T;t++){
-      int test_block_it = test_order(test_version_i,t)-1;
+      int test_block_it = Test_order(test_version_i,t)-1;
       arma::mat Q_it = Qs.slice(test_block_it);
       arma::mat rstar_it = r_stars.slice(test_block_it);
       arma::vec pistar_it = pi_stars.col(test_block_it);
@@ -245,7 +245,7 @@ arma::cube simrRUM(const arma::cube& alphas, const arma::mat& r_stars_mat, const
       Y.slice(t).row(i) = sim_resp_rRUM(Jt,K,Q_it,rstar_it,pistar_it,alpha_it).t();
     }
   }
-  arma::cube Y_sim = Dense2Sparse(Y, test_order, Test_versions);
+  arma::cube Y_sim = Dense2Sparse(Y, Test_order, Test_versions);
   return(Y_sim);
 }
 
@@ -324,14 +324,14 @@ arma::vec sim_resp_NIDA(const unsigned int J, const unsigned int K, const arma::
 //' @param Svec A length K \code{vector} of slipping probability in applying mastered skills
 //' @param Gvec A length K \code{vector} of guessing probability in applying mastered skills
 //' @param Q_matrix A J-by-K Q-matrix
-//' @param test_order A N_versions-by-T \code{matrix} indicating which block of items were administered to examinees with specific test version.
+//' @param Test_order A N_versions-by-T \code{matrix} indicating which block of items were administered to examinees with specific test version.
 //' @param Test_versions A length N \code{vector} of the test version of each examinee
 //' @return An \code{array} of NIDA item responses of examinees across all time points
 //' @examples
 //' N = length(Test_versions)
 //' J = nrow(Q_matrix)
 //' K = ncol(Q_matrix)
-//' T = nrow(test_order)
+//' T = nrow(Test_order)
 //' Jt = J/T
 //' Svec <- runif(K,.1,.3)
 //' Gvec <- runif(K,.1,.3)
@@ -356,11 +356,11 @@ arma::vec sim_resp_NIDA(const unsigned int J, const unsigned int K, const arma::
 //'       }
 //'     }
 //'    Alphas <- simulate_alphas_indept(tau,Alphas_0,T,R) 
-//' Y_sim = simNIDA(Alphas,Svec,Gvec,Q_matrix,test_order,Test_versions_sim)
+//' Y_sim = simNIDA(Alphas,Svec,Gvec,Q_matrix,Test_order,Test_versions_sim)
 //' @export
 // [[Rcpp::export]]
 arma::cube simNIDA(const arma::cube& alphas, const arma::vec& Svec, const arma::vec& Gvec, 
-                   const arma::mat Q_matrix, const arma::mat& test_order, const arma::vec& Test_versions){
+                   const arma::mat Q_matrix, const arma::mat& Test_order, const arma::vec& Test_versions){
   unsigned int N = alphas.n_rows;
   unsigned int J = Q_matrix.n_rows;
   unsigned int K = alphas.n_cols;
@@ -371,13 +371,13 @@ arma::cube simNIDA(const arma::cube& alphas, const arma::vec& Svec, const arma::
   for(unsigned int i=0;i<N;i++){
     int test_version_i = Test_versions(i)-1;
     for(unsigned int t=0;t<T;t++){
-      int test_block_it = test_order(test_version_i,t)-1;
+      int test_block_it = Test_order(test_version_i,t)-1;
       arma::mat Q_it = Qs.slice(test_block_it);
       arma::vec alpha_it = alphas.slice(t).row(i).t();
       Y.slice(t).row(i) = sim_resp_NIDA(Jt,K,Q_it,Svec,Gvec,alpha_it).t();
     }
   }
-  arma::cube Y_sim = Dense2Sparse(Y, test_order, Test_versions);
+  arma::cube Y_sim = Dense2Sparse(Y, Test_order, Test_versions);
   return(Y_sim);
 }
 

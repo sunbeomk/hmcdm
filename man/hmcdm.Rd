@@ -8,7 +8,7 @@ hmcdm(
   Y_real_array,
   Q_matrix,
   model,
-  test_order,
+  Test_order,
   Test_versions,
   chain_length,
   burn_in,
@@ -34,7 +34,7 @@ speed and learning ability;
 "NIDA_indept": Simple independent transition probability model with NIDA responses
 "DINA_FOHM": First Order Hidden Markov model with DINA responses}
 
-\item{test_order}{A \code{matrix} of the order of item blocks for each test version.}
+\item{Test_order}{A \code{matrix} of the order of item blocks for each test version.}
 
 \item{Test_versions}{A \code{vector} of the test version of each learner.}
 
@@ -62,7 +62,7 @@ Runs MCMC to estimate parameters of any of the listed learning models.
 }
 \examples{
 \donttest{
-output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",test_order,Test_versions,10000,5000)
+output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",Test_order,Test_versions,10000,5000)
 }
 }
 \author{
