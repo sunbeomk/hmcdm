@@ -13,8 +13,11 @@
 plot functions include \code{"dens_overlay"}, \code{"hist"}, \code{"stat_2d"}, \code{"scatter_avg"}, \code{"error_scatter_avg"}.
 The default function is \code{"dens_overlay"}.}
 
-\item{type}{A character string naming the type of posterior predictive distributions to plot.
-The list of available types include \code{"total_score"}, \code{"M1"}, \code{"M2"}. The default type is \code{"total_score"}.}
+\item{type}{A character string naming the which statistic to use for checking posterior predictive distribution plot.
+The list of available types include \code{"total_score"}, \code{"item_mean"}, \code{"item_OR"}, \code{"latency_mean"}, and \code{"latency_total"}. The default type is \code{"total_score"} which examines total scores of subjects.
+Type \code{"item_mean"} is related to the first order moment and examines mean scores of all the items included in the test.
+Type \code{"item_OR"} is related to the second order moment and examines odds ratios of all item pairs.
+Types \code{"latency_mean"} and \code{"total_latency"} are available only for \code{hmcdm} objects that include item response time information (i.e., \code{hmcdm} object fitted with "\code{DINA_HO_RT}" model).}
 }
 \description{
 \code{pp_check} method for class \code{hmcdm}.
@@ -24,7 +27,7 @@ The list of available types include \code{"total_score"}, \code{"M1"}, \code{"M2
 output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",Test_order,Test_versions,10000,5000)
 library(bayesplot)
 pp_check(output_FOHM)
-pp_check(output_FOHM, plotfun="hist", type="M1")
+pp_check(output_FOHM, plotfun="hist", type="item_mean")
 }
 }
 \references{

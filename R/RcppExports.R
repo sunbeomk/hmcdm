@@ -22,16 +22,6 @@ rwishart <- function(df, S) {
     .Call(`_hmcdm_rwishart`, df, S)
 }
 
-#' @title Generate Random Inverse Wishart Distribution
-#' @description Creates a random inverse wishart distribution when given degrees of freedom and a sigma matrix. 
-#' @param df An \code{int} that represents the degrees of freedom.  (> 0)
-#' @param Sig A \code{matrix} with dimensions m x m that provides Sigma, the covariance matrix. 
-#' @return A \code{matrix} that is an inverse wishart distribution.
-#' @author James J Balamuta
-#' @examples 
-#' #Call with the following data:
-#' rinvwish(3, diag(2))
-#' @export
 rinvwish <- function(df, Sig) {
     .Call(`_hmcdm_rinvwish`, df, Sig)
 }
@@ -237,32 +227,13 @@ Gibbs_DINA_FOHM <- function(Response, Qs, Test_order, Test_versions, chain_lengt
 #' @author Susu Zhang
 #' @examples
 #' \donttest{
-#' output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",Test_order,Test_versions,10000,5000)
+#' output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",Test_order,Test_versions,100,30)
 #' }
 #' @export
 hmcdm <- function(Y_real_array, Q_matrix, model, Test_order, Test_versions, chain_length, burn_in, G_version = NA_integer_, theta_propose = 0., Latency_array = NULL, deltas_propose = NULL, R = NULL) {
     .Call(`_hmcdm_hmcdm`, Y_real_array, Q_matrix, model, Test_order, Test_versions, chain_length, burn_in, G_version, theta_propose, Latency_array, deltas_propose, R)
 }
 
-#' @title Simulate DINA model responses (single vector)
-#' @description Simulate a single vector of DINA responses for a person on a set of items
-#' @param J An \code{int} of number of items
-#' @param K An \code{int} of number of attributes
-#' @param ETA A \code{matrix} of ideal responses generated with ETAmat function
-#' @param Svec A length J \code{vector} of item slipping parameters
-#' @param Gvec A length J \code{vector} of item guessing parameters
-#' @param alpha A length K \code{vector} of attribute pattern of a person 
-#' @return A length J \code{vector} of item responses 
-#' @examples
-#' J = 15
-#' K = 4
-#' Q = random_Q(J,K)
-#' ETA = ETAmat(K,J,Q)
-#' s = runif(J,.1,.2)
-#' g = runif(J,.1,.2)
-#' alpha_i = c(1,0,0,1)
-#' Y_i = sim_resp_DINA(J,K,ETA,s,g,alpha_i)
-#' @export
 sim_resp_DINA <- function(J, K, ETA, Svec, Gvec, alpha) {
     .Call(`_hmcdm_sim_resp_DINA`, J, K, ETA, Svec, Gvec, alpha)
 }
@@ -310,31 +281,6 @@ pYit_DINA <- function(ETA_it, Y_it, itempars) {
     .Call(`_hmcdm_pYit_DINA`, ETA_it, Y_it, itempars)
 }
 
-#' @title Simulate rRUM model responses (single vector)
-#' @description Simulate a single vector of rRUM responses for a person on a set of items
-#' @param J An \code{int} of number of items
-#' @param K An \code{int} of number of attributes
-#' @param Q A J-by-K Q \code{matrix}
-#' @param rstar A J-by-K \code{matrix} of item penalty parameters for missing requisite skills
-#' @param pistar length J \code{vector} of item correct response probability with all requisite skills
-#' @param alpha A length K \code{vector} of attribute pattern of a person 
-#' @return A length J \code{vector} of item responses
-#' @examples
-#' J = 15
-#' K = 4
-#' T = 5
-#' Q = random_Q(J,K)
-#' Smats <- matrix(runif(J*K,.1,.3),J,K)
-#' Gmats <- matrix(runif(J*K,.1,.3),J,K)
-#' r_stars <- matrix(NA,J,K)
-#' pi_stars <- numeric(J)
-#' for(t in 1:T){
-#'   pi_stars <- apply(((1-Smats)^Q),1,prod)
-#'   r_stars <- Gmats/(1-Smats)
-#' }
-#' alpha_i = c(1,0,0,1)
-#' Y_i = sim_resp_rRUM(J,K,Q,r_stars,pi_stars,alpha_i)
-#' @export
 sim_resp_rRUM <- function(J, K, Q, rstar, pistar, alpha) {
     .Call(`_hmcdm_sim_resp_rRUM`, J, K, Q, rstar, pistar, alpha)
 }
@@ -389,24 +335,6 @@ pYit_rRUM <- function(alpha_it, Y_it, pi_star_it, r_star_it, Q_it) {
     .Call(`_hmcdm_pYit_rRUM`, alpha_it, Y_it, pi_star_it, r_star_it, Q_it)
 }
 
-#' @title Simulate NIDA model responses (single vector)
-#' @description Simulate a single vector of NIDA responses for a person on a set of items
-#' @param J An \code{int} of number of items
-#' @param K An \code{int} of number of attributes
-#' @param Q A J-by-K Q \code{matrix}
-#' @param Svec A length K \code{vector} of slipping probability in applying mastered skills
-#' @param Gvec A length K \code{vector} of guessing probability in applying mastered skills
-#' @param alpha A length K \code{vector} of attribute pattern of a person 
-#' @return A length J \code{vector} of item responses
-#' @examples
-#' J = 15
-#' K = 4
-#' Q = random_Q(J,K)
-#' Svec <- runif(K,.1,.3)
-#' Gvec <- runif(K,.1,.3)
-#' alpha_i = c(1,0,0,1)
-#' Y_i = sim_resp_NIDA(J,K,Q,Svec,Gvec,alpha_i)
-#' @export
 sim_resp_NIDA <- function(J, K, Q, Svec, Gvec, alpha) {
     .Call(`_hmcdm_sim_resp_NIDA`, J, K, Q, Svec, Gvec, alpha)
 }

@@ -24,13 +24,13 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Susu Zhang \email{susu.zhang1992@gmail.com}
+\strong{Maintainer}: Sunbeom Kwon \email{sunbeom2@illinois.edu}
 
 Authors:
 \itemize{
+  \item Susu Zhang \email{szhan105@illinois.edu}
   \item Shiyu Wang \email{swang44@uga.edu}
   \item Yinghan Chen \email{yinghanc@unr.edu }
-  \item Sunbeom Kwon \email{sunbeom2@illinois.edu}
 }
 
 }

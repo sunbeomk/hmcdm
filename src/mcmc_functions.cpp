@@ -2406,7 +2406,7 @@ Rcpp::List Gibbs_DINA_FOHM(const arma::cube& Response,const arma::cube& Qs,
 //' @author Susu Zhang
 //' @examples
 //' \donttest{
-//' output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",Test_order,Test_versions,10000,5000)
+//' output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",Test_order,Test_versions,100,30)
 //' }
 //' @export
 // [[Rcpp::export]]
