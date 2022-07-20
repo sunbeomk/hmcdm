@@ -25,7 +25,6 @@ pp_check.hmcdm <- function(x,plotfun="dens_overlay",type="total_score",...){
                           Test_order, Test_versions, Q_examinee)
   }
   if(x$Model == "DINA_HO_RT_sep" | x$Model == "DINA_HO_RT_joint"){
-    x <- output_HMDCM_RT_sep
     L_sim <- Dense2Sparse(x$input_data$Latency, x$input_data$Test_order, x$input_data$Test_versions)
     x_fit <- Learning_fit(x,x$Model,Y_sim,Q_matrix,
                                   x$input_data$Test_order,x$input_data$Test_versions,

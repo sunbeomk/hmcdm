@@ -68,6 +68,12 @@ summary.hmcdm <- function(object, ...){
         PPP_item_ORs[j,jp] <- f2(Observed_ORs[j,jp])
       }
     }
+    class_mat <- matrix(NA, nrow=2^K, ncol=K)
+    for(i in 1:(2^K)){class_mat[i,] <- inv_bijectionvector(K, i-1)}
+    class_names <- apply(class_mat, 1, paste, collapse="")
+    rownames(point_estimates$pis_EAP) <- class_names
+    colnames(point_estimates$pis_EAP) <- "pis_EAP"
+    rownames(point_estimates$lambdas_EAP) <- paste0("\u03bb", 0:(length(point_estimates$lambdas_EAP)-1))
     res <- list(Model = "DINA_HO",
                 Alphas_est = point_estimates$Alphas_est,
                 ss_EAP = point_estimates$ss_EAP,
@@ -144,6 +150,12 @@ summary.hmcdm <- function(object, ...){
                                         taus_EAP = point_estimates$taus_EAP,
                                         phis = point_estimates$phis,
                                         tauvar_EAP = point_estimates$tauvar_EAP)
+    class_mat <- matrix(NA, nrow=2^K, ncol=K)
+    for(i in 1:(2^K)){class_mat[i,] <- inv_bijectionvector(K, i-1)}
+    class_names <- apply(class_mat, 1, paste, collapse="")
+    rownames(point_estimates$pis_EAP) <- class_names
+    colnames(point_estimates$pis_EAP) <- "pis_EAP"
+    rownames(point_estimates$lambdas_EAP) <- paste0("\u03bb", 0:(length(point_estimates$lambdas_EAP)-1))
     res <- list(Model = "DINA_HO_RT_sep",
                 Alphas_est = point_estimates$Alphas_est,
                 ss_EAP = point_estimates$ss_EAP,
@@ -223,6 +235,12 @@ summary.hmcdm <- function(object, ...){
                                         taus_EAP = point_estimates$taus_EAP,
                                         phis = point_estimates$phis,
                                         Sigs_EAP = point_estimates$Sigs_EAP)
+    class_mat <- matrix(NA, nrow=2^K, ncol=K)
+    for(i in 1:(2^K)){class_mat[i,] <- inv_bijectionvector(K, i-1)}
+    class_names <- apply(class_mat, 1, paste, collapse="")
+    rownames(point_estimates$pis_EAP) <- class_names
+    colnames(point_estimates$pis_EAP) <- "pis_EAP"
+    rownames(point_estimates$lambdas_EAP) <- paste0("\u03bb", 0:(length(point_estimates$lambdas_EAP)-1))
     res <- list(Model = "DINA_HO_RT_joint",
                 Alphas_est = point_estimates$Alphas_est,
                 ss_EAP = point_estimates$ss_EAP,
@@ -285,6 +303,12 @@ summary.hmcdm <- function(object, ...){
         PPP_item_ORs[j,jp] <- f2(Observed_ORs[j,jp])
       }
     }
+    class_mat <- matrix(NA, nrow=2^K, ncol=K)
+    for(i in 1:(2^K)){class_mat[i,] <- inv_bijectionvector(K, i-1)}
+    class_names <- apply(class_mat, 1, paste, collapse="")
+    rownames(point_estimates$pis_EAP) <- class_names
+    colnames(point_estimates$pis_EAP) <- "pis_EAP"
+    rownames(point_estimates$taus_EAP) <- paste0("\u03c4", 1:(length(point_estimates$taus_EAP)))
     res <- list(Model = "rRUM_indept",
                 Alphas_est = point_estimates$Alphas_est,
                 taus_EAP = point_estimates$taus_EAP,
@@ -343,6 +367,12 @@ summary.hmcdm <- function(object, ...){
         PPP_item_ORs[j,jp] <- f2(Observed_ORs[j,jp])
       }
     }
+    class_mat <- matrix(NA, nrow=2^K, ncol=K)
+    for(i in 1:(2^K)){class_mat[i,] <- inv_bijectionvector(K, i-1)}
+    class_names <- apply(class_mat, 1, paste, collapse="")
+    rownames(point_estimates$pis_EAP) <- class_names
+    colnames(point_estimates$pis_EAP) <- "pis_EAP"
+    rownames(point_estimates$taus_EAP) <- paste0("\u03c4", 1:(length(point_estimates$taus_EAP)))
     res <- list(Model = "NIDA_indept",
                 Alphas_est = point_estimates$Alphas_est,
                 ss_EAP = point_estimates$ss_EAP,
@@ -399,6 +429,11 @@ summary.hmcdm <- function(object, ...){
         PPP_item_ORs[j,jp] <- f2(Observed_ORs[j,jp])
       }
     }
+    class_mat <- matrix(NA, nrow=2^K, ncol=K)
+    for(i in 1:(2^K)){class_mat[i,] <- inv_bijectionvector(K, i-1)}
+    class_names <- apply(class_mat, 1, paste, collapse="")
+    rownames(point_estimates$pis_EAP) <- class_names
+    colnames(point_estimates$pis_EAP) <- "pis_EAP"
     res <- list(Model = "DINA_FOHM",
                 Alphas_est = point_estimates$Alphas_est,
                 ss_EAP = point_estimates$ss_EAP,
@@ -437,18 +472,20 @@ print.summary.hmcdm <- function(x, ...){
   
   cat("\nTransition Parameters:\n")
   if(x$Model=="DINA_HO" || x$Model=="DINA_HO_RT_sep" || x$Model=="DINA_HO_RT_joint"){
-    Transition_parameters <- as.vector(x$lambdas_EAP)
-    Transition_parameters_name <- "lambdas_EAP"
+    Transition_parameters <- x$lambdas_EAP
+    rownames(Transition_parameters) <- paste0("\u03bb", 0:(length(Transition_parameters)-1))
+    colnames(Transition_parameters) <- "lambdas_EAP"
   }
   if(x$Model=="NIDA_indept" || x$Model=="rRUM_indept"){
-    Transition_parameters <- as.vector(x$taus_EAP)
-    Transition_parameters_name <- "taus_EAP"
+    Transition_parameters <- x$taus_EAP
+    rownames(Transition_parameters) <- paste0("\u03c4", 1:(length(Transition_parameters)))
+    colnames(Transition_parameters) <- "taus_EAP"
   }
   if(x$Model=="DINA_FOHM"){
     Transition_parameters <- x$omegas_EAP[1,]
     Transition_parameters_name <- "omegas_EAP"
   }
-  cat(Transition_parameters_name,"\n",formatC(Transition_parameters, digits=digits),"\n")
+  print(Transition_parameters, digits=digits)
   if(x$Model=="DINA_FOHM"){cat("   ...", length(Transition_parameters)-1, "more rows\n")}
   
   cat("\nClass Probabilities:\n")
