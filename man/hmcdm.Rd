@@ -62,7 +62,7 @@ Runs MCMC to estimate parameters of any of the listed learning models.
 }
 \examples{
 \donttest{
-output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",Test_order,Test_versions,10000,5000)
+output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",Test_order,Test_versions,100,30)
 }
 }
 \author{

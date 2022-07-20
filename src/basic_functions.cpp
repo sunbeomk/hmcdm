@@ -68,16 +68,6 @@ arma::mat rwishart(unsigned int df, const arma::mat& S) {
 }
 
 
-//' @title Generate Random Inverse Wishart Distribution
-//' @description Creates a random inverse wishart distribution when given degrees of freedom and a sigma matrix. 
-//' @param df An \code{int} that represents the degrees of freedom.  (> 0)
-//' @param Sig A \code{matrix} with dimensions m x m that provides Sigma, the covariance matrix. 
-//' @return A \code{matrix} that is an inverse wishart distribution.
-//' @author James J Balamuta
-//' @examples 
-//' #Call with the following data:
-//' rinvwish(3, diag(2))
-//' @export
 // [[Rcpp::export]]
 arma::mat rinvwish(unsigned int df, const arma::mat& Sig) {
   return rwishart(df,Sig.i()).i();

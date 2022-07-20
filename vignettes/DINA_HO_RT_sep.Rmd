@@ -67,6 +67,8 @@ output_HMDCM_RT_sep
 summary(output_HMDCM_RT_sep)
 a <- summary(output_HMDCM_RT_sep)
 head(a$ss_EAP)
+object <- output_HMDCM_RT_sep
+
 ```
 
 
@@ -101,5 +103,7 @@ a$DIC
 head(a$PPP_total_scores)
 head(a$PPP_item_means)
 head(a$PPP_item_ORs)
+library(bayesplot)
+pp_check(output_HMDCM_RT_sep, type="total_latency")
 ```
 

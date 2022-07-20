@@ -4,8 +4,11 @@
 #' @param plotfun A character string naming the type of plot. The list of available 
 #' plot functions include `"dens_overlay"`, `"hist"`, `"stat_2d"`, `"scatter_avg"`, `"error_scatter_avg"`.
 #' The default function is `"dens_overlay"`.
-#' @param type A character string naming the type of posterior predictive distributions to plot. 
-#' The list of available types include `"total_score"`, `"M1"`, `"M2"`. The default type is `"total_score"`.
+#' @param type A character string naming the which statistic to use for checking posterior predictive distribution plot. 
+#' The list of available types include `"total_score"`, `"item_mean"`, `"item_OR"`, `"latency_mean"`, and `"latency_total"`. The default type is `"total_score"` which examines total scores of subjects. 
+#' Type `"item_mean"` is related to the first order moment and examines mean scores of all the items included in the test. 
+#' Type `"item_OR"` is related to the second order moment and examines odds ratios of all item pairs.
+#' Types `"latency_mean"` and `"total_latency"` are available only for `hmcdm` objects that include item response time information (i.e., `hmcdm` object fitted with "`DINA_HO_RT`" model).
 #' @seealso 
 #' [bayesplot::ppc_dens_overlay()]
 #' [bayesplot::ppc_stat()]
@@ -19,7 +22,7 @@
 #' output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",Test_order,Test_versions,10000,5000)
 #' library(bayesplot)
 #' pp_check(output_FOHM)
-#' pp_check(output_FOHM, plotfun="hist", type="M1")
+#' pp_check(output_FOHM, plotfun="hist", type="item_mean")
 #' }
 #' @export
 pp_check.hmcdm <- function(object,plotfun="dens_overlay",type="total_score"){
@@ -73,7 +76,7 @@ pp_check.hmcdm <- function(object,plotfun="dens_overlay",type="total_score"){
     obs <- rowSums(total_score_obs)
     pp <- apply(object_fit$PPs$total_score_PP,1,colSums)
   }
-  if(type=="M1"){
+  if(type=="item_mean"){
     ## Item means
     obs <- rep(NA, J)
     for(j in 1:J){
@@ -81,8 +84,7 @@ pp_check.hmcdm <- function(object,plotfun="dens_overlay",type="total_score"){
     }
     pp <- t(object_fit$PPs$item_mean_PP)
   }
-  
-  if(type=="M2"){
+  if(type=="item_OR"){
     ## Item log odds ratio
     Observed_ORs <- OddsRatio(N,J,Y_sim_collapsed)
     ORs_obs <- Observed_ORs[upper.tri(Observed_ORs)]
@@ -94,7 +96,33 @@ pp_check.hmcdm <- function(object,plotfun="dens_overlay",type="total_score"){
     }
     pp <- log(ORs_pp)
   }
-
+  if(type=="latency_mean"){
+    L_sim_array <- Sparse2Dense(L_sim, object$input_data$Test_order, object$input_data$Test_versions)
+    L_sim_collapsed <- matrix(NA,N,J)
+    for(i in 1:N){
+      test_i <- object$input_data$Test_versions[i]
+      for(t in 1:T){
+        t_i = object$input_data$Test_order[test_i,t]
+        L_sim_collapsed[i,(Jt*(t_i-1)+1):(Jt*t_i)] <- L_sim_array[i,,t]
+      }
+    }
+    ## latency means
+    obs <- rep(NA, J)
+    for(j in 1:J){
+      obs[j] <- mean(L_sim_collapsed[,j])
+    }
+    pp <- t(object_fit$PPs$RT_mean_PP)
+  }
+  if(type=="total_latency"){
+    ## total score
+    total_latency_obs <- matrix(NA, N, T)
+    for(t in 1:T){
+      total_latency_obs[,t] <- rowSums(object$input_data$Latency[,,t])
+    }
+    obs <- rowSums(total_latency_obs)
+    pp <- apply(object_fit$PPs$total_time_PP,1,colSums)
+  }
+  
   if(plotfun=="dens_overlay"){# Compare distribution of y to distributions of multiple yrep datasets
     bayesplot::color_scheme_set("red")
     result <- bayesplot::ppc_dens_overlay(y=obs, yrep=pp)
