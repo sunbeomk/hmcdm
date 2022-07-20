@@ -28,16 +28,11 @@ T = nrow(Test_order)
 Jt = J/T
 ```
 
-### Create the ideal response matrix
-
-```{r}
-ETAs <- ETAmat(K, J, Q_matrix)
-```
-
 
 ## (1) Simulate responses and response times based on the HMDCM model with response times (no covariance between speed and learning ability)
 
 ```{r}
+ETAs <- ETAmat(K, J, Q_matrix)
 Q_examinee <- Q_list(Q_matrix, Test_order, Test_versions)
 class_0 <- sample(1:2^K, N, replace = T)
 Alphas_0 <- matrix(0,N,K)

@@ -12,37 +12,6 @@
 
 
 
-//' @title Obtain learning model point estimates
-//' @description Obtain EAPs of continuous parameters and EAP or MAP of the attribute trajectory estimates under
-//' the CDM learning models based on the MCMC output
-//' @param output A \code{list} of MCMC outputs, obtained from the hmcdm function
-//' @param model A \code{charactor} of the type of model fitted with the MCMC sampler, possible selections are 
-//' "DINA_HO": Higher-Order Hidden Markov Diagnostic Classification Model with DINA responses;
-//' "DINA_HO_RT_joint": Higher-Order Hidden Markov DCM with DINA responses, log-Normal response times, and joint modeling of latent
-//' speed and learning ability; 
-//' "DINA_HO_RT_sep": Higher-Order Hidden Markov DCM with DINA responses, log-Normal response times, and separate modeling of latent
-//' speed and learning ability; 
-//' "rRUM_indept": Simple independent transition probability model with rRUM responses
-//' "NIDA_indept": Simple independent transition probability model with NIDA responses
-//' "DINA_FOHM": First Order Hidden Markov model with DINA responses
-//' @param N An \code{int} of number of subjects 
-//' @param Jt An \code{int} of number of items in each block
-//' @param K An \code{int} of number of skills
-//' @param T An \code{int} of number of time points
-//' @param alpha_EAP A \code{boolean} operator (T/F) of whether to use EAP for alphas (if F: use most likely trajectory (MAP) for alphas) 
-//' @return A \code{list} of point estimates of model parameters
-//' @author Susu Zhang
-//' @examples
-//' \donttest{
-//' N = length(Test_versions)
-//' J = nrow(Q_matrix)
-//' K = ncol(Q_matrix)
-//' T = nrow(Test_order)
-//' Jt = J/T
-//' output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",Test_order,Test_versions,10000,5000)
-//' point_estimates = point_estimates_learning(output_FOHM,"DINA_FOHM",N,Jt,K,T,alpha_EAP = T)
-//' }
-//' @export
 // [[Rcpp::export]]
 Rcpp::List point_estimates_learning(const Rcpp::List output, const std::string model, const unsigned int N,
                                     const unsigned int Jt, const unsigned int K, const unsigned int T,
@@ -250,39 +219,7 @@ Rcpp::List point_estimates_learning(const Rcpp::List output, const std::string m
   return(point_ests);
 }
 
-//' @title Model fit statistics of learning models
-//' @description Obtain joint model's deviance information criteria (DIC) and posterior predictive item means, item response time means, 
-//' item odds ratios, subject total scores at each time point, and subject total response times at each time point.
-//' @param output A \code{list} of MCMC outputs, obtained from the hmcdm function
-//' @param model A \code{charactor} of the type of model fitted with the MCMC sampler, possible selections are 
-//' "DINA_HO": Higher-Order Hidden Markov Diagnostic Classification Model with DINA responses;
-//' "DINA_HO_RT_joint": Higher-Order Hidden Markov DCM with DINA responses, log-Normal response times, and joint modeling of latent
-//' speed and learning ability; 
-//' "DINA_HO_RT_sep": Higher-Order Hidden Markov DCM with DINA responses, log-Normal response times, and separate modeling of latent
-//' speed and learning ability; 
-//' "rRUM_indept": Simple independent transition probability model with rRUM responses
-//' "NIDA_indept": Simple independent transition probability model with NIDA responses
-//' "DINA_FOHM": First Order Hidden Markov model with DINA responses
-//' @param Y_real_array A \code{array} of dichotomous item responses. t-th slice is an N-by-J matrix of responses at time t.
-//' @param Q_matrix A \code{list} of Q-matrices. b-th element is a Jt-by-K Q-matrix for items in block b. 
-//' @param Test_order A \code{matrix} of the order of item blocks for each test version.
-//' @param Test_versions A \code{vector} of the test version of each learner.
-//' @param Q_examinee Optional. A \code{list} of the Q matrix for each learner. i-th element is a J-by-K Q-matrix for all items learner i was administered.
-//' @param Latency_array Optional. A \code{array} of the response times. t-th slice is an N-by-J matrix of response times at time t.
-//' @param G_version Optional. An \code{int} of the type of covariate for increased fluency (1: G is dichotomous depending on whether all skills required for
-//' current item are mastered; 2: G cumulates practice effect on previous items using mastered skills; 3: G is a time block effect invariant across 
-//' subjects with different attribute trajectories)
-//' @param R Optional. A reachability \code{matrix} for the hierarchical relationship between attributes. 
-//' @return A list of DIC matrix, with deviance decomposed to that of the transition model, response model, response time model (if applicable),
-//' and joint model of random parameters, and posterior predictive item means, item odds ratios, item averaged response times, subjects' total
-//' scores at each time point, and subjects' total response times at each time point. Predicted values can be compared to the observed ones from
-//' empirical data.
-//' @examples
-//' \donttest{
-//' output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",Test_order,Test_versions,10000,5000)
-//' FOHM_fit <- Learning_fit(output_FOHM,"DINA_FOHM",Y_real_array,Q_matrix,Test_order,Test_versions)
-//' }
-//' @export
+
 // [[Rcpp::export]]
 Rcpp::List Learning_fit(const Rcpp::List output, const std::string model,
                         const arma::cube Y_real_array, const arma::mat Q_matrix,

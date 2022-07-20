@@ -28,16 +28,11 @@ T = nrow(Test_order)
 Jt = J/T
 ```
 
-### Create the ideal response matrix
-
-```{r}
-ETAs <- ETAmat(K, J, Q_matrix)
-```
-
 
 ## (1) Simulate responses and response times based on the DINA_FOHM model
 
 ```{r}
+ETAs <- ETAmat(K, J, Q_matrix)
 TP <- TPmat(K)
 Omega_true <- rOmega(TP)
 class_0 <- sample(1:2^K, N, replace = T)

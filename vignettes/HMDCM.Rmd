@@ -28,12 +28,6 @@ T = nrow(Test_order)
 Jt = J/T
 ```
 
-### Create the ideal response matrix
-
-```{r}
-ETAs <- ETAmat(K, J, Q_matrix)
-```
-
 
 ## (1) Simulate responses based on the HMDCM model
 
