@@ -18,7 +18,9 @@ BugReports: https://github.com/tmsalab/hmcdm/issues
 Depends: R (>= 3.5.0)
 Imports: 
     Rcpp (>= 1.0.0),
-    stats
+    stats,
+    bayesplot,
+    rstanarm
 LinkingTo: Rcpp, RcppArmadillo, progress
 SystemRequirements: C++11
 Encoding: UTF-8

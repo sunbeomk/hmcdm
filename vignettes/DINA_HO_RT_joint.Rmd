@@ -113,6 +113,5 @@ head(a$PPP_total_RTs)
 head(a$PPP_item_means)
 head(a$PPP_item_mean_RTs)
 head(a$PPP_item_ORs)
-
 ```
 

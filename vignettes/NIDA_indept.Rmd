@@ -108,6 +108,5 @@ a$DIC
 head(a$PPP_total_scores)
 head(a$PPP_item_means)
 head(a$PPP_item_ORs)
-
 ```
 
