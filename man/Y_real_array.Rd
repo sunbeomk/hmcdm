@@ -3,10 +3,10 @@
 \docType{data}
 \name{Y_real_array}
 \alias{Y_real_array}
-\title{Observed response accuracy list}
+\title{Observed response accuracy array}
 \format{
 An array of dimensions N-by-J-by-T. Each slice of the array is an N-by-J matrix, containing the
-subjects' response accuracy to each item at that time point.
+subjects' response accuracy to each item at time point t.
 }
 \source{
 Spatial Rotation Learning Experiment at UIUC between Fall 2015 and Spring 2016.

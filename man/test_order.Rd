@@ -5,9 +5,7 @@
 \alias{Test_order}
 \title{Test block ordering of each test version}
 \format{
-A 5x5 matrix, each row is the order of item blocks (as in Qs and Q_list) for that test version.
-For example, the first row is the order of item block administration (1-2-3-4-5) to subjects with test
-version 1.
+A T-by-T matrix, each row is the order of item blocks for that test version.
 }
 \source{
 Spatial Rotation Learning Experiment at UIUC between Fall 2015 and Spring 2016.
@@ -16,7 +14,15 @@ Spatial Rotation Learning Experiment at UIUC between Fall 2015 and Spring 2016.
 Test_order
 }
 \description{
-This data set contains the item block ordering of each version of the test.
+This data set contains the item block ordering of each test module.
+}
+\details{
+Each row represents the test module number and shows the order of item blocks administered to a subject with the test module.
+For example, the first row is the order of item block administration (1-2-3-4-5) to subjects with test
+module 1.
+}
+\seealso{
+\code{\link{Test_versions}}
 }
 \author{
 Shiyu Wang, Yan Yang, Jeff Douglas, and Steve Culpepper

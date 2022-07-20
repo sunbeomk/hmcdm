@@ -3,10 +3,10 @@
 \docType{data}
 \name{L_real_array}
 \alias{L_real_array}
-\title{Observed response times list}
+\title{Observed response times array}
 \format{
-An array of dimensions 350-by-50-by-5. Each slice of the array is an N-by-J matrix, containing the
-subjects' response times in seconds to each item at that time point.
+An array of dimensions N-by-J-by-T. Each slice of the array is an N-by-J matrix, containing the
+subjects' response times in seconds to each item at time point t.
 }
 \source{
 Spatial Rotation Learning Experiment at UIUC between Fall 2015 and Spring 2016.

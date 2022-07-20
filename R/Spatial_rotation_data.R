@@ -31,8 +31,12 @@
 
 #' Subjects' test version
 #' 
-#' This data set contains each subject's test version in the Spatial Rotation Learning Program.
-#' @format A vector of length N, containing each subject's test version ranging from 1 to T.
+#' This data set contains each subject's test module in the Spatial Rotation Learning Program.
+#' @format A vector of length N, containing each subject's assigned test module.
+#' @details The data object `"Test_versions"` contains a vector of length N indicating the test module assigned to each subject. 
+#' Each test module consists of multiple item blocks with different orders over T time points. 
+#' The order of item blocks corresponding to each test module is presented in the data object `"Test_order"`.
+#' @seealso [`Test_order`]
 #' @source Spatial Rotation Learning Experiment at UIUC between Fall 2015 and Spring 2016.
 #' @author Shiyu Wang, Yan Yang, Jeff Douglas, and Steve Culpepper
 "Test_versions"
@@ -40,10 +44,12 @@
 
 #' Test block ordering of each test version
 #' 
-#' This data set contains the item block ordering of each version of the test.
+#' This data set contains the item block ordering of each test module.
 #' @format A T-by-T matrix, each row is the order of item blocks for that test version. 
+#' @details Each row represents the test module number and shows the order of item blocks administered to a subject with the test module. 
 #' For example, the first row is the order of item block administration (1-2-3-4-5) to subjects with test
-#' version 1. 
+#' module 1. 
+#' @seealso [`Test_versions`]
 #' @source Spatial Rotation Learning Experiment at UIUC between Fall 2015 and Spring 2016.
 #' @author Shiyu Wang, Yan Yang, Jeff Douglas, and Steve Culpepper
 'Test_order'
