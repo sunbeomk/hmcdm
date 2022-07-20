@@ -44,7 +44,7 @@
 
 #' Test block ordering of each test version
 #' 
-#' This data set contains the item block ordering of each test module.
+#' This data set contains the item block ordering corresponding to each test module.
 #' @format A T-by-T matrix, each row is the order of item blocks for that test version. 
 #' @details Each row represents the test module number and shows the order of item blocks administered to a subject with the test module. 
 #' For example, the first row is the order of item block administration (1-2-3-4-5) to subjects with test

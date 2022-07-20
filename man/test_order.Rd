@@ -14,7 +14,7 @@ Spatial Rotation Learning Experiment at UIUC between Fall 2015 and Spring 2016.
 Test_order
 }
 \description{
-This data set contains the item block ordering of each test module.
+This data set contains the item block ordering corresponding to each test module.
 }
 \details{
 Each row represents the test module number and shows the order of item blocks administered to a subject with the test module.

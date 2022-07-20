@@ -57,7 +57,7 @@ Y_sim <- simDINA(Alphas,itempars_true,ETAs,Test_order,Test_versions)
 
 ```{r}
 output_HMDCM = hmcdm(Y_sim,Q_matrix,"DINA_HO",Test_order,Test_versions,
-                     chain_length=1000,burn_in=300,
+                     chain_length=100,burn_in=30,
                      theta_propose = 2,deltas_propose = c(.45,.35,.25,.06))
 
 output_HMDCM
