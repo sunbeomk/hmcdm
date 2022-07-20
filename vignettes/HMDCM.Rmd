@@ -106,7 +106,7 @@ a$DIC
 head(a$PPP_total_scores)
 head(a$PPP_item_means)
 head(a$PPP_item_ORs)
-library(rstanarm)
+library(bayesplot)
 pp_check(output_HMDCM)
 pp_check(output_HMDCM, plotfun="dens_overlay", type="M1")
 pp_check(output_HMDCM, plotfun="hist", type="M1")

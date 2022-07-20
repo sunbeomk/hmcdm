@@ -18,6 +18,18 @@ print.hmcdm <- function(x, ...){
 }
 
 
+#' @name summary.hmcdm
+#' @title Summarizing Hidden Markov Cognitive Diagnosis Model Fits
+#' @description `summary` method for class "`hmcdm`" or "`summary.hmcdm`".
+#' @param object a fitted model object of class "`hmcdm`".
+#' @param ... further arguments passed to or from other methods.
+#' @return The function `summary.hmcdm` computes and returns a \code{list} of point estimates of model parameters and model fit measures including DIC and PPP-values.
+#' @seealso [hmcdm()]
+#' @examples
+#' \donttest{
+#' output_FOHM = hmcdm(Y_real_array,Q_matrix,"DINA_FOHM",Test_order,Test_versions,10000,5000)
+#' summary(output_FOHM)
+#' }
 #' @export
 summary.hmcdm <- function(object, ...){
   N <- nrow(object$input_data$Response)[1]
@@ -451,7 +463,8 @@ summary.hmcdm <- function(object, ...){
   return(res)
 }
 
-
+#' @param x an object of class "`hmcdm.summary`".
+#' @rdname summary.hmcdm
 #' @export
 print.summary.hmcdm <- function(x, ...){
   digits <- max(3, getOption("digits") - 3)

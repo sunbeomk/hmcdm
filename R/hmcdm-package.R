@@ -3,7 +3,6 @@
 #' @importFrom Rcpp evalCpp
 #' @importFrom stats ecdf
 #' @importFrom utils head
-#' @importFrom rstanarm pp_check
 #' @import bayesplot
 #' @references 
 #' Wang, S., Yang, Y., Culpepper, S. A., & Douglas, J. A. (2018). Tracking Skill Acquisition With Cognitive Diagnosis Models: A Higher-Order, Hidden Markov Model With Covariates. Journal of Educational and Behavioral Statistics, 1076998617719727.
